@@ -1,0 +1,89 @@
+.box::-webkit-scrollbar {
+    width: 1rem;
+}
+.box::-webkit-scrollbar-thumb {
+    background-color: #2f3542;
+    border-radius: 1rem;
+}
+.box::-webkit-scrollbar-track {
+    background-color: white;
+}
+.map-box{
+    width:100%;
+    height:auto;
+}
+.menu-icon{
+    width: 2rem;
+    height: 1.5rem;
+    background: 50% no-repeat;
+    background-size: contain;
+    margin: 0 auto;
+    position: relative;
+    padding: 0.6rem;
+    color: #ababab;
+}
+.list-top{
+    border-top: 1px solid #cccccc;
+    background: #f8fafd;
+}
+.board-container{
+    margin: 1rem auto;
+    max-width: 76.8rem;
+}
+div.board-container button{
+    display: none !important;
+}
+div.board-container img{
+    width: 100% !important;
+    height: 18rem !important;
+    border-radius: 0;
+    max-width: 76.8rem;
+}
+.shop-board-container{
+
+}
+div.shop-board-container img{
+    width: 100% !important;
+    height: 25rem !important;
+}
+.slick-arrow {
+    display: none;
+}
+.slick-prev{
+    display: none;
+}
+
+@media screen and (max-width:1200px) { 
+    div.shop-board-container img{
+        height: 32vw !important;
+    }
+    div.board-container img{
+        height: 24vw !important;
+    }
+}
+
+@media screen and (max-width:900px) { 
+    div.shop-board-container img{
+        height: 30vw !important;
+    }
+    div.board-container img{
+        height: 42vw !important;
+    }
+}
+
+@media screen and (max-width:600px) { 
+    div.shop-board-container img{
+        height: 40vw !important;
+    }
+}
+
+@keyframes blink-effect {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .blink {
+    margin: 0 auto;
+    height: 3rem;
+  }
