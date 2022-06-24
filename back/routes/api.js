@@ -173,7 +173,6 @@ router.post('/changepassword', (req, res, next) => {
 router.get('/auth', (req, res, next) => {
     try {
         const decode = checkLevel(req.cookies.token, 0)
-
         if (decode) {
             let id = decode.id
             let pk = decode.code
@@ -577,17 +576,16 @@ router.post('/addchat', (req, res) => {
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
             } else {
-                response(req, res, 200, "입력성공", [])
             }
         })
-        const postId = req.body.post_id
         const postName = req.body.post_name
-        db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, creat_time) VALUES (?,?,?,?,?)',[content,postId,postName,nickname,moment],(err, result)=>{
+        const postTitle = req.body.post_title
+        db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle) VALUES (?,?,?,?,?,?)',[content,userPk,postName,nickname,moment,postTitle],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
             } else {
-                response(req, res, 200, "메신저 입력 성공", [])
+                response(req, res, 200, "입력 성공", [])
             }
         })
     }
@@ -670,7 +668,8 @@ router.post('/upbid',async (req, res) => {
         })
         const post_id = req.body.post_id
         const post_name = req.body.post_name
-        await db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time) VALUES (?,?,?,?,?)',[content,post_id,post_name,nickname,moment],(err, result)=>{
+        const postTitle = req.body.post_title
+        await db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle) VALUES (?,?,?,?,?,?)',[content,post_id,post_name,nickname,moment,postTitle],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -776,37 +775,5 @@ router.post('/myfavorite', async (req, res) => {
         response(req, res, -200, "서버 에러 발생", [])
     }
 })
-
-// 메신저 추가
-// router.post('/updatechat', (req, res) => {
-//     try {
-//         console.log(req.body)
-//         const { low_message, up_message, chat_message, post_id, post_name, user_name } = req.body
-
-//         var today = new Date();
-//         var year = today.getFullYear();
-//         var month = ('0' + (today.getMonth() + 1)).slice(-2);
-//         var day = ('0' + today.getDate()).slice(-2);
-//         var dateString = year + '-' + month + '-' + day;
-//         var hours = ('0' + today.getHours()).slice(-2);
-//         var minutes = ('0' + today.getMinutes()).slice(-2);
-//         var seconds = ('0' + today.getSeconds()).slice(-2);
-//         var timeString = hours + ':' + minutes + ':' + seconds;
-//         let moment = dateString + ' ' + timeString;
-
-//         db.query('INSERT INTO messenger (low_message, up_message, chat_message, post_id, post_name, user_name, creat_time) VALUES (?,?,?,?,?,?)',[low_message,up_message,chat_message,post_id,post_name,user_name,moment],(err, result)=>{
-//             if(err){
-//                 console.log(err)
-//                 response(req, res, -200, "서버 에러 발생", [])
-//             } else {
-//                 response(req, res, 200, "메신저 입력 성공", [])
-//             }
-//         })
-//     }
-//     catch (err) {
-//         console.log(err)
-//         response(req, res, -200, "서버 에러 발생", [])
-//     }
-// })
 
 module.exports = router;        

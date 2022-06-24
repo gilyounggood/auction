@@ -43,9 +43,7 @@ app.get('/', (req, res) => {
 
 app.post('/api/addauction', upload.single('image'), (req, res) =>{
         try{
-                
-               
-                        
+                              
                         const sql = 'INSERT INTO item_table (name, min_price, bid_price, category_list, seller_pk, seller_nickname, end_date, create_time, main_image) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ?)'
                         var today = new Date();
                         var year = today.getFullYear();

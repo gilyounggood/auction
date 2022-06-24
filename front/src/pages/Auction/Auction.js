@@ -140,8 +140,8 @@ const Auction = () => {
       userPk: auth.pk,
       content: $('#chat').val(),
       itemPk: params.pk,
-      postId: item?.pk,
-      postName: item?.seller_nickname,
+      post_name: item?.seller_nickname,
+      post_title: item?.name,
     })
     $('#chat').val("");
     if (response.result > 0) {
@@ -163,7 +163,10 @@ const Auction = () => {
         nickname: auth.nick_name,
         userPk: auth.pk,
         content: `${auth.nick_name}님이 ${$('#request-down-price').val()}원 으로 시작가 낮추기 요청을 하셨습니다.`,
-        itemPk: params.pk
+        itemPk: params.pk,
+        post_id: item?.pk,
+        post_name: item?.seller_nickname,
+        post_title: item?.name,
       })
       $('#request-down-price').val("");
       if (response.result > 0) {
@@ -190,6 +193,7 @@ const Auction = () => {
         userPk:auth.pk,
         post_id: item?.pk,
         post_name: item?.seller_nickname,
+        post_title: item?.name,
       })
       if(response.result>0){
         alert('가격 올리기 성공')
@@ -235,33 +239,6 @@ const Auction = () => {
     } else {
       alert('서버 에러 발생')
     }
-  }
-
-  const addLowMessage = async (e) => {
-    await axios.post("/api/updatechat", {
-      low_message: parseInt($('#request-down-price').val()),
-      user_name: auth.nick_name,
-      post_id: params,
-      post_name: item?.seller_nickname ?? '',
-    })
-  }
-
-  const addUpMessage = async (e) => {
-    await axios.post("/api/updatechat", {
-      up_message: parseInt($('#up-price').val()),
-      user_name: auth.nick_name,
-      post_id: params,
-      post_name: item?.seller_nickname ?? '',
-    })
-  }
-
-  const addChatMessage = async (e) => {
-    await axios.post("/api/updatechat", {
-      chat_message: $('#chat').val(),
-      user_name: auth.nick_name,
-      post_id: params,
-      post_name: item?.seller_nickname ?? '',
-    })
   }
 
   return (
@@ -438,7 +415,6 @@ const Auction = () => {
           }}>
             <Title>경매 로그</Title>
             <Container id="chating">
-              <pre>{JSON.stringify(item?.pk)}</pre>
               {chatList?.map((post, index) => (
                 <div key={index} style={{ width: '100%', textAlign: 'end', alignItems: `${auth.pk == post.user_pk ? 'end' : 'flex-start'}`, display: 'flex', flexDirection: 'column' }}>
                   <div style={{
