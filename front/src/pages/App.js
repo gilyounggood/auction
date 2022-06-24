@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route,Redirect,Switch, useLocation} from "react-router-dom";
 import styled from 'styled-components';
 import ScrollToTop from '../components/ScrollToTop';
@@ -34,6 +34,9 @@ import CommunityList from './Community/CommunityList';
 
 import SearchResult from './Search/SearchResult';
 
+import Messenger from './Messenger';
+import MessengerLog from './MessengerLog';
+
 const MarginTop1 = styled.div`
 margin-top:5rem;
 @media screen and (max-width:950px) {
@@ -47,7 +50,23 @@ const MarginBottom1 = styled.div`
   }
 `
 const App = () => {
-  
+ 
+  const [ userLog, setUserLog ] = useState(false);
+
+  const ref = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if(ref.current && !ref.current.contains(event.target)) {
+        setUserLog(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [ref])
+
     return (
         
             <Router >
@@ -85,7 +104,17 @@ const App = () => {
                 <Route exact path="/addcommunity/:pk" component={AddCommunity} />
 
                 <Route exact path="/searchresult" component={SearchResult} />
+
                 </Switch>
+                
+                <div ref={ref} style={{ position: "fixed", bottom: "24px", right: "24px" }}>
+                  <MessengerLog 
+                    userLog={userLog}
+                  />
+                  <Messenger 
+                    onClick={() => setUserLog(true)}
+                  />
+                </div>
                 
                 <BottomMenu/>
             
