@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Routes, Link, Router, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import $ from 'jquery'
 
 const UserLogStyle = styled.div`
-  width: 300px;
-  height: 400px;
+  width: 350px;
+  height: 500px;
   border: 1px solid #8A2BE2;
   border-radius: 10px;
   padding: 10px;
@@ -14,6 +15,14 @@ const UserLogStyle = styled.div`
   background-color: white;
   box-shadow: 3px 3px 3px grey;
   margin-left: 80px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
 `;
 
 const StyledLink = styled(Link)`
@@ -32,9 +41,15 @@ const LogTitle = styled.h3`
   border-radius: 10px;
   padding: 10px;
   text-align: center;
-  color: Lightseagreen;
+  color: #006400;
   background-color: wihte;
   box-shadow: 3px 3px 3px grey;
+  background-color: #FFFFF0;
+`;
+
+const Span = styled.span`
+  color: gray;
+  display: block;
 `;
 
 const MessengerLog = props => {
@@ -45,8 +60,12 @@ const MessengerLog = props => {
   const [myNickName, setMyNickName] = useState('')
   const [myLevel, setMyLevel] = useState(0);
   const [myPk, setMyPk] = useState(0);
+
+  const [messengerList, setMessengerList] = useState([])
+
   const isAdmin = async () => {
       setLoading(true)
+      
       const { data: response } = await axios.get('/api/auth')
       if (!response.second) {
           setAuth(false)
@@ -59,39 +78,46 @@ const MessengerLog = props => {
           setMyLevel(response.level)
           setMyPk(response.pk)
           console.log(response)
-      }
-      
+      }   
+
       setLoading(false)
   }
 
+  const fetchMessengers = async () => {
+    const {data:response} = await axios.post('/api/messengerinfo', {
+    })
+    console.log(response)
+    setMessengerList(response.data)
+  } 
+
   useEffect(() => {
-      isAdmin()
+    isAdmin()
+    fetchMessengers()
   }, [])
 
   return (
     <UserLogStyle
         style={{
             marginBottom: "15px",
-            ...{ opacity: props.userLog ? "1" : "0" }
+            ...{ display: props.userLog ? "block" : "none" }
         }}
     >
-      <LogTitle>{myNickName}님의 알림창</LogTitle>
-      {/* {listOfMessage.map((value, key) => {
-        return ( */}
-          <>
-            {/* {authState.userid !== value.userid && authState.id == value.postUserid ?  */}
-              <StyledLink 
-                // to={`/post/${value.PostId}`}
-                to = "" 
-                // key={key}
-              >
-                {}님이 "{}"에 댓글을 남겼습니다.
-              </StyledLink>
-              :null
-            {/* } */}
-          </>
-        {/* )
-      })} */}
+      <LogTitle>{myNickName}님의 메신저</LogTitle>
+          {messengerList?.map(messenger => {
+            return (
+              <>
+                {myNickName === messenger.post_name && myNickName !== messenger.user_name ?
+                <StyledLink 
+                to = {`/auction/${messenger.post_id}`}
+                >
+                      "{messenger.user_name}"님이 "{messenger.postTitle}"게시글에 "{messenger.chat_message}"
+                      <Span>{messenger.create_time}</Span>
+                </StyledLink>
+                : null
+                } 
+              </>
+            )
+          })}
     </UserLogStyle>
   )
 }

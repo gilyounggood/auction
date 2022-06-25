@@ -578,9 +578,10 @@ router.post('/addchat', (req, res) => {
             } else {
             }
         })
+        const post_id = req.body.post_id
         const postName = req.body.post_name
         const postTitle = req.body.post_title
-        db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle) VALUES (?,?,?,?,?,?)',[content,userPk,postName,nickname,moment,postTitle],(err, result)=>{
+        db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle) VALUES (?,?,?,?,?,?)',[content,post_id,postName,nickname,moment,postTitle],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -767,6 +768,25 @@ router.post('/myfavorite', async (req, res) => {
                         response(req, res, 200, "즐겨찾기 불러오기 성공", result2)
                     }
                 })
+            }
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+// 유저 메신저 추가
+router.post('/messengerinfo', async (req, res, next) => {
+    try {
+        const user_name = req.body.user_name;
+        await db.query('SELECT * FROM messenger ORDER BY pk DESC;', (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "success", result)
             }
         })
     }

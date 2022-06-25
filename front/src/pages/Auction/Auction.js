@@ -140,6 +140,7 @@ const Auction = () => {
       userPk: auth.pk,
       content: $('#chat').val(),
       itemPk: params.pk,
+      post_id: item?.pk,
       post_name: item?.seller_nickname,
       post_title: item?.name,
     })

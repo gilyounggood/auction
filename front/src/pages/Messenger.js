@@ -12,11 +12,15 @@ const UserImageStyle = styled.img`
     box-shadow: 5px 5px 5px grey;
     float: right;
     background-color: white;
+    margin-left: 5px;
+    @media screen and (max-width:950px) {
+        margin-bottom: 65px
+      }
 `;
 
 const UserNameStyle = styled.h4`
     padding: 10px;
-    margin-left: 150px;
+    margin-left: 195px;
     border-radius: 20px;
     color: black;
     background-color: #FFF0F5;
@@ -25,6 +29,9 @@ const UserNameStyle = styled.h4`
     display: flex;
     justify-content: center;
     align-items: center;
+    @media screen and (max-width:950px) {
+        margin-bottom: 65px
+      }
 `;
 
 const Messenger = props => {
