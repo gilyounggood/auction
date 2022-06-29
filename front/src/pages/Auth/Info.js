@@ -97,6 +97,9 @@ const Info = () => {
     const [reliability, setReliability] = useState(0)
     const [phoneNumber, setPhoneNumber] = useState('')
     const [communityList, setCommunityList] = useState([])
+    const [userTag, setUserTag] = useState("")
+    const [userTagInfo, setUserTagInfo] = useState("")
+
     const isAdmin = async () => {
 
         const { data: response } = await axios.get('/api/auth')
@@ -108,6 +111,17 @@ const Info = () => {
         const { data: response2 } = await axios.post('/api/info', {
             pk: params.pk
         })
+        try {
+            const { data: result } = await axios.post('/api/usertaginfo', {
+                user_name: response2.data.info[0].nick_name
+            })
+            if (result.data) {
+                setUserTagInfo(result.data.userTag[0].userTag)
+            } else {
+            }
+        } catch {
+        }
+
         console.log(response2)
         if (response2.data) {
             setPk(response2.data.info[0].pk)
@@ -132,6 +146,7 @@ const Info = () => {
         }
         console.log(response2)
     }
+
     useEffect(() => {
         isAdmin()
     }, [])
@@ -196,6 +211,37 @@ const Info = () => {
             window.location.reload()
         }
     }
+
+    const onChangeTag = (e) => {
+        setUserTag(e.target.value)
+    }
+
+    const addTag = (e) => {
+        if(userTag==="") {
+            alert("태그를 입력해주세요")
+        } else {
+            const {data:response} = axios.post('/api/addusertag',{
+                nickname: nickname,
+                userTag: userTag,
+            })
+                alert('태그가 등록되었습니다')
+                window.location.reload()
+        }
+    }
+
+    const editTag = (e) => {
+        if(userTag==="") {
+            alert("태그를 입력해주세요")
+        } else {
+            const {data:response} = axios.post('/api/editusertag',{
+                nickname: nickname,
+                userTag: userTag,
+            })
+                alert('태그가 수정되었습니다')
+                window.location.reload()
+        }
+    }
+
     return (
         <Wrapper >
             <ContentsWrapper style={{
@@ -225,6 +271,43 @@ const Info = () => {
                     <Content>
                         <Div>{reliability}</Div>
                     </Content>
+                    <Content style={{ marginBottom: '0.3rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>관심 태그</div>
+                    </Content>
+                    <Content>
+                        {/* {JSON.stringify(userTagName)} */}
+                        {userTagInfo ?
+                            <>
+                            <Div>{userTagInfo}</Div>
+                            </> :
+                            <>
+                            <Div>없음</Div>
+                            </>
+                        }
+                    </Content>
+                    {myPk == params.pk &&
+                    <>
+                        {userTagInfo ? ( 
+                        <>
+                            <Content>
+                                <Input type='text' onChange={onChangeTag} />
+                            </Content>
+                            <Button style={{ marginBottom: '2rem' }}
+                                onClick={editTag}>태그 수정하기</Button>
+                        </>
+                        ) :
+                        (
+                        <>
+                            <Content>
+                                <Input type='text' onChange={onChangeTag} />
+                            </Content>
+                            <Button style={{ marginBottom: '2rem' }}
+                                onClick={addTag}>태그 등록하기</Button> 
+                        </>
+                        )
+                        }
+                    </>
+                    }
                     {myPk == params.pk ?
                         <>
                             <Title>비밀번호 변경</Title>

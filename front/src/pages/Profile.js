@@ -129,6 +129,7 @@ const Profile = () => {
         await axios.post('/api/logout')
         history.push('/')
         history.push('/profile')
+        window.location.reload()
     }
     return (
         <Wrapper >

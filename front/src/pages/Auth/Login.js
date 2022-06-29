@@ -84,6 +84,7 @@ const Login = () => {
       else{
         alert(response.message)
         history.push('/profile')
+        window.location.reload()
       }
   };
     const onChangeId = (e) =>{

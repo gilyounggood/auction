@@ -796,4 +796,67 @@ router.post('/messengerinfo', async (req, res, next) => {
     }
 })
 
+// 유저 태그 추가
+router.post('/addusertag', (req, res, next) => {
+    try {
+        const nickname = req.body.nickname
+        const userTag = req.body.userTag
+
+        db.query(`INSERT INTO user_tag (user_name, userTag ) VALUES (?,?)`, [nickname, userTag], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "업로드 실패", [])
+            } else {
+                console.log(err)
+                response(req, res, 200, "업로드 성공", [])
+            }
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/editusertag', (req, res, next) => {
+    try {
+        const nickname = req.body.nickname
+        const userTag = req.body.userTag
+
+        db.query('UPDATE user_tag SET userTag=? WHERE user_name=?', [userTag, nickname], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "수정 실패", [])
+            } else {
+                console.log(err)
+                response(req, res, 200, "수정 성공", [])
+            }
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/usertaginfo', async (req, res, next) => {
+    try {
+        const user_name = req.body.user_name;
+        let data = {};
+        await db.query('SELECT * FROM user_tag WHERE user_name=?', [user_name], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                data.userTag = result
+                response(req, res, 200, "sucess", data)
+            } 
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 module.exports = router;        
