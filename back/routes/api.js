@@ -859,4 +859,71 @@ router.post('/usertaginfo', async (req, res, next) => {
     }
 })
 
+// 메신저 관리자 문의 추가
+router.post('/addadminchat', (req, res, next) => {
+    try {
+        const chat_name = req.body.chat_name
+        const chat_message = req.body.chat_message
+
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = ('0' + (today.getMonth() + 1)).slice(-2);
+        var day = ('0' + today.getDate()).slice(-2);
+        var dateString = year + '-' + month + '-' + day;
+        var hours = ('0' + today.getHours()).slice(-2);
+        var minutes = ('0' + today.getMinutes()).slice(-2);
+        var seconds = ('0' + today.getSeconds()).slice(-2);
+        var timeString = hours + ':' + minutes + ':' + seconds;
+        let moment = dateString + ' ' + timeString;
+
+        db.query(`INSERT INTO admin_chat (chat_name, chat_message, create_time) VALUES (?,?,?)`, [chat_name, chat_message, moment], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "업로드 실패", [])
+            } else {
+                console.log(err)
+                response(req, res, 200, "업로드 성공", [])
+            }
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.get('/adminchatinfo', async (req, res, next) => {
+    try {
+        const user_name = req.body.user_name;
+        await db.query('SELECT * FROM admin_chat', (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "sucess", result)
+            } 
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.get('/userinfo', async (req, res, next) => {
+    try {
+        await db.query(`SELECT * FROM user_table`, (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "sucess", result)
+            }
+        })
+    } catch {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 module.exports = router;        
