@@ -117,12 +117,13 @@ const ChatMessage = styled.div`
   width: 51%;
 `
 
-const UserInfoList = styled.div`
+const UserInfoList = styled.button`
   border:1px solid #bc3cbc;
   border-radius:0.6rem;
   padding:8px 0;
   margin-bottom: 15px;
   width: 100%;
+  cursor: pointer;
 `
 
 const MessengerLog = props => {
@@ -142,6 +143,8 @@ const MessengerLog = props => {
   const [adminChat, setAdminChat] = useState("")
   const [adminChatList, setAdminChatList] = useState([])
   const [userList, setUserList] = useState([])
+  const [userChatInfo, setUserChatInfo] = useState(false)
+  const [adminUserChatList, setAdminUserChatList] = useState([])
 
   const history = useHistory();
 
@@ -199,6 +202,11 @@ const MessengerLog = props => {
     } else {
       setChat(true)
     }
+    if (userChatInfo === true) {
+      setUserChatInfo(false)
+      setChat(true)
+    } else {
+    }
   }
 
   const addAdminChat = async () => {
@@ -208,11 +216,43 @@ const MessengerLog = props => {
       const { data: response } = await axios.get('/api/auth')
         await axios.post("/api/addadminchat", {
           chat_name: response.nick_name,
+          chat_id: response.nick_name,
           chat_message: adminChat,
       }) 
       alert("문의사항이 등록 되었습니다")
       window.location.reload()
     }
+  }
+
+  const addAdminChat2 = async (chat_id, e) => {
+    e.preventDefault();
+    if(adminChat === "") {
+      alert("답변을 입력해주세요")
+      console.log(chat_id)
+    } else {
+      const { data: response } = await axios.get('/api/auth')
+        await axios.post("/api/addadminchat", {
+          chat_name: response.nick_name,
+          chat_id: chat_id,
+          chat_message: adminChat,
+      }) 
+      alert("답변이 등록 되었습니다")
+      window.location.reload()
+    }
+  }
+
+  const userChatList = async (user_name, e) => {
+    e.preventDefault();
+    if(userChatInfo === false) {
+      setUserChatInfo(true)
+    } else {
+      setUserChatInfo(false)
+    }
+    const { data: response } = await axios.post('/api/adminchatinfo/user', {
+      chat_name: user_name,
+    })
+    console.log(response.data)
+    setAdminUserChatList(response.data)
   }
 
   return (
@@ -270,7 +310,7 @@ const MessengerLog = props => {
             {myNickName !=="관리자" && adminChatList?.map(adchat => {
               return (
                 <>
-                  {adchat.chat_name === "관리자" || myNickName === adchat.chat_name &&
+                  {myNickName === adchat.chat_id &&
                     <ChatMessage style={{
                       backgroundColor:  adchat.chat_name === myNickName ? "#FFF978" : "#AFFFEE",
                       float:  adchat.chat_name === myNickName ? "right" : "left",
@@ -280,38 +320,62 @@ const MessengerLog = props => {
                       <Span>{adchat.create_time}</Span>
                     </ChatMessage>
                   }
+                  <InputContainer>
+                  <MessengerInput 
+                      placeholder= {'문의사항을 적어주세요'}
+                      onChange={e=> setAdminChat(e.target.value)}
+                    />
+                  </InputContainer>
+                  <MessengerButton
+                    onClick={addAdminChat}
+                  >
+                    전송하기
+                  </MessengerButton>
                 </>
               )
             })}
-              {myNickName ==="관리자" && userList?.map(userlist => {
+              {userChatInfo === false && myNickName ==="관리자" && userList?.map(userlist => {
               return (
                 <>
                   <UserInfoList style={{
                     display: adminChatList.findIndex(n => n.chat_name === userlist.nick_name) === -1 || userlist.nick_name === "관리자" ? "none" : "block",
-                  }}>
+                  }}
+                    onClick= {e => {userChatList(userlist.nick_name, e)}}
+                  >
                     <span style={{color: "#B90000"}}>{userlist.nick_name}</span><span style={{color: "black"}}>님의 문의 목록</span>
                   </UserInfoList>
                 </>
               )
               })}
-          <InputContainer
-            style={{
-              display: myNickName !== "관리자" ? 'block' : "none"
-            }}
-          >
-          <MessengerInput 
-              placeholder= {myNickName !== "관리자" ? '문의사항을 적어주세요' : "유저에게 답변하기"}
-              onChange={e=> setAdminChat(e.target.value)}
-            />
-          </InputContainer>
-            <MessengerButton
-              style={{
-                display: myNickName !== "관리자" ? 'block' : "none"
-              }}
-              onClick={addAdminChat}
-            >
-              전송하기
-            </MessengerButton>
+              {userChatInfo === true && adminUserChatList?.map(userchat => {
+                return (
+                  <>
+                    <ChatMessage style={{
+                      backgroundColor:  userchat.chat_name === myNickName ? "#FFF978" : "#AFFFEE",
+                      float:  userchat.chat_name === myNickName ? "right" : "left",
+                      textAlign:  userchat.chat_name === myNickName ? "right" : "left",
+                    }}>
+                      <span style={{color: "#0000CD"}}>{userchat.chat_name}:</span> <span style={{color: "black"}}>{userchat.chat_message}</span>
+                      <Span>{userchat.create_time}</Span>
+                    </ChatMessage>
+                    <>
+                      <InputContainer>
+                      <MessengerInput 
+                          placeholder= {"유저에게 답변하기"}
+                          onChange={e=> setAdminChat(e.target.value)}
+                        />
+                      </InputContainer>
+                      <MessengerButton
+                        onClick={e => {addAdminChat2(userchat.chat_id, e)}}
+                      >
+                        전송하기
+                      </MessengerButton>
+                    </>
+                  </>
+                )
+              })
+              }
+
         </div>
     </UserLogStyle>
   </>

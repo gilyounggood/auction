@@ -864,6 +864,7 @@ router.post('/addadminchat', (req, res, next) => {
     try {
         const chat_name = req.body.chat_name
         const chat_message = req.body.chat_message
+        const chat_id = req.body.chat_id
 
         var today = new Date();
         var year = today.getFullYear();
@@ -876,7 +877,7 @@ router.post('/addadminchat', (req, res, next) => {
         var timeString = hours + ':' + minutes + ':' + seconds;
         let moment = dateString + ' ' + timeString;
 
-        db.query(`INSERT INTO admin_chat (chat_name, chat_message, create_time) VALUES (?,?,?)`, [chat_name, chat_message, moment], (err, result) => {
+        db.query(`INSERT INTO admin_chat (chat_name, chat_message, create_time, chat_id) VALUES (?,?,?,?)`, [chat_name, chat_message, moment, chat_id], (err, result) => {
             if (err) {
                 console.log(err)
                 response(req, res, -200, "업로드 실패", [])
@@ -921,6 +922,24 @@ router.get('/userinfo', async (req, res, next) => {
             }
         })
     } catch {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/adminchatinfo/user', async (req, res, next) => {
+    try {
+        const chat_name = req.body.chat_name;
+        await db.query('SELECT * FROM admin_chat WHERE chat_id=?', [chat_name], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "sucess", result)
+            } 
+        })
+    }
+    catch (err) {
         console.log(err)
         response(req, res, -200, "서버 에러 발생", [])
     }
