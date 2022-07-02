@@ -945,4 +945,24 @@ router.post('/adminchatinfo/user', async (req, res, next) => {
     }
 })
 
+// 관리자 유저 관리 추가
+
+router.post('/userinfo/user', async (req, res, next) => {
+    try {
+        const pk = req.body.pk
+
+        await db.query(`SELECT * FROM user_table WHERE pk=?`, [pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "sucess", result)
+            }
+        })
+    } catch {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 module.exports = router;        

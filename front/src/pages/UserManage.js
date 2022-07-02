@@ -1,0 +1,140 @@
+import React, { useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom';
+import styled from 'styled-components'
+import Wrapper from '../components/elements/Wrapper';
+import '../styles/style.css'
+import Table from '../components/elements/Table';
+import Tr from '../components/elements/Tr';
+import Td from '../components/elements/Td';
+import axios from 'axios';
+import ContentsWrapper from '../components/elements/ContentWrapper';
+import ListContainer from '../components/elements/ListContainer';
+import { AiFillEdit } from 'react-icons/ai'
+import { CgDetailsMore } from 'react-icons/cg'
+const Container = styled.div`
+width:80%;
+padding:1rem;
+display:flex;
+min-height:24rem;
+flex-direction:column;
+text-align:left;
+margin-bottom:2rem;
+@media screen and (max-width:600px) {
+    padding:0.5rem;
+  }
+`
+const Title = styled.h3`
+font-size:2rem;
+color:#8e44ad;
+font-weight:bold;
+`
+const UserManage = () => {
+    const history = useHistory()
+    const [userList, setUserList] = useState([])
+    const [auth, setAuth] = useState({})
+
+    const [user, setUser] = useState(false)
+    const [userInfo, setUserInfo] = useState([])
+
+    const isAdmin = async () => {
+        const { data: response } = await axios.get('/api/auth')
+        if (!response.second) {
+            history.push('/profile')
+        } else {
+            setAuth(response)
+            const {data:response2} = await axios.get('/api/userinfo')
+            setUserList(response2.data)
+        }
+    }
+    useEffect(() => {
+        isAdmin()
+    }, [])
+    async function updateUser(num) {
+        const { data: response } = await axios.post('/api/updatefavorite', {
+            status: -1,
+            userPk: auth.pk,
+            itemPk: num
+        })
+        if (response.result > 0) {
+            window.location.reload()
+        } else {
+            alert('서버 에러 발생')
+        }
+    }
+
+    const userChange = async (num) => {
+        if(user===false) {
+            setUser(true)
+        } else {
+            setUser(false)
+        }
+        try {
+            const { data: response } = await axios.post("/api/userinfo/user", {
+                pk: num,
+            })
+            setUserInfo(response.data)
+        } catch {
+
+        }
+    } 
+
+    return (
+        <Wrapper>
+            <ContentsWrapper style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
+                , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'
+            }}>
+                <Container>
+                    <Title>유저 관리</Title>
+                    <ListContainer>
+                        <Table>
+                            <Tr style={{ borderTop: '1px solid #cccccc', background: '#f8fafd' }}>
+                                <Td>번호</Td>
+                                <Td>아이디</Td>
+                                <Td>닉네임</Td>
+                                <Td>연락처</Td>
+                                <Td>신뢰도</Td>
+                                <Td
+                                    style={{
+                                        color: user ? "#cd84f1" : "",
+                                        cursor: user ? "pointer" : "",
+                                    }}
+                                    onClick={user ? userChange : "none"}
+                                >{user ? "목록으로" : "자세히"}</Td>
+                            </Tr>
+                            {user === false && userList.map(user => (
+                                <Tr>
+                                    <Td>{user.pk}</Td>
+                                    <Td>{user.id}</Td>
+                                    <Td>{user.nick_name}</Td>
+                                    <Td>{user.phone_number}</Td>
+                                    <Td>{user.reliability}</Td>
+                                    <Td><CgDetailsMore style={{color: '#cd84f1', fontSize: '1.3rem', cursor: 'pointer' }}
+                                        onClick={() => {userChange(user.pk)}} /></Td>
+                                </Tr>
+                            ))}
+                            {user === true && userInfo.map(user => (
+                                <Tr>
+                                    <Td>{user.pk}</Td>
+                                    <Td>{user.id}</Td>
+                                    <Td>{user.nick_name}</Td>
+                                    <Td>{user.phone_number}</Td>
+                                    <Td>{user.reliability}</Td>
+                                    <Td><AiFillEdit style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
+                                        onClick={() => {
+                                                if(window.confirm("유저 정보를 변경하시겠습니까?")) {
+                                                updateUser(user.pk)} 
+                                            }
+                                        }
+                                        />
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </Table>
+                    </ListContainer>
+                </Container>
+            </ContentsWrapper>
+        </Wrapper>
+    );
+};
+export default UserManage;

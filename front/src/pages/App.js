@@ -37,6 +37,8 @@ import SearchResult from './Search/SearchResult';
 import Messenger from './Messenger';
 import MessengerLog from './MessengerLog';
 
+import UserManage from './UserManage';
+
 const MarginTop1 = styled.div`
 margin-top:5rem;
 @media screen and (max-width:950px) {
@@ -104,6 +106,8 @@ const App = () => {
                 <Route exact path="/addcommunity/:pk" component={AddCommunity} />
 
                 <Route exact path="/searchresult" component={SearchResult} />
+
+                <Route exact path="/usermanage" component={UserManage} />
 
                 </Switch>
                 
