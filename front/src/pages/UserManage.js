@@ -28,13 +28,27 @@ font-size:2rem;
 color:#8e44ad;
 font-weight:bold;
 `
+
+const UserInput = styled.input`
+    width: 100px;
+    font-weight:bold;
+`
+
 const UserManage = () => {
     const history = useHistory()
     const [userList, setUserList] = useState([])
     const [auth, setAuth] = useState({})
 
     const [user, setUser] = useState(false)
-    const [userInfo, setUserInfo] = useState([])
+    const [userInfo, setUserInfo] = useState({
+        pk: "",
+        id: "",
+        nick_name: "",
+        phone_number: "",
+        reliability: "",
+    })
+
+    const { pk, id, nick_name, phone_number, reliability } = userInfo
 
     const isAdmin = async () => {
         const { data: response } = await axios.get('/api/auth')
@@ -49,13 +63,20 @@ const UserManage = () => {
     useEffect(() => {
         isAdmin()
     }, [])
-    async function updateUser(num) {
-        const { data: response } = await axios.post('/api/updatefavorite', {
-            status: -1,
-            userPk: auth.pk,
-            itemPk: num
+
+    const changeUserInfo = e => {
+        setUserInfo({...userInfo, [e.target.name]: [e.target.value]})
+    }
+
+    async function editUser() {
+        const { data: response } = await axios.post('/api/useredit', {
+            pk: pk,
+            nick_name: nick_name,
+            phone_number: phone_number,
+            reliability: reliability,
         })
         if (response.result > 0) {
+            alert("유저 정보가 변경되었습니다")
             window.location.reload()
         } else {
             alert('서버 에러 발생')
@@ -73,6 +94,7 @@ const UserManage = () => {
                 pk: num,
             })
             setUserInfo(response.data)
+            console.log(response.data)
         } catch {
 
         }
@@ -113,23 +135,41 @@ const UserManage = () => {
                                         onClick={() => {userChange(user.pk)}} /></Td>
                                 </Tr>
                             ))}
-                            {user === true && userInfo.map(user => (
+                            {user === true && 
                                 <Tr>
-                                    <Td>{user.pk}</Td>
-                                    <Td>{user.id}</Td>
-                                    <Td>{user.nick_name}</Td>
-                                    <Td>{user.phone_number}</Td>
-                                    <Td>{user.reliability}</Td>
+                                    <Td>{pk}</Td>
+                                    <Td>{id}</Td>
+                                    <Td>
+                                        <UserInput
+                                            name='nick_name'
+                                            value={nick_name}
+                                            onChange={e => changeUserInfo(e)}
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <UserInput
+                                            name='phone_number'
+                                            value={phone_number}
+                                            onChange={e=> changeUserInfo(e)}
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <UserInput
+                                            name='reliability'
+                                            value={reliability}
+                                            onChange={e=> changeUserInfo(e)}
+                                        />
+                                    </Td>
                                     <Td><AiFillEdit style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
-                                        onClick={() => {
+                                        onClick={(e) => {
                                                 if(window.confirm("유저 정보를 변경하시겠습니까?")) {
-                                                updateUser(user.pk)} 
+                                                editUser()} 
                                             }
                                         }
                                         />
                                     </Td>
                                 </Tr>
-                            ))}
+                            }
                         </Table>
                     </ListContainer>
                 </Container>
