@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import MessengerImage from '../assets/images/메신저이미지.png'
+import setLevel from '../data/Level';
 import axios from 'axios';
 
 const UserImageStyle = styled.img`
@@ -34,6 +35,11 @@ const UserNameStyle = styled.h4`
       }
 `;
 
+const UserLevel = styled.img`
+    width: 28px;
+    margin-top: 4px;
+`
+
 const Messenger = props => {
 
     const [hovered, setHovered] = useState(false);
@@ -44,6 +50,7 @@ const Messenger = props => {
     const [myNickName, setMyNickName] = useState('')
     const [myLevel, setMyLevel] = useState(0);
     const [myPk, setMyPk] = useState(0);
+    const [myReliability, setMyReliability] = useState(0);
     const isAdmin = async () => {
         setLoading(true)
         const { data: response } = await axios.get('/api/auth')
@@ -57,6 +64,7 @@ const Messenger = props => {
             setMyNickName(response.nick_name)
             setMyLevel(response.level)
             setMyPk(response.pk)
+            setMyReliability(response.reliability)
             console.log(response)
         }
         
@@ -77,7 +85,7 @@ const Messenger = props => {
                         style={{
                             ...{ opacity: hovered ? "1" : "0" }
                         }}
-                    >{myNickName}님의 메신저</UserNameStyle>
+                    ><UserLevel src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
                     <UserImageStyle 
                         onMouseEnter={() => {setHovered(true)}}
                         onMouseLeave={() => {setHovered(false)}}

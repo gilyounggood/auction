@@ -17,7 +17,7 @@ import ranking8 from '../assets/images/ranking/8.png'
 import ranking9 from '../assets/images/ranking/9.png'
 import ranking10 from '../assets/images/ranking/10.png'
 
-
+import setLevel from '../data/Level';
 
 const Ranking = () => {
   const [memberList, setMemberList] = useState([])
@@ -44,7 +44,7 @@ const Ranking = () => {
   return (
     <Wrapper>
       {memberList.map((post,index)=>(
-        <MemberComponent ranking={ranking[`ranking${index+1}`]} nick_name={post.nick_name} phone_number={post.phone_number} reliability={post.reliability} pk={post.pk}  />
+        <MemberComponent ranking={ranking[`ranking${index+1}`]} nick_name={post.nick_name} phone_number={post.phone_number} level={setLevel(post.reliability)} reliability={post.reliability} pk={post.pk}  />
       ))}
 
     </Wrapper>

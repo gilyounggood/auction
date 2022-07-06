@@ -38,6 +38,10 @@ const MemberComponent = (props) => {
                     <SmallTitle2>전화번호</SmallTitle2>
                     <SmallContent>{props.phone_number}</SmallContent>
                   </SmallSubContainer>
+                  <SmallSubContainer style={{paddingLeft:'1rem', paddingRight:'1rem',borderRight:'1px solid #cccccc'}}>
+                    <SmallTitle2>레벨</SmallTitle2>
+                    <img src={props.level}/>
+                  </SmallSubContainer>
                   <SmallSubContainer style={{paddingLeft:'1rem'}}>
                     <SmallTitle2>신뢰도</SmallTitle2>
                     <SmallContent style={{color:'#e84118'}}>{props.reliability}</SmallContent>

@@ -180,8 +180,9 @@ router.get('/auth', (req, res, next) => {
             let phone_number = decode.phone_number
             let first = decode.user_level >= 40
             let second = decode.user_level >= 0
+            let reliability = decode.reliability
             let level = decode.user_level
-            res.send({ id, first, second, pk, nick_name, level, phone_number })
+            res.send({ id, first, second, pk, nick_name, level, phone_number, reliability })
         }
         else {
             res.send({
@@ -219,7 +220,8 @@ router.post('/login', (req, res, next) => {
                     id: user.id,
                     nick_name: user.nick_name,
                     user_level: user.user_level,
-                    phone_number: user.phone_number
+                    phone_number: user.phone_number,
+                    reliability: user.reliability
                 },
                     jwtSecret,
                     {
@@ -560,6 +562,7 @@ router.post('/addchat', (req, res) => {
         const nickname = req.body.nickname
         const userPk = req.body.userPk
         const content = req.body.content
+        const reliability = req.body.reliability
         var today = new Date();
         var year = today.getFullYear();
         var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -571,7 +574,7 @@ router.post('/addchat', (req, res) => {
         var timeString = hours + ':' + minutes + ':' + seconds;
         let moment = dateString + ' ' + timeString;
         const itemPk = req.body.itemPk;
-        db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk) VALUES (?,?,?,?,?)',[nickname,userPk,content,moment,itemPk],(err, result)=>{
+        db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk, user_reliability) VALUES (?,?,?,?,?,?)',[nickname,userPk,content,moment,itemPk,reliability],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -641,6 +644,7 @@ router.post('/upbid',async (req, res) => {
         const itemPk = req.body.itemPk
         const nickname = req.body.nickname
         const userPk = req.body.userPk
+        const reliability = req.body.reliability
         var today = new Date();
         var year = today.getFullYear();
         var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -660,7 +664,7 @@ router.post('/upbid',async (req, res) => {
             }
         })
         let content = `낙찰가를 ${price}로 올렸습니다.`
-        await db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk) VALUES (?,?,?,?,?)',[nickname,userPk,content,moment,itemPk],(err, result)=>{
+        await db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk, user_reliability) VALUES (?,?,?,?,?,?)',[nickname,userPk,content,moment,itemPk,reliability],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -950,8 +954,29 @@ router.post('/adminchatinfo/user', async (req, res, next) => {
 router.post('/userinfo/user', async (req, res, next) => {
     try {
         const pk = req.body.pk
-
+        
         await db.query(`SELECT * FROM user_table WHERE pk=?`, [pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "sucess", result[0])
+            }
+        })
+    } catch {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/useredit', async (req, res, next) => {
+    try {
+        const pk = req.body.pk
+        const nick_name = req.body.nick_name
+        const phone_number = req.body.phone_number
+        const reliability = req.body.reliability
+
+        await db.query(`UPDATE user_table SET nick_name=?,phone_number=?,reliability=?  WHERE pk=?`, [nick_name,phone_number,reliability, pk], (err, result) => {
             if(err) {
                 console.log(err)
                 response(req, res, -200, "fail", [])

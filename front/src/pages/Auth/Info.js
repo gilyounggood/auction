@@ -12,6 +12,9 @@ import Tr from '../../components/elements/Tr';
 import Td from '../../components/elements/Td';
 import { AiFillDelete } from 'react-icons/ai'
 import { CgDetailsMore } from 'react-icons/cg'
+import { useSelector } from 'react-redux'
+import setLevel from '../../data/Level';
+
 const Button = styled.button`
 width:12.2rem;
 height:3rem;
@@ -99,6 +102,8 @@ const Info = () => {
     const [communityList, setCommunityList] = useState([])
     const [userTag, setUserTag] = useState("")
     const [userTagInfo, setUserTagInfo] = useState("")
+
+    const level = useSelector((state) => state.level.value)
 
     const isAdmin = async () => {
 
@@ -264,6 +269,12 @@ const Info = () => {
                     </Content>
                     <Content>
                         <Div>{phoneNumber}</Div>
+                    </Content>
+                    <Content style={{ marginBottom: '0.3rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>레벨</div>
+                    </Content>
+                    <Content>
+                        <Div><img width="30px" src={setLevel(reliability)}/></Div>
                     </Content>
                     <Content style={{ marginBottom: '0.3rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>신뢰도</div>

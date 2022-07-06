@@ -65,7 +65,7 @@ const UserManage = () => {
     }, [])
 
     const changeUserInfo = e => {
-        setUserInfo({...userInfo, [e.target.name]: [e.target.value]})
+        setUserInfo({...userInfo, [e.target.name]: e.target.value})
     }
 
     async function editUser() {

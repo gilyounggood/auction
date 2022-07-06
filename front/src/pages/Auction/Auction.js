@@ -12,6 +12,7 @@ import Button from '../../components/elements/Button';
 import $ from 'jquery'
 import Input from '../../components/elements/Input';
 import {AiFillStar} from 'react-icons/ai'
+import setLevel from '../../data/Level';
 const Container2 = styled.div`
 width:80%;
 padding:1rem;
@@ -92,6 +93,10 @@ display:flex;
   align-items:center;
 }
 `
+const UserLevel = styled.img`
+    width: 28px;
+`
+
 const Auction = () => {
   const params = useParams()
   const history = useHistory()
@@ -138,6 +143,7 @@ const Auction = () => {
     const { data: response } = await axios.post('/api/addchat', {
       nickname: auth.nick_name,
       userPk: auth.pk,
+      reliability: auth.reliability,
       content: $('#chat').val(),
       itemPk: params.pk,
       post_id: item?.pk,
@@ -163,6 +169,7 @@ const Auction = () => {
       const { data: response } = await axios.post('/api/addchat', {
         nickname: auth.nick_name,
         userPk: auth.pk,
+        reliability: auth.reliability,
         content: `${auth.nick_name}님이 ${$('#request-down-price').val()}원 으로 시작가 낮추기 요청을 하셨습니다.`,
         itemPk: params.pk,
         post_id: item?.pk,
@@ -191,6 +198,7 @@ const Auction = () => {
         price:parseInt($('#up-price').val()),
         itemPk:params.pk,
         nickname:auth.nick_name,
+        reliability: auth.reliability,
         userPk:auth.pk,
         post_id: item?.pk,
         post_name: item?.seller_nickname,
@@ -303,7 +311,7 @@ const Auction = () => {
           </LeftTextBox>
           <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>판매자</LeftTextBox>
           <LeftTextBox onClick={() => { history.push(`/info/${item?.seller_pk}`) }} style={{ cursor: 'pointer' }}>
-            {item?.seller_nickname ?? ''}
+            <img width={25} src={setLevel(item?.seller_reliability)}/>{item?.seller_nickname ?? ''}
           </LeftTextBox>
           <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>상태</LeftTextBox>
           <LeftTextBox>
@@ -422,7 +430,7 @@ const Auction = () => {
                     padding: '1rem', minHeight: '3rem', background: `${auth.pk == post.user_pk ? '#8e44ad' : '$fff'}`, border: '1px solid #8e44ad', width: '9rem', margin: '0.5rem 0', borderRadius: '1rem',
                     color: `${auth.pk == post.user_pk ? '#fff' : '#8e44ad'}`
                   }}>
-                    <div style={{ textAlign: 'left', fontWeight: 'bold' }}>{post.user_nickname}</div>
+                    <div style={{ textAlign: 'left', fontWeight: 'bold' }}><UserLevel src={setLevel(post.user_reliability)}/>{post.user_nickname}</div>
                     <div style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>{post.content}</div>
                     <div style={{ fontSize: '0.7rem' }}>{post.create_time}</div>
                   </div>

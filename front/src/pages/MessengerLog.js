@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, BrowserRouter as Routes, Link, Router, Route } from 'react-router-dom';
 import styled from 'styled-components';
+import setLevel from '../data/Level';
 import axios from 'axios';
 
 const UserLogStyle = styled.div`
@@ -13,7 +14,7 @@ const UserLogStyle = styled.div`
   color: Lightseagreen;
   background-color: white;
   box-shadow: 3px 3px 3px grey;
-  margin-left: 80px;
+  margin-left: 100px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 4px;
@@ -126,6 +127,10 @@ const UserInfoList = styled.button`
   cursor: pointer;
 `
 
+const UserLevel = styled.img`
+    width: 28px;
+`
+
 const MessengerLog = props => {
 
   const [auth, setAuth] = useState(false)
@@ -134,6 +139,7 @@ const MessengerLog = props => {
   const [myNickName, setMyNickName] = useState('')
   const [myLevel, setMyLevel] = useState(0);
   const [myPk, setMyPk] = useState(0);
+  const [myReliability, setMyReliability] = useState(0)
 
   const [messengerList, setMessengerList] = useState([])
   const [userTagInfo, setUserTagInfo] = useState("")
@@ -161,6 +167,7 @@ const MessengerLog = props => {
           setMyNickName(response.nick_name)
           setMyLevel(response.level)
           setMyPk(response.pk)
+          setMyReliability(response.reliability)
           console.log(response)
       }   
 
@@ -271,7 +278,7 @@ const MessengerLog = props => {
       <div className='messenger'
         style={{display: chat ? "none" : "block" }}
       >
-        <LogTitle>{myNickName}님의 메신저</LogTitle>
+        <LogTitle><UserLevel src={setLevel(myReliability)}/>{myNickName}님의 메신저</LogTitle>
             {messengerList?.map(messenger => {
               return (
                 <>

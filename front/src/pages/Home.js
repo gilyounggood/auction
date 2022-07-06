@@ -7,7 +7,7 @@ import Wrapper from '../components/elements/Wrapper';
 import AuctionComponent from '../components/AuctionComponent';
 import '../styles/style.css'
 import slide1 from '../assets/images/slide/123.jpg'
-import slide2 from '../assets/images/slide/456.jpg'
+import slide2 from '../assets/images/slide/456.jpeg'
 import slide3 from '../assets/images/slide/789.jpg'
 import ServerLink from '../data/ServerLink';
 import Slider from 'react-slick'
@@ -45,7 +45,7 @@ const Home = () => {
           {auctionList.map(post=>(
             <>
             <AuctionComponent pk={post.pk} main_image={post.main_image} name={post.name} buy_count={post.buy_count} 
-                              create_time={post.create_time} end_date={post.end_date} seller_nickname={post.seller_nickname} bid_price={post.bid_price}      />
+                              create_time={post.create_time} end_date={post.end_date} seller_nickname={post.seller_nickname} seller_reliability={post.seller_reliability} bid_price={post.bid_price}      />
             </>
           ))}
       </ContentsWrapper>
