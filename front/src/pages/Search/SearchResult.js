@@ -29,10 +29,10 @@ const SearchResult = () => {
             </ContentsWrapper>
             <ContentsWrapper style={{ flexDirection: 'row', flexWrap: 'wrap', boxShadow: 'none', background: '#f1f2f6' }}>
                 {auctionList.map(post => (
-                    <>
-                        <AuctionComponent pk={post.pk} main_image={post.main_image} name={post.name} buy_count={post.buy_count}
+                    <div key={post.pk}>
+                        <AuctionComponent pk={post.pk} main_image={post.main_image} name={post.name} buy_count={post.buy_count} seller_reliability={post.seller_reliability}
                             create_time={post.create_time} end_date={post.end_date} seller_nickname={post.seller_nickname} bid_price={post.bid_price} />
-                    </>
+                    </div>
                 ))}
             </ContentsWrapper>
 

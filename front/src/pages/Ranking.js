@@ -44,7 +44,7 @@ const Ranking = () => {
   return (
     <Wrapper>
       {memberList.map((post,index)=>(
-        <MemberComponent ranking={ranking[`ranking${index+1}`]} nick_name={post.nick_name} phone_number={post.phone_number} level={setLevel(post.reliability)} reliability={post.reliability} pk={post.pk}  />
+        <MemberComponent  key={post.pk} ranking={ranking[`ranking${index+1}`]} nick_name={post.nick_name} phone_number={post.phone_number} level={setLevel(post.reliability)} reliability={post.reliability} pk={post.pk}  />
       ))}
 
     </Wrapper>

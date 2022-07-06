@@ -69,6 +69,7 @@ const Favorite = () => {
                     <Title>즐겨찾기</Title>
                     <ListContainer>
                         <Table>
+                            <thead>
                             <Tr style={{ borderTop: '1px solid #cccccc', background: '#f8fafd' }}>
                                 <Td>상품명</Td>
                                 <Td>마감일</Td>
@@ -77,6 +78,8 @@ const Favorite = () => {
                                 <Td>상세보기</Td>
                                 <Td>삭제</Td>
                             </Tr>
+                            </thead>
+                            <tbody>
                             {favoriteList && favoriteList.map(post => (
                                 <Tr>
                                     <Td>{post.name}</Td>
@@ -92,6 +95,7 @@ const Favorite = () => {
                                         }} /></Td>
                                 </Tr>
                             ))}
+                            </tbody>
                         </Table>
                     </ListContainer>
                 </Container>

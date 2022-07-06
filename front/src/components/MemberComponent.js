@@ -26,7 +26,7 @@ font-size:0.65rem;
 const MemberComponent = (props) => {
     const history = useHistory();
     return (
-        <>
+        <div key={props.pk}>
             <SmallBoxContainer onClick={()=>{history.push(`/info/${props.pk}`)}}>
               <SmallImg src={props.ranking} />
               <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', margin: '1rem auto', width: '50%' }}>
@@ -49,7 +49,7 @@ const MemberComponent = (props) => {
                 </div>
               </div>
             </SmallBoxContainer>
-        </>
+        </div>
     )
 }
 

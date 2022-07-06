@@ -150,6 +150,7 @@ const CommunityList = () => {
                         <ListContainer style={{ marginTop: '1rem' }}>
 
                             <Table>
+                                <thead>
                                 <Tr style={{ borderTop: '1px solid #cccccc', background: '#f8fafd' }}>
                                     {
                                         slide == 1 || slide == 2 ?
@@ -183,8 +184,10 @@ const CommunityList = () => {
 
 
                                 </Tr>
+                                </thead>
+                                <tbody>
                                 {posts && posts.map((post, index) => (
-                                    <Tr key={index}>
+                                    <Tr key={post.pk}>
                                         {
                                             slide == 1 || slide == 2 ?
                                                 <>
@@ -227,6 +230,7 @@ const CommunityList = () => {
 
                                     </Tr>
                                 ))}
+                                </tbody>
                             </Table>
                         </ListContainer>
 
@@ -259,8 +263,8 @@ const CommunityList = () => {
                     }}>
                         First
                     </PageButton>
-                    {pageList.map(num => (
-                        <PageButton style={{
+                    {pageList.map((num, index) => (
+                        <PageButton key={index} style={{
                             display: `${Math.abs(page - num.num) < 4 ? '' : 'none'}`, fontSize: `${num.num >= 10 ? num.num >= 100 ? '0.6rem' : '0.75rem' : '0.9rem'}`
                             , color: `${num.num == page ? 'white' : '#ababab'}`, background: `${num.num == page ? '#8e44ad' : 'white'}`, border: `${num.num == page ? 'none' : '1px solid #ababab'}`
                         }}

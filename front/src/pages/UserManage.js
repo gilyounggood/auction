@@ -110,6 +110,7 @@ const UserManage = () => {
                     <Title>유저 관리</Title>
                     <ListContainer>
                         <Table>
+                            <thead>
                             <Tr style={{ borderTop: '1px solid #cccccc', background: '#f8fafd' }}>
                                 <Td>번호</Td>
                                 <Td>아이디</Td>
@@ -121,10 +122,12 @@ const UserManage = () => {
                                         color: user ? "#cd84f1" : "",
                                         cursor: user ? "pointer" : "",
                                     }}
-                                    onClick={user ? userChange : "none"}
+                                    onClick={user ? userChange : undefined}
                                 >{user ? "목록으로" : "자세히"}</Td>
                             </Tr>
+                            </thead>
                             {user === false && userList.map(user => (
+                                <tbody key={user.pk}>
                                 <Tr>
                                     <Td>{user.pk}</Td>
                                     <Td>{user.id}</Td>
@@ -134,8 +137,10 @@ const UserManage = () => {
                                     <Td><CgDetailsMore style={{color: '#cd84f1', fontSize: '1.3rem', cursor: 'pointer' }}
                                         onClick={() => {userChange(user.pk)}} /></Td>
                                 </Tr>
+                                </tbody>
                             ))}
                             {user === true && 
+                                <tbody>
                                 <Tr>
                                     <Td>{pk}</Td>
                                     <Td>{id}</Td>
@@ -169,6 +174,7 @@ const UserManage = () => {
                                         />
                                     </Td>
                                 </Tr>
+                                </tbody>
                             }
                         </Table>
                     </ListContainer>

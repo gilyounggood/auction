@@ -42,7 +42,7 @@ const AuctionComponent = (props) => {
   
  
   return (
-    <>
+    <div key={props.pk}>
       <BoxContent onClick={() => { history.push(`/auction/${props.pk}`) }}>
         <BoxImage style={{ backgroundImage: `url(${`${ServerLink}${props?.main_image}`})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center', position: 'relative' }} />
         <LeftTextBox style={{ fontSize: '1rem', fontWeight: 'bold' }}>{props.name}</LeftTextBox>
@@ -52,7 +52,7 @@ const AuctionComponent = (props) => {
 
         <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>마감일자 | {props.end_date}</RightTextBox>
       </BoxContent>
-    </>
+    </div>
   )
 }
 

@@ -174,7 +174,7 @@ const AddAuction = () => {
                     </Content>
                     <Content style={{ marginBottom: '0.3rem',flexDirection:'column' }}>
                     {tagList.map((post,index)=>(
-                         <div style={{border:'1px solid #5a5a5a',width:'50%',padding:'0.5rem'}}>
+                         <div key={index} style={{border:'1px solid #5a5a5a',width:'50%',padding:'0.5rem'}}>
                          <input style={{width:'90%',margin:'auto',outline:'none',border:'none',maxWidth:'120px'}} id={`tag${index}`}  />
                      </div>
                     
@@ -185,7 +185,7 @@ const AddAuction = () => {
                         <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>상품이미지</div>
                     </Content>
                     <Content>
-                        <ImageContainer for="file">
+                        <ImageContainer htmlFor="file">
 
                             {url ?
                                 <>

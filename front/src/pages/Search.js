@@ -120,7 +120,7 @@ const Search = () => {
                     
                     <ThemeList>
                             {themeList.map((theme,index)=>(
-                                <Theme onClick={()=>{searchAuction(theme)}}>
+                                <Theme key={theme} onClick={()=>{searchAuction(theme)}}>
                                     <p style={{paddingLeft:'0.4rem',fontSize:'1rem'}}>{theme}</p>
                                     <div style={{display:'flex',alignItems:'center'}}>
                                         <div style={{fontSize:'0.8rem',color:'#9b59b6'}}>자세히보기</div> 

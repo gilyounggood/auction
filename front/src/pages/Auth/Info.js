@@ -360,6 +360,7 @@ const Info = () => {
                     <Title>판매 내역</Title>
                     <ListContainer>
                         <Table>
+                            <thead>
                             <Tr style={{ borderTop: '1px solid #cccccc', background: '#f8fafd' }}>
                                 <Td>상품명</Td>
                                 <Td>낙찰일</Td>
@@ -368,8 +369,10 @@ const Info = () => {
                                 <Td>가격</Td>
                                 <Td>비고</Td>
                             </Tr>
+                            </thead>
+                            <tbody>
                             {sellList && sellList.map(post => (
-                                <Tr>
+                                <Tr key={post.pk}>
                                     <Td>{post.name}</Td>
                                     <Td>{post.end_date}</Td>
                                     <Td>{post.buyer_nickname??'----'}</Td>
@@ -392,6 +395,7 @@ const Info = () => {
                                     </Td>
                                 </Tr>
                             ))}
+                            </tbody>
                         </Table>
                     </ListContainer>
                 </Container>
@@ -404,6 +408,7 @@ const Info = () => {
                     <Title>구매 내역</Title>
                     <ListContainer>
                         <Table>
+                            <thead>
                             <Tr style={{ borderTop: '1px solid #cccccc', background: '#f8fafd' }}>
                                 <Td>상품명</Td>
                                 <Td>낙찰일</Td>
@@ -411,8 +416,10 @@ const Info = () => {
                                 <Td>상태</Td>
                                 <Td>가격</Td>
                             </Tr>
+                            </thead>
+                            <tbody>
                             {buyList && buyList.map(post => (
-                                <Tr>
+                                <Tr key={post.pk}>
                                     <Td>{post.name}</Td>
                                     <Td>{post.end_date}</Td>
                                     <Td>{post.seller_nickname??'---'}</Td>
@@ -420,6 +427,7 @@ const Info = () => {
                                     <Td>{post.bid_price}원</Td>
                                 </Tr>
                             ))}
+                            </tbody>
                         </Table>
                     </ListContainer>
                 </Container>
@@ -432,6 +440,7 @@ const Info = () => {
                     <Title>커뮤니티</Title>
                     <ListContainer>
                         <Table>
+                            <thead>
                             <Tr style={{ borderTop: '1px solid #cccccc', background: '#f8fafd' }}>
                                 <Td>제목</Td>
                                 <Td>분류</Td>
@@ -439,8 +448,10 @@ const Info = () => {
                                 <Td>등록일</Td>
                                 <Td>비고</Td>
                             </Tr>
+                            </thead>
+                            <tbody>
                             {communityList && communityList.map(post => (
-                                <Tr>
+                                <Tr key={post.pk}>
                                     <Td>{post.title}</Td>
                                     <Td>{post.kind==1?'공지사항':'자유게시판'}</Td>
                                     <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/community/${post.pk}`) }} /></Td>
@@ -460,6 +471,7 @@ const Info = () => {
                                         </>}</Td>
                                 </Tr>
                             ))}
+                            </tbody>
                         </Table>
                     </ListContainer>
                 </Container>

@@ -38,15 +38,15 @@ const Home = () => {
     <Wrapper>
       <Slider {...settings} className='board-container'>
         {slideList.map((item, index) => (
-          <img src={item} />
+          <img key={index} src={item} />
         ))}
       </Slider>
       <ContentsWrapper style={{ flexDirection: 'row', flexWrap: 'wrap', boxShadow: 'none', background: '#f1f2f6' }}>
-          {auctionList.map(post=>(
-            <>
+          {auctionList.map((post)=>(
+            <div key={post.pk}>
             <AuctionComponent pk={post.pk} main_image={post.main_image} name={post.name} buy_count={post.buy_count} 
                               create_time={post.create_time} end_date={post.end_date} seller_nickname={post.seller_nickname} seller_reliability={post.seller_reliability} bid_price={post.bid_price}      />
-            </>
+            </div>
           ))}
       </ContentsWrapper>
 

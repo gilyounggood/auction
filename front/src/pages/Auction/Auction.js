@@ -290,8 +290,8 @@ const Auction = () => {
           </LeftTextBox>
           <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>태그</LeftTextBox>
           <LeftTextBox style={{ display: 'flex', flexWrap: 'wrap' }}>
-            {tagList.map(item => (
-              <div style={{ background: '#cd84f1', color: 'white', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.2rem', padding: '0 0.2rem', marginRight: '0.2rem', marginBottom: '0.2rem' }}
+            {tagList.map((item, index) => (
+              <div key={index} style={{ background: '#cd84f1', color: 'white', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.2rem', padding: '0 0.2rem', marginRight: '0.2rem', marginBottom: '0.2rem' }}
                 onClick={() => { history.push({ pathname: '/searchresult', state: { keyword: item } }) }}>
                 {'#' + item}
               </div>
@@ -424,8 +424,8 @@ const Auction = () => {
           }}>
             <Title>경매 로그</Title>
             <Container id="chating">
-              {chatList?.map((post, index) => (
-                <div key={index} style={{ width: '100%', textAlign: 'end', alignItems: `${auth.pk == post.user_pk ? 'end' : 'flex-start'}`, display: 'flex', flexDirection: 'column' }}>
+              {chatList?.map((post) => (
+                <div key={post.pk} style={{ width: '100%', textAlign: 'end', alignItems: `${auth.pk == post.user_pk ? 'end' : 'flex-start'}`, display: 'flex', flexDirection: 'column' }}>
                   <div style={{
                     padding: '1rem', minHeight: '3rem', background: `${auth.pk == post.user_pk ? '#8e44ad' : '$fff'}`, border: '1px solid #8e44ad', width: '9rem', margin: '0.5rem 0', borderRadius: '1rem',
                     color: `${auth.pk == post.user_pk ? '#fff' : '#8e44ad'}`

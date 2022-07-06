@@ -48,7 +48,7 @@ const SelectCommunity = () => {
 
                     <ThemeList>
                         {themeList.map((theme, index) => (
-                            <Theme onClick={() => { goToPage(index+1)}} style={{display:`${index%2==0?'':'none'}`}}>
+                            <Theme key={theme} onClick={() => { goToPage(index+1)}} style={{display:`${index%2==0?'':'none'}`}}>
                                 <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>{theme}</p>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>

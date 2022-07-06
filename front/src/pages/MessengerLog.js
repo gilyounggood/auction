@@ -281,7 +281,7 @@ const MessengerLog = props => {
         <LogTitle><UserLevel src={setLevel(myReliability)}/>{myNickName}님의 메신저</LogTitle>
             {messengerList?.map(messenger => {
               return (
-                <>
+                <div key={messenger.pk}>
                   {myNickName === messenger.post_name && myNickName !== messenger.user_name ?
                   <StyledLink 
                   to = {`/auction/${messenger.post_id}`}
@@ -306,7 +306,7 @@ const MessengerLog = props => {
                   </StyledLink>
                   : null
                   }  
-                </>
+                </div>
               )
             })}
         </div>
@@ -314,9 +314,9 @@ const MessengerLog = props => {
           style={{display: chat ? "block" : "none" }}
         >
           <LogTitle>{myNickName !== "관리자" ? "관리자에게 1:1 문의하기" : "유저 문의 관리하기"}</LogTitle>
-            {myNickName !=="관리자" && adminChatList?.map(adchat => {
+            {myNickName !=="관리자" && adminChatList?.map((adchat, index) => {
               return (
-                <>
+                <div key={adchat.pk}>
                   {myNickName === adchat.chat_id &&
                     <ChatMessage style={{
                       backgroundColor:  adchat.chat_name === myNickName ? "#FFF978" : "#AFFFEE",
@@ -338,12 +338,12 @@ const MessengerLog = props => {
                   >
                     전송하기
                   </MessengerButton>
-                </>
+                </div>
               )
             })}
-              {userChatInfo === false && myNickName ==="관리자" && userList?.map(userlist => {
+              {userChatInfo === false && myNickName ==="관리자" && userList?.map((userlist, index) => {
               return (
-                <>
+                <div key={userlist.pk}>
                   <UserInfoList style={{
                     display: adminChatList.findIndex(n => n.chat_name === userlist.nick_name) === -1 || userlist.nick_name === "관리자" ? "none" : "block",
                   }}
@@ -351,12 +351,12 @@ const MessengerLog = props => {
                   >
                     <span style={{color: "#B90000"}}>{userlist.nick_name}</span><span style={{color: "black"}}>님의 문의 목록</span>
                   </UserInfoList>
-                </>
+                </div>
               )
               })}
-              {userChatInfo === true && adminUserChatList?.map(userchat => {
+              {userChatInfo === true && adminUserChatList?.map((userchat, index) => {
                 return (
-                  <>
+                  <div key={userchat.pk}>
                     <ChatMessage style={{
                       backgroundColor:  userchat.chat_name === myNickName ? "#FFF978" : "#AFFFEE",
                       float:  userchat.chat_name === myNickName ? "right" : "left",
@@ -378,7 +378,7 @@ const MessengerLog = props => {
                         전송하기
                       </MessengerButton>
                     </>
-                  </>
+                  </div>
                 )
               })
               }

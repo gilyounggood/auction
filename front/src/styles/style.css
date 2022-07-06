@@ -36,11 +36,8 @@ div.board-container button{
 div.board-container img{
     width: 100% !important;
     height: 18rem !important;
-    border-radius: 0;
+    border-radius: 15px;
     max-width: 76.8rem;
-}
-.shop-board-container{
-
 }
 div.shop-board-container img{
     width: 100% !important;
