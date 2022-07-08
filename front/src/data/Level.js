@@ -34,7 +34,7 @@ let setLevel = (num) => {
         return level10;
     } else if (101<=num && num<=99999) {
         return level11;
-    } else if (1000000===num) {
+    } else if (1000000 <= num) {
         return levelAdmin;
     } else {
         return 0;

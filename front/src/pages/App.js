@@ -38,6 +38,7 @@ import Messenger from './Messenger';
 import MessengerLog from './MessengerLog';
 
 import UserManage from './UserManage';
+import PointShop from './PointShop';
 
 const MarginTop1 = styled.div`
 margin-top:5rem;
@@ -108,6 +109,8 @@ const App = () => {
                 <Route exact path="/searchresult" component={SearchResult} />
 
                 <Route exact path="/usermanage" component={UserManage} />
+                <Route exact path="/pointshop" component={PointShop} />
+
 
                 </Switch>
                 

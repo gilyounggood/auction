@@ -90,7 +90,8 @@ const SignUp = () => {
                     pw: pw,
                     nickName: nickName,
                     phoneNumber: phoneNumber,
-                    userLevel:0
+                    userLevel:0,
+                    userPoint:0,
                   })
                   if (response.result < 0) {
                     alert(response.message)

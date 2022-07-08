@@ -45,10 +45,11 @@ const UserManage = () => {
         id: "",
         nick_name: "",
         phone_number: "",
-        reliability: "",
+        reliability: 0,
+        user_point: 0,
     })
 
-    const { pk, id, nick_name, phone_number, reliability } = userInfo
+    const { pk, id, nick_name, phone_number, reliability, user_point } = userInfo
 
     const isAdmin = async () => {
         const { data: response } = await axios.get('/api/auth')
@@ -74,6 +75,7 @@ const UserManage = () => {
             nick_name: nick_name,
             phone_number: phone_number,
             reliability: reliability,
+            user_point: user_point,
         })
         if (response.result > 0) {
             alert("유저 정보가 변경되었습니다")
@@ -117,6 +119,7 @@ const UserManage = () => {
                                 <Td>닉네임</Td>
                                 <Td>연락처</Td>
                                 <Td>신뢰도</Td>
+                                <Td>포인트</Td>
                                 <Td
                                     style={{
                                         color: user ? "#cd84f1" : "",
@@ -134,6 +137,7 @@ const UserManage = () => {
                                     <Td>{user.nick_name}</Td>
                                     <Td>{user.phone_number}</Td>
                                     <Td>{user.reliability}</Td>
+                                    <Td>{user.user_point}</Td>
                                     <Td><CgDetailsMore style={{color: '#cd84f1', fontSize: '1.3rem', cursor: 'pointer' }}
                                         onClick={() => {userChange(user.pk)}} /></Td>
                                 </Tr>
@@ -162,6 +166,13 @@ const UserManage = () => {
                                         <UserInput
                                             name='reliability'
                                             value={reliability}
+                                            onChange={e=> changeUserInfo(e)}
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <UserInput
+                                            name='user_point'
+                                            value={user_point}
                                             onChange={e=> changeUserInfo(e)}
                                         />
                                     </Td>

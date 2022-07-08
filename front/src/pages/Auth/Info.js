@@ -99,6 +99,7 @@ const Info = () => {
     const [pk, setPk] = useState(0)
     const [reliability, setReliability] = useState(0)
     const [phoneNumber, setPhoneNumber] = useState('')
+    const [point, setPoint] = useState(0)
     const [communityList, setCommunityList] = useState([])
     const [userTag, setUserTag] = useState("")
     const [userTagInfo, setUserTagInfo] = useState("")
@@ -132,6 +133,7 @@ const Info = () => {
             setPk(response2.data.info[0].pk)
             setReliability(response2.data.info[0].reliability)
             setNickname(response2.data.info[0].nick_name)
+            setPoint(response2.data.info[0].user_point)
             setPhoneNumber(response2.data.info[0].phone_number)
             let sell_list = []
             let buy_list = []
@@ -274,7 +276,7 @@ const Info = () => {
                         <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>레벨</div>
                     </Content>
                     <Content>
-                        <Div><img width="30px" src={setLevel(reliability)}/></Div>
+                        <Div><img width={25} src={setLevel(reliability)}/></Div>
                     </Content>
                     <Content style={{ marginBottom: '0.3rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>신뢰도</div>
@@ -283,10 +285,15 @@ const Info = () => {
                         <Div>{reliability}</Div>
                     </Content>
                     <Content style={{ marginBottom: '0.3rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>포인트</div>
+                    </Content>
+                    <Content>
+                        <Div>{point}</Div>
+                    </Content>
+                    <Content style={{ marginBottom: '0.3rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>관심 태그</div>
                     </Content>
                     <Content>
-                        {/* {JSON.stringify(userTagName)} */}
                         {userTagInfo ?
                             <>
                             <Div>{userTagInfo}</Div>

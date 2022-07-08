@@ -35,11 +35,6 @@ const UserNameStyle = styled.h4`
       }
 `;
 
-const UserLevel = styled.img`
-    width: 28px;
-    margin-top: 4px;
-`
-
 const Messenger = props => {
 
     const [hovered, setHovered] = useState(false);
@@ -85,7 +80,7 @@ const Messenger = props => {
                         style={{
                             ...{ opacity: hovered ? "1" : "0" }
                         }}
-                    ><UserLevel src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
+                    ><img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
                     <UserImageStyle 
                         onMouseEnter={() => {setHovered(true)}}
                         onMouseLeave={() => {setHovered(false)}}

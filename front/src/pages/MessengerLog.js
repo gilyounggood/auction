@@ -127,10 +127,6 @@ const UserInfoList = styled.button`
   cursor: pointer;
 `
 
-const UserLevel = styled.img`
-    width: 28px;
-`
-
 const MessengerLog = props => {
 
   const [auth, setAuth] = useState(false)
@@ -278,7 +274,7 @@ const MessengerLog = props => {
       <div className='messenger'
         style={{display: chat ? "none" : "block" }}
       >
-        <LogTitle><UserLevel src={setLevel(myReliability)}/>{myNickName}님의 메신저</LogTitle>
+        <LogTitle><img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</LogTitle>
             {messengerList?.map(messenger => {
               return (
                 <div key={messenger.pk}>

@@ -65,7 +65,7 @@ const Header = () => {
     const [beforeCount, setBeforeCount] = useState(0)
     const [colorList, setColorList] = useState([])
     useEffect(()=>{
-        let arr = ['#ababab','#ababab','#ababab','#ababab','#ababab']
+        let arr = ['#ababab','#ababab','#ababab','#ababab','#ababab', '#ababab']
         if(location.pathname == '/search'||location.pathname.substring(0,11)=='/shopofcity'||location.pathname.substring(0,14)=='/shopofkeyword'){
             arr[0] = '#9b59b6'
             setBeforeCount(0)
@@ -82,9 +82,13 @@ const Header = () => {
             arr[3] = '#9b59b6'
             setBeforeCount(3)
         }
-        else if(location.pathname == '/profile'|| location.pathname == '/signup'||location.pathname == '/login'){
+        else if(location.pathname == '/pointshop'){
             arr[4] = '#9b59b6'
             setBeforeCount(4)
+        }
+        else if(location.pathname == '/profile'|| location.pathname == '/signup'||location.pathname == '/login'){
+            arr[5] = '#9b59b6'
+            setBeforeCount(5)
         }
         else{
             arr[beforeCount] = '#9b59b6'
@@ -94,7 +98,7 @@ const Header = () => {
     useEffect(() => {
 
         if (location.pathname == '/search' || location.pathname == '/ranking' || location.pathname == '/' ||
-            location.pathname == '/selectcommunity' || location.pathname == '/profile') {
+            location.pathname == '/selectcommunity' || location.pathname == '/pointshop' || location.pathname == '/profile') {
             setBackDisplay(false)
         }
         else {
@@ -147,8 +151,13 @@ const Header = () => {
                         커뮤니티
                     </OneMenuName>
                 </OneMenuContainer>
-                <OneMenuContainer onClick={()=>{history.push('/profile')}}>
+                <OneMenuContainer onClick={()=>{history.push('/pointshop')}}>
                     <OneMenuName style={{color:`${colorList[4]}`}}>
+                        상점
+                    </OneMenuName>
+                </OneMenuContainer>
+                <OneMenuContainer onClick={()=>{history.push('/profile')}}>
+                    <OneMenuName style={{color:`${colorList[5]}`}}>
                         MY
                     </OneMenuName>
                 </OneMenuContainer>

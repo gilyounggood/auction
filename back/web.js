@@ -82,6 +82,16 @@ app.post('/api/addauction', upload.single('image'), (req, res) =>{
                                 response(req, res, -200, "메신저 추가 실패", [])
                         }
                         else {
+                        }
+                })
+                const sql3 = 'UPDATE user_table SET user_point=user_point+20 WHERE pk=?'
+
+                db.query(sql3, [sellerPk], (err, rows, feild) => {
+                        if (err) {
+                                console.log(err)
+                                response(req, res, -200, "포인트 추가 실패", [])
+                        }
+                        else {
                                 response(req, res, 200, "경매 추가 성공", [])
                         }
                 })

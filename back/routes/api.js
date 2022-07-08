@@ -50,16 +50,21 @@ router.post('/signup', (req, res, next) => {
         const nickName = req.body.nickName
         const phoneNumber = req.body.phoneNumber
         const userLevel = req.body.userLevel
+        const userPoint = req.body. userPoint
 
-
-        if (isNotNullOrUndefined([id, pw, userLevel, nickName, phoneNumber])) {
+        if (isNotNullOrUndefined([id, pw, userLevel, nickName, phoneNumber, userPoint])) {
             //중복 체크 
             let sql = "SELECT * FROM user_table WHERE id=?"
+            let sql2 = "SELECT * FROM user_table WHERE nick_name=?"
 
-            db.query(sql, [id], (err, result) => {
+            db.query(sql, [id], (err, result) => {  
                 if (result.length > 0)
                     response(req, res, -200, "ID가 중복됩니다.", [])
                 else {
+                    db.query(sql2, [nickName], (err, result2) => {  
+                    if (result2.length > 0)
+                        response(req, res, -200, "Nick Name이 중복됩니다.")
+                    else {
                     console.log(salt)
                     crypto.pbkdf2(pw, salt, saltRounds, pwBytes, 'sha512', async (err, decoded) => {
                         // bcrypt.hash(pw, salt, async (err, hash) => {
@@ -70,8 +75,8 @@ router.post('/signup', (req, res, next) => {
                             response(req, res, -200, "비밀번호 암호화 도중 에러 발생", [])
                         }
 
-                        sql = 'INSERT INTO user_table (id, pw, nick_name , phone_number, user_level) VALUES (?, ?, ?, ?, ?)'
-                        await db.query(sql, [id, hash, nickName, phoneNumber, userLevel], (err, result) => {
+                        sql = 'INSERT INTO user_table (id, pw, nick_name , phone_number, user_level, user_point) VALUES (?, ?, ?, ?, ?, ?)'
+                        await db.query(sql, [id, hash, nickName, phoneNumber, userLevel, userPoint], (err, result) => {
 
                             if (err) {
                                 console.log(err)
@@ -82,7 +87,9 @@ router.post('/signup', (req, res, next) => {
                             }
                         })
                     })
+                  }
                 }
+              )}
             })
         }
         else {
@@ -181,8 +188,9 @@ router.get('/auth', (req, res, next) => {
             let first = decode.user_level >= 40
             let second = decode.user_level >= 0
             let reliability = decode.reliability
+            let user_point = decode.user_point
             let level = decode.user_level
-            res.send({ id, first, second, pk, nick_name, level, phone_number, reliability })
+            res.send({ id, first, second, pk, nick_name, level, phone_number, reliability, user_point })
         }
         else {
             res.send({
@@ -221,7 +229,8 @@ router.post('/login', (req, res, next) => {
                     nick_name: user.nick_name,
                     user_level: user.user_level,
                     phone_number: user.phone_number,
-                    reliability: user.reliability
+                    reliability: user.reliability,
+                    user_point: user.user_point,
                 },
                     jwtSecret,
                     {
@@ -481,8 +490,13 @@ router.post('/addcommunity', (req, res, next) => {
                 console.log(err)
                 response(req, res, -200, "업로드 실패", [])
             } else {
-                console.log(err)
-                response(req, res, 200, "업로드 성공", [])
+            }
+        })
+        db.query(`UPDATE user_table SET user_point=user_point+5 WHERE pk=?`, [userPk], (err, result) => {
+            if (err) {
+                response(req, res, -200, "포인트 추가 실패", [])
+            } else {
+                response(req, res, 200, "업로드 성공")
             }
         })
     }
@@ -711,7 +725,7 @@ router.post('/successfulbid', async (req, res) => {
             } else {
             }
         })
-        await db.query('UPDATE user_table SET reliability=reliability+1 WHERE pk IN (?,?)',[sellerPk,buyerPk], (err, result) => {
+        await db.query('UPDATE user_table SET reliability=reliability+1, user_point=user_point+20 WHERE pk IN (?,?)',[sellerPk,buyerPk], (err, result) => {
             if (err) {
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -975,8 +989,9 @@ router.post('/useredit', async (req, res, next) => {
         const nick_name = req.body.nick_name
         const phone_number = req.body.phone_number
         const reliability = req.body.reliability
+        const user_point = req.body.user_point
 
-        await db.query(`UPDATE user_table SET nick_name=?,phone_number=?,reliability=?  WHERE pk=?`, [nick_name,phone_number,reliability, pk], (err, result) => {
+        await db.query(`UPDATE user_table SET nick_name=?,phone_number=?,reliability=?,user_point=?  WHERE pk=?`, [nick_name,phone_number,reliability,user_point, pk], (err, result) => {
             if(err) {
                 console.log(err)
                 response(req, res, -200, "fail", [])

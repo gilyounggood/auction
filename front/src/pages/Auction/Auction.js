@@ -93,9 +93,6 @@ display:flex;
   align-items:center;
 }
 `
-const UserLevel = styled.img`
-    width: 28px;
-`
 
 const Auction = () => {
   const params = useParams()
@@ -430,7 +427,7 @@ const Auction = () => {
                     padding: '1rem', minHeight: '3rem', background: `${auth.pk == post.user_pk ? '#8e44ad' : '$fff'}`, border: '1px solid #8e44ad', width: '9rem', margin: '0.5rem 0', borderRadius: '1rem',
                     color: `${auth.pk == post.user_pk ? '#fff' : '#8e44ad'}`
                   }}>
-                    <div style={{ textAlign: 'left', fontWeight: 'bold' }}><UserLevel src={setLevel(post.user_reliability)}/>{post.user_nickname}</div>
+                    <div style={{ textAlign: 'left', fontWeight: 'bold' }}><img width={25} src={setLevel(post.user_reliability)}/>{post.user_nickname}</div>
                     <div style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>{post.content}</div>
                     <div style={{ fontSize: '0.7rem' }}>{post.create_time}</div>
                   </div>
