@@ -189,8 +189,10 @@ router.get('/auth', (req, res, next) => {
             let second = decode.user_level >= 0
             let reliability = decode.reliability
             let user_point = decode.user_point
+            let user_icon = decode.user_icon
+            let user_use_icon = decode.user_use_icon
             let level = decode.user_level
-            res.send({ id, first, second, pk, nick_name, level, phone_number, reliability, user_point })
+            res.send({ id, first, second, pk, nick_name, level, phone_number, reliability, user_point, user_icon, user_use_icon })
         }
         else {
             res.send({
@@ -231,6 +233,8 @@ router.post('/login', (req, res, next) => {
                     phone_number: user.phone_number,
                     reliability: user.reliability,
                     user_point: user.user_point,
+                    user_icon: user.user_icon,
+                    user_use_icon: user.user_use_icon,
                 },
                     jwtSecret,
                     {
@@ -1003,6 +1007,29 @@ router.post('/useredit', async (req, res, next) => {
         console.log(err)
         response(req, res, -200, "서버 에러 발생", [])
     }
+})
+
+// 아이콘 상점 추가
+
+router.post('/buyicon', async (req, res) => {
+try {
+    const pk = req.body.pk
+    const iconName = req.body.name
+    const iconPoint = req.body.point
+
+    await db.query(`UPDATE user_table SET user_icon=IFNULL(CONCAT(user_icon, "${iconName}"), "${iconName}"), user_point=user_point-${iconPoint} WHERE pk=?`, [pk], (err, result)=> {
+        if(err) {
+            console.log(err)
+            response(req, res, -200, "fail", [])
+        } else {
+            response(req, res, 200, "sucess", result)
+        }
+    })
+    
+ } catch {
+    console.log(err)
+    response(req, res, -200, "서버 에러 발생", [])
+ }
 })
 
 module.exports = router;        

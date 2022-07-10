@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import ContentsWrapper from '../components/elements/ContentWrapper';
+import axios from 'axios';
 const BoxContent = styled.div`
 width:15rem;
 min-height:19.4rem;
@@ -71,9 +72,43 @@ const IconImage = styled.img`
   margin-top: 3.5rem;
 `
 
-const AuctionComponent = (props) => {
-  const history = useHistory();
-  
+const IconComponent = (props) => {
+
+  const[auth, setAuth] = useState({})
+  const [myPoint, setMyPoint] = useState(0)
+  const [userIcon, setUserIcon] = useState("")
+
+  async function fecthUser() {
+    const {data:response} = await axios.get('/api/auth')
+    setAuth(response)
+  try {
+    const {data:response2} = await axios.post('/api/info', {
+      pk: response.pk
+    })
+    setMyPoint(response2.data.info[0].user_point)
+    setUserIcon(response2.data.info[0].user_icon)
+  } catch {}
+  }
+
+  useEffect (() => {
+      fecthUser()
+  }, [])
+
+  const buyIcon = async (name, point) => {
+    if(!auth?.pk) {
+      alert("로그인 후 이용 가능합니다.")
+    } else if(myPoint < point) {
+      alert(`포인트가 부족합니다. 필요 포인트: ${point - myPoint}`)
+    } else {
+      await axios.post('/api/buyicon', {
+        pk: auth?.pk,
+        name: name,
+        point: point,
+      })
+      alert("아이콘을 구매했습니다.")
+      window.location.reload();
+    }
+  }
   return (
     <>
       <BoxContent>
@@ -82,11 +117,39 @@ const AuctionComponent = (props) => {
         </BoxImage>
         <LeftTextBox style={{ fontSize: '1rem', fontWeight: 'bold' }}>{props.name}</LeftTextBox>
         <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>가격 | <strong style={{ fontSize: '1rem', color: '#e84118' }}>{props.point} Point</strong></RightTextBox>
-        <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>상태 | 판매중</RightTextBox>
-        <CenterTextBox style={{ fontSize: '1rem', color: '#5a5a5a' }}>구매하기</CenterTextBox>
+        <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>상태 | {userIcon && userIcon.indexOf(props.name) === -1 || userIcon === null ? "판매중" : "구매완료"}</RightTextBox>
+        {userIcon && userIcon.indexOf(props.name) === -1  || userIcon === null ?
+        <>
+        <CenterTextBox 
+          style={{ fontSize: '1rem', color: '#0000CD', cursor: "pointer" }}
+          onClick={() => {
+              if(window.confirm(`${props.name} 아이콘을 구매하시겠습니까?`)) {
+                buyIcon(props.name, props.point)
+              }
+            }
+          }
+        >
+          구매하기
+        </CenterTextBox>
+        </>
+        :
+        <>
+        <CenterTextBox 
+          style={{ fontSize: '1rem', color: '#C71585', cursor: "pointer" }}
+          onClick={() => {
+              if(window.confirm(`${props.name} 아이콘을 사용하시겠습니까?`)) {
+                buyIcon(props.name, props.point)
+              }
+            }
+          }
+        >
+          사용하기
+        </CenterTextBox> 
+        </>
+        }
       </BoxContent>
     </>
   )
 }
 
-export default AuctionComponent
+export default IconComponent
