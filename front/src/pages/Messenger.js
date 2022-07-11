@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import MessengerImage from '../assets/images/메신저이미지.png'
 import setLevel from '../data/Level';
+import { setIcon } from '../data/Icon';
 import axios from 'axios';
 
 const UserImageStyle = styled.img`
@@ -15,7 +16,11 @@ const UserImageStyle = styled.img`
     background-color: white;
     margin-left: 5px;
     @media screen and (max-width:950px) {
-        margin-bottom: 65px
+        margin-bottom: 10px;
+        width: 50px;
+        height: 50px; 
+        margin-left: 195px;
+        display: none;
       }
 `;
 
@@ -31,7 +36,7 @@ const UserNameStyle = styled.h4`
     justify-content: center;
     align-items: center;
     @media screen and (max-width:950px) {
-        margin-bottom: 65px
+        margin-bottom: 15px;
       }
 `;
 
@@ -46,6 +51,7 @@ const Messenger = props => {
     const [myLevel, setMyLevel] = useState(0);
     const [myPk, setMyPk] = useState(0);
     const [myReliability, setMyReliability] = useState(0);
+    const [myIcon, setMyIcon] = useState("")
     const isAdmin = async () => {
         setLoading(true)
         const { data: response } = await axios.get('/api/auth')
@@ -60,6 +66,7 @@ const Messenger = props => {
             setMyLevel(response.level)
             setMyPk(response.pk)
             setMyReliability(response.reliability)
+            setMyIcon(response.user_use_icon)
             console.log(response)
         }
         
@@ -80,7 +87,9 @@ const Messenger = props => {
                         style={{
                             ...{ opacity: hovered ? "1" : "0" }
                         }}
-                    ><img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
+                    >
+                        <img width={25} src={setIcon(myIcon)}/>
+                        <img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
                     <UserImageStyle 
                         onMouseEnter={() => {setHovered(true)}}
                         onMouseLeave={() => {setHovered(false)}}

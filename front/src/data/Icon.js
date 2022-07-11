@@ -11,6 +11,36 @@ import icon10 from '../assets/images/icon/황금벌레.png'
 import icon11 from '../assets/images/icon/지구.png'
 import icon12 from '../assets/images/icon/은하.png'
 
+let setIcon = (name) => {
+    if(name==="다이아몬드") {
+        return icon1;
+    } else if (name==="돈다발") {
+        return icon2;
+    } else if (name==="메달") {
+        return icon3;
+    } else if (name==="메타몽") {
+        return icon4;
+    } else if (name==="상어") {
+        return icon5;
+    } else if (name==="왕관") {
+        return icon6;
+    } else if (name==="용") {
+        return icon7;
+    } else if (name==="종이비행기") {
+        return icon8;
+    } else if (name==="트로피") {
+        return icon9;
+    } else if (name==="황금벌레") {
+        return icon10;
+    } else if (name==="지구") {
+        return icon11;
+    } else if (name==="은하") {
+        return icon12;
+    } else {
+        return null;
+    }
+}
+
 const IconList = [
     {
     pk: 1,
@@ -85,4 +115,5 @@ const IconList = [
     image: icon12
     },
 ]
-export default IconList
+// export default IconList;
+export { setIcon, IconList as default }

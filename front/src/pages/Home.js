@@ -45,7 +45,8 @@ const Home = () => {
           {auctionList.map((post)=>(
             <div key={post.pk}>
             <AuctionComponent pk={post.pk} main_image={post.main_image} name={post.name} buy_count={post.buy_count} 
-                              create_time={post.create_time} end_date={post.end_date} seller_nickname={post.seller_nickname} seller_reliability={post.seller_reliability} bid_price={post.bid_price}      />
+                              create_time={post.create_time} end_date={post.end_date} seller_nickname={post.seller_nickname} seller_reliability={post.seller_reliability} bid_price={post.bid_price}  
+                              seller_icon={post.seller_icon}    />
             </div>
           ))}
       </ContentsWrapper>

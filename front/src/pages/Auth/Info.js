@@ -14,6 +14,7 @@ import { AiFillDelete } from 'react-icons/ai'
 import { CgDetailsMore } from 'react-icons/cg'
 import { useSelector } from 'react-redux'
 import setLevel from '../../data/Level';
+import { setIcon } from '../../data/Icon';
 
 const Button = styled.button`
 width:12.2rem;
@@ -98,6 +99,7 @@ const Info = () => {
     const [sellList, setSellList] = useState([])
     const [pk, setPk] = useState(0)
     const [reliability, setReliability] = useState(0)
+    const [myIcon, setMyIcon] = useState("")
     const [phoneNumber, setPhoneNumber] = useState('')
     const [point, setPoint] = useState(0)
     const [communityList, setCommunityList] = useState([])
@@ -135,6 +137,7 @@ const Info = () => {
             setNickname(response2.data.info[0].nick_name)
             setPoint(response2.data.info[0].user_point)
             setPhoneNumber(response2.data.info[0].phone_number)
+            setMyIcon(response2.data.info[0].user_use_icon)
             let sell_list = []
             let buy_list = []
             for (var i = 0; i < response2?.data?.auction?.length ?? 0; i++) {
@@ -277,6 +280,19 @@ const Info = () => {
                     </Content>
                     <Content>
                         <Div><img width={25} src={setLevel(reliability)}/></Div>
+                    </Content>
+                    <Content style={{ marginBottom: '0.3rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>아이콘</div>
+                    </Content>
+                    <Content>
+                        {myIcon ?
+                            <>
+                            <Div><img width={30} src={setIcon(myIcon)}/></Div>
+                            </> :
+                            <>
+                            <Div>없음</Div>
+                            </>
+                        }
                     </Content>
                     <Content style={{ marginBottom: '0.3rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>신뢰도</div>

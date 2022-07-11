@@ -10,6 +10,7 @@ import { MdOutlineAccountBox } from 'react-icons/md'
 import { BiSmile } from 'react-icons/bi'
 import ScaleLoader from "react-spinners/ScaleLoader";
 import setLevel from '../data/Level';
+import { setIcon } from '../data/Icon';
 const ThemeList = styled.div`
 width:22rem;
 margin:0 auto;
@@ -105,6 +106,7 @@ const Profile = () => {
     const [myLevel, setMyLevel] = useState(0);
     const [myPk, setMyPk] = useState(0);
     const [myReliability, setMyReliability] = useState(0)
+    const [myIcon, setMyIcon] = useState("")
     const isAdmin = async () => {
         setLoading(true)
         const { data: response } = await axios.get('/api/auth')
@@ -119,6 +121,7 @@ const Profile = () => {
             setMyLevel(response.level)
             setMyPk(response.pk)
             setMyReliability(response.reliability)
+            setMyIcon(response.user_use_icon)
             console.log(response)
         }
         
@@ -152,7 +155,11 @@ const Profile = () => {
                         <DottedLineContainer style={{border:'none'}}>
                             <div style={{ padding: '1rem 0',display:'flex',justifyContent:'space-around',alignItems:'center' }}>
                                 <BiSmile style={{ fontSize: '2rem', color: '#8e44ad' }} />
-                                <CongText><img src={setLevel(myReliability)}/>{myNickName}({myId})님, 안녕하세요!</CongText>
+                                <CongText>
+                                    {myIcon &&
+                                    <img width={20} src={setIcon(myIcon)} />
+                                    }
+                                    <img src={setLevel(myReliability)}/>{myNickName}({myId})님, 안녕하세요!</CongText>
                                 <BiSmile style={{ fontSize: '2rem', color: '#8e44ad' }}/>
                             </div>
                         </DottedLineContainer>

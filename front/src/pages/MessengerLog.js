@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory, BrowserRouter as Routes, Link, Router, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import setLevel from '../data/Level';
+import { setIcon } from '../data/Icon';
 import axios from 'axios';
 
 const UserLogStyle = styled.div`
@@ -14,7 +15,7 @@ const UserLogStyle = styled.div`
   color: Lightseagreen;
   background-color: white;
   box-shadow: 3px 3px 3px grey;
-  margin-left: 100px;
+  margin-left: 130px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 4px;
@@ -136,6 +137,7 @@ const MessengerLog = props => {
   const [myLevel, setMyLevel] = useState(0);
   const [myPk, setMyPk] = useState(0);
   const [myReliability, setMyReliability] = useState(0)
+  const [myIcon, setMyIcon] = useState("")
 
   const [messengerList, setMessengerList] = useState([])
   const [userTagInfo, setUserTagInfo] = useState("")
@@ -164,6 +166,7 @@ const MessengerLog = props => {
           setMyLevel(response.level)
           setMyPk(response.pk)
           setMyReliability(response.reliability)
+          setMyIcon(response.user_use_icon)
           console.log(response)
       }   
 
@@ -274,7 +277,11 @@ const MessengerLog = props => {
       <div className='messenger'
         style={{display: chat ? "none" : "block" }}
       >
-        <LogTitle><img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</LogTitle>
+        <LogTitle>
+          {myIcon &&
+          <img width={25} src={setIcon(myIcon)}/>
+          }
+          <img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</LogTitle>
             {messengerList?.map(messenger => {
               return (
                 <div key={messenger.pk}>

@@ -124,6 +124,10 @@ const Header = () => {
                             <div className='menu-icon' />
                         </>
                 }
+                <div style={{fontWeight: "bold", padding: "5px", border: "1px solid #8e44ad", borderRadius: "8px", fontSize: "13px", cursor: 'pointer', color: '#8e44ad'}}
+                    onClick={() => { history.push('/pointshop') }}>
+                        상점
+                </div>
                 <div className='menu-icon' />
                 <img src={logo} className='blink' style={{marginTop:'0.2rem'}} />
                 <div className='menu-icon' />

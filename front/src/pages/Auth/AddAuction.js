@@ -44,6 +44,7 @@ const AddAuction = () => {
     const [myId, setMyId] = useState('')
     const [myNickname, setMyNickname] = useState('')
     const [myReliability, setMyReliability] = useState(0)
+    const [myIcon, setMyIcon] = useState("")
     const [content, setContent] = useState(undefined)
     const [price, setPrice] = useState(10000);
     const [name, setName] = useState('')
@@ -60,6 +61,7 @@ const AddAuction = () => {
             setMyPk(response.pk)
             setMyNickname(response.nick_name)
             setMyReliability(response.reliability)
+            setMyIcon(response.user_use_icon)
         } else {
             history.push('/')
         }
@@ -89,6 +91,7 @@ const AddAuction = () => {
         formData.append("sellerPk",myPk)
         formData.append("sellerNickname",myNickname)
         formData.append("sellerReliability",myReliability)
+        formData.append("sellerIcon",myIcon)
         formData.append("endDate",date+' '+time+':00')
         formData.append("categoryList",arr)
         formData.append("image", content)

@@ -77,6 +77,7 @@ const IconComponent = (props) => {
   const[auth, setAuth] = useState({})
   const [myPoint, setMyPoint] = useState(0)
   const [userIcon, setUserIcon] = useState("")
+  const [usingIcon, setUsingIcon] = useState("")
 
   async function fecthUser() {
     const {data:response} = await axios.get('/api/auth')
@@ -87,6 +88,7 @@ const IconComponent = (props) => {
     })
     setMyPoint(response2.data.info[0].user_point)
     setUserIcon(response2.data.info[0].user_icon)
+    setUsingIcon(response2.data.info[0].user_use_icon)
   } catch {}
   }
 
@@ -105,10 +107,24 @@ const IconComponent = (props) => {
         name: name,
         point: point,
       })
-      alert("아이콘을 구매했습니다.")
+      alert(`${name}아이콘을 구매했습니다.`)
       window.location.reload();
     }
   }
+
+  const applyIcon = async (name) => {
+    if(usingIcon === name) {
+      alert("현재 적용중인 아이콘입니다.")
+    } else {
+      await axios.post('/api/applyicon', {
+        pk: auth?.pk,
+        name: name,
+      })
+      alert(`${name}아이콘을 적용했습니다. 재로그인 시 아이콘이 표시됩니다.`)
+      window.location.reload();
+    }
+  }
+
   return (
     <>
       <BoxContent>
@@ -117,8 +133,13 @@ const IconComponent = (props) => {
         </BoxImage>
         <LeftTextBox style={{ fontSize: '1rem', fontWeight: 'bold' }}>{props.name}</LeftTextBox>
         <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>가격 | <strong style={{ fontSize: '1rem', color: '#e84118' }}>{props.point} Point</strong></RightTextBox>
-        <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>상태 | {userIcon && userIcon.indexOf(props.name) === -1 || userIcon === null ? "판매중" : "구매완료"}</RightTextBox>
-        {userIcon && userIcon.indexOf(props.name) === -1  || userIcon === null ?
+        <RightTextBox style={{ 
+          fontSize: '0.8rem', 
+          color: userIcon && userIcon.indexOf(props.name) === -1 || userIcon === null ? '#006400' : "#800080"
+        }}>
+          상태 | {userIcon && userIcon.indexOf(props.name) === -1 || userIcon === null ? "판매중" : "구매완료"}
+        </RightTextBox>
+        {userIcon && userIcon.indexOf(props.name) === -1  || userIcon === "" ?
         <>
         <CenterTextBox 
           style={{ fontSize: '1rem', color: '#0000CD', cursor: "pointer" }}
@@ -135,15 +156,18 @@ const IconComponent = (props) => {
         :
         <>
         <CenterTextBox 
-          style={{ fontSize: '1rem', color: '#C71585', cursor: "pointer" }}
+          style={{ 
+            fontSize: '1rem', 
+            color: usingIcon === props.name ? '#D65BC1' : "#C71585", 
+            cursor: "pointer" }}
           onClick={() => {
               if(window.confirm(`${props.name} 아이콘을 사용하시겠습니까?`)) {
-                buyIcon(props.name, props.point)
+                applyIcon(props.name)
               }
             }
           }
         >
-          사용하기
+          {usingIcon === props.name ? "사용중" : "사용하기"}
         </CenterTextBox> 
         </>
         }

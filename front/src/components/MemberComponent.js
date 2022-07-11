@@ -42,6 +42,12 @@ const MemberComponent = (props) => {
                     <SmallTitle2>레벨</SmallTitle2>
                     <img style={{marginTop: "9px"}} src={props.level}/>
                   </SmallSubContainer>
+                  {props.icon &&
+                  <SmallSubContainer style={{paddingLeft:'1rem', paddingRight:'1rem',borderRight:'1px solid #cccccc'}}>
+                    <SmallTitle2>아이콘</SmallTitle2>
+                    <img width={30} style={{marginLeft: "9px"}} src={props.icon}/>
+                  </SmallSubContainer>
+                  }
                   <SmallSubContainer style={{paddingLeft:'1rem', paddingRight:'1rem'}}>
                     <SmallTitle2>신뢰도</SmallTitle2>
                     <SmallContent style={{color:'#e84118'}}>{props.reliability}</SmallContent>

@@ -581,6 +581,7 @@ router.post('/addchat', (req, res) => {
         const userPk = req.body.userPk
         const content = req.body.content
         const reliability = req.body.reliability
+        const icon = req.body.icon
         var today = new Date();
         var year = today.getFullYear();
         var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -592,7 +593,7 @@ router.post('/addchat', (req, res) => {
         var timeString = hours + ':' + minutes + ':' + seconds;
         let moment = dateString + ' ' + timeString;
         const itemPk = req.body.itemPk;
-        db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk, user_reliability) VALUES (?,?,?,?,?,?)',[nickname,userPk,content,moment,itemPk,reliability],(err, result)=>{
+        db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk, user_reliability, user_icon) VALUES (?,?,?,?,?,?,?)',[nickname,userPk,content,moment,itemPk,reliability,icon],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -663,6 +664,7 @@ router.post('/upbid',async (req, res) => {
         const nickname = req.body.nickname
         const userPk = req.body.userPk
         const reliability = req.body.reliability
+        const icon = req.body.icon
         var today = new Date();
         var year = today.getFullYear();
         var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -682,7 +684,7 @@ router.post('/upbid',async (req, res) => {
             }
         })
         let content = `낙찰가를 ${price}로 올렸습니다.`
-        await db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk, user_reliability) VALUES (?,?,?,?,?,?)',[nickname,userPk,content,moment,itemPk,reliability],(err, result)=>{
+        await db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk, user_reliability, user_icon) VALUES (?,?,?,?,?,?,?)',[nickname,userPk,content,moment,itemPk,reliability,icon],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -1030,6 +1032,25 @@ try {
     console.log(err)
     response(req, res, -200, "서버 에러 발생", [])
  }
+})
+
+router.post('/applyicon', async (req, res) => {
+    try {
+        const pk = req.body.pk
+        const name = req.body.name
+
+        await db.query('UPDATE user_table SET user_use_icon =? WHERE pk =?', [name, pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "sucess", result)
+            }
+        })
+    } catch {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
 })
 
 module.exports = router;        
