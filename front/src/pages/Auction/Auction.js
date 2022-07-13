@@ -170,7 +170,7 @@ const Auction = () => {
         userPk: auth.pk,
         reliability: auth.reliability,
         icon: auth.user_use_icon,
-        content: `${auth.nick_name}님이 ${$('#request-down-price').val()}원 으로 시작가 낮추기 요청을 하셨습니다.`,
+        content: `${auth.nick_name}님이 ${$('#request-down-price').val()}원으로 시작가 낮추기 요청을 하셨습니다.`,
         itemPk: params.pk,
         post_id: item?.pk,
         post_name: item?.seller_nickname,

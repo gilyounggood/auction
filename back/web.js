@@ -35,11 +35,22 @@ app.use('/config', express.static(__dirname + '/config'));
 app.use('/image', express.static(__dirname + '/image'));
 app.use('/api', require('./routes/api'))
 
-app.get('/', (req, res) => {
-    console.log("back-end initialized")
-    res.send('back-end initialized')
-});
+// app.get('/', (req, res) => {
+//     console.log("back-end initialized")
+//     res.send('back-end initialized')
+// });
 
+//호스팅
+
+app.use(express.static(path.join(__dirname, '../front/build')))
+
+app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, '../front/build/index.html'))
+})
+
+app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../front/build/index.html'))
+})
 
 app.post('/api/addauction', upload.single('image'), (req, res) =>{
         try{

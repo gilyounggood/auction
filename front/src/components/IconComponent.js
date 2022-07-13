@@ -76,7 +76,7 @@ const IconComponent = (props) => {
 
   const[auth, setAuth] = useState({})
   const [myPoint, setMyPoint] = useState(0)
-  const [userIcon, setUserIcon] = useState("")
+  const [userIcon, setUserIcon] = useState(null)
   const [usingIcon, setUsingIcon] = useState("")
 
   async function fecthUser() {
@@ -139,7 +139,7 @@ const IconComponent = (props) => {
         }}>
           상태 | {userIcon && userIcon.indexOf(props.name) === -1 || userIcon === null ? "판매중" : "구매완료"}
         </RightTextBox>
-        {userIcon && userIcon.indexOf(props.name) === -1  || userIcon === "" ?
+        {userIcon && userIcon.indexOf(props.name) === -1  || userIcon === null ?
         <>
         <CenterTextBox 
           style={{ fontSize: '1rem', color: '#0000CD', cursor: "pointer" }}

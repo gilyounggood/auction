@@ -683,7 +683,7 @@ router.post('/upbid',async (req, res) => {
             } else {
             }
         })
-        let content = `낙찰가를 ${price}로 올렸습니다.`
+        let content = `낙찰가를 ${price}원으로 올렸습니다.`
         await db.query('INSERT INTO chat_table (user_nickname, user_pk, content, create_time, item_pk, user_reliability, user_icon) VALUES (?,?,?,?,?,?,?)',[nickname,userPk,content,moment,itemPk,reliability,icon],(err, result)=>{
             if(err){
                 console.log(err)
