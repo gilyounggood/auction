@@ -14,7 +14,6 @@ const UserImageStyle = styled.img`
     box-shadow: 5px 5px 5px grey;
     float: right;
     background-color: white;
-    margin-left: 5px;
     @media screen and (max-width:950px) {
         margin-bottom: 10px;
         width: 50px;
@@ -40,6 +39,21 @@ const UserNameStyle = styled.h4`
       }
 `;
 
+const UserNotice = styled.div`
+    color: white;
+    background-color: red;
+    margin-bottom: 83px;
+    border-radius: 10px;
+    width: 23px;
+    text-align: center;
+    font-weight: bold;
+
+    @media screen and (max-width:950px) {
+        margin-bottom: 15px;
+        display: none;
+      }
+`;
+
 const Messenger = props => {
 
     const [hovered, setHovered] = useState(false);
@@ -52,6 +66,8 @@ const Messenger = props => {
     const [myPk, setMyPk] = useState(0);
     const [myReliability, setMyReliability] = useState(0);
     const [myIcon, setMyIcon] = useState("")
+    const [messengerList, setMessengerList] = useState([])
+
     const isAdmin = async () => {
         setLoading(true)
         const { data: response } = await axios.get('/api/auth')
@@ -67,15 +83,35 @@ const Messenger = props => {
             setMyPk(response.pk)
             setMyReliability(response.reliability)
             setMyIcon(response.user_use_icon)
-            console.log(response)
         }
         
+        // const { data: response2 } = await axios.post('/api/messengernotice', {
+        //     user_name: response.nick_name
+        // })
+        // setMessengerList(response2.data)
+
+        try {
+            const { data: result } = await axios.post('/api/usertaginfo', {
+                user_name: response.nick_name
+            })
+            const { data: response2 } = await axios.post('/api/messengernotice', {
+                user_name: response.nick_name,
+                user_tag: result.data.userTag[0].userTag
+            })
+            setMessengerList(response2.data)
+          } catch {
+          }
+
         setLoading(false)
     }
 
     useEffect(() => {
         isAdmin()
     }, [])
+
+    const noticeList = messengerList.filter(message => message.notice === 1 && message.post_id !== '0' && message.user_name !== myNickName)
+    const noticeList2 = messengerList.filter(message => message.notice ===1 && message.post_id === '0' && message.user_name !== myNickName)
+    console.log(noticeList)
 
   return (
     <div>
@@ -90,6 +126,7 @@ const Messenger = props => {
                     >
                         <img width={25} src={setIcon(myIcon)}/>
                         <img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
+                    <UserNotice>{noticeList.length + noticeList2.length}</UserNotice>
                     <UserImageStyle 
                         onMouseEnter={() => {setHovered(true)}}
                         onMouseLeave={() => {setHovered(false)}}

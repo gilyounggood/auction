@@ -15,7 +15,7 @@ const UserLogStyle = styled.div`
   color: Lightseagreen;
   background-color: white;
   box-shadow: 3px 3px 3px grey;
-  margin-left: 130px;
+  margin-left: 145px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 4px;
@@ -257,8 +257,14 @@ const MessengerLog = props => {
     const { data: response } = await axios.post('/api/adminchatinfo/user', {
       chat_name: user_name,
     })
-    console.log(response.data)
     setAdminUserChatList(response.data)
+  }
+
+  const deleteNotice = async (pk, e) => {
+    await axios.post('/api/deletenotice', {
+      pk: pk
+    })
+    window.location.reload()
   }
 
   return (
@@ -287,24 +293,28 @@ const MessengerLog = props => {
                 <div key={messenger.pk}>
                   {myNickName === messenger.post_name && myNickName !== messenger.user_name ?
                   <StyledLink 
-                  to = {`/auction/${messenger.post_id}`}
+                    to = {`/auction/${messenger.post_id}`}
+                    onClick={e => deleteNotice(messenger.pk)}
+                    style={{ color: messenger.notice === 0 ? 'gray' : null}}
                   >
-                    <span style={{color: "#DC143C"}}>{messenger.user_name}</span>님이
-                    <span style={{color: "#FF0000"}}>{messenger.postTitle}</span>게시글에
-                    <span style={{color: "#800000"}}>{messenger.chat_message}</span>
+                    <span style={{color: messenger.notice === 0 ? 'gray' : "#DC143C"}}>{messenger.user_name}</span>님이
+                    <span style={{color: messenger.notice === 0 ? 'gray' : "#FF0000"}}>{messenger.postTitle}</span>게시글에
+                    <span style={{color: messenger.notice === 0 ? 'gray' : "#800000"}}>{messenger.chat_message}</span>
                     <Span>{messenger.create_time}</Span>
                   </StyledLink>
                   : null
                   }
                   {messenger.post_id === "0" && myNickName !== messenger.user_name && messenger.chat_message.includes(userTagInfo) ?
                   <StyledLink 
-                  to = {{
-                    pathname:'/searchresult',
-                    state:{...{keyword: messenger.chat_message}}
-                  }}
+                    to = {{
+                      pathname:'/searchresult',
+                      state:{...{keyword: messenger.chat_message}}
+                    }}
+                    onClick={e => deleteNotice(messenger.pk)}
+                    style={{color: messenger.notice === 0 ? 'gray' : null}}
                   >
-                    <span style={{color: "#DC143C"}}>{messenger.chat_message}</span>태그의 게시글이 업로드 되었습니다.
-                    제목 <span style={{color: "#FF0000"}}>{messenger.postTitle}</span> 작성자 <span style={{color: "#800000"}}>{messenger.user_name}</span>님
+                    <span style={{color: messenger.notice === 0 ? 'gray' : "#DC143C"}}>{messenger.chat_message}</span>태그의 게시글이 업로드 되었습니다.
+                    제목 <span style={{color: messenger.notice === 0 ? 'gray' : "#FF0000"}}>{messenger.postTitle}</span> 작성자 <span style={{color: messenger.notice === 0 ? 'gray' : "#800000"}}>{messenger.user_name}</span>님
                     <Span>{messenger.create_time}</Span>
                   </StyledLink>
                   : null

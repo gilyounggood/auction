@@ -603,7 +603,7 @@ router.post('/addchat', (req, res) => {
         const post_id = req.body.post_id
         const postName = req.body.post_name
         const postTitle = req.body.post_title
-        db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle) VALUES (?,?,?,?,?,?)',[content,post_id,postName,nickname,moment,postTitle],(err, result)=>{
+        db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle, notice) VALUES (?,?,?,?,?,?,?)',[content,post_id,postName,nickname,moment,postTitle,1],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -694,7 +694,7 @@ router.post('/upbid',async (req, res) => {
         const post_id = req.body.post_id
         const post_name = req.body.post_name
         const postTitle = req.body.post_title
-        await db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle) VALUES (?,?,?,?,?,?)',[content,post_id,post_name,nickname,moment,postTitle],(err, result)=>{
+        await db.query('INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle, notice) VALUES (?,?,?,?,?,?,?)',[content,post_id,post_name,nickname,moment,postTitle,1],(err, result)=>{
             if(err){
                 console.log(err)
                 response(req, res, -200, "서버 에러 발생", [])
@@ -814,6 +814,47 @@ router.post('/messengerinfo', async (req, res, next) => {
             }
         })
     }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+//메신저 알람 추가
+
+router.post('/messengernotice', async (req, res, next) => {
+    try {
+        const user_name = req.body.user_name;
+        const user_tag = req.body.user_tag ? req.body.user_tag : "" ;
+
+        await db.query(`SELECT * FROM messenger WHERE post_name=? OR chat_message LIKE '%${user_tag}%'`, [user_name], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "success", result)
+            }
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/deletenotice', async (req, res, next) => {
+    try {
+        const pk = req.body.pk
+        
+        await db.query('UPDATE messenger SET notice =? WHERE pk =?', [0, pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+                response(req, res, 200, "success", result)
+            } 
+        })
+    } 
     catch (err) {
         console.log(err)
         response(req, res, -200, "서버 에러 발생", [])

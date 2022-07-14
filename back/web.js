@@ -85,8 +85,8 @@ app.post('/api/addauction', upload.single('image'), (req, res) =>{
                         }
                 })
                 
-                const sql2 = 'INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle) VALUES (? , ? , ? , ? , ? , ?)'
-                const param2 = [categoryList, 0, "0", sellerNickname, moment, name]
+                const sql2 = 'INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle, notice) VALUES (? , ? , ? , ? , ? , ?, ?)'
+                const param2 = [categoryList, 0, "0", sellerNickname, moment, name, 1]
 
                 db.query(sql2, param2, (err, rows, feild) => {
                         if (err) {
