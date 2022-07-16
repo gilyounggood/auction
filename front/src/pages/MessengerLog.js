@@ -15,7 +15,7 @@ const UserLogStyle = styled.div`
   color: Lightseagreen;
   background-color: white;
   box-shadow: 3px 3px 3px grey;
-  margin-left: 145px;
+  margin-left: 130px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 4px;
@@ -167,13 +167,11 @@ const MessengerLog = props => {
           setMyPk(response.pk)
           setMyReliability(response.reliability)
           setMyIcon(response.user_use_icon)
-          console.log(response)
       }   
 
       const { data: response2 } = await axios.post('/api/messengerinfo', {
         user_name: response.nick_name
       })
-      console.log(response2)
       setMessengerList(response2.data)
     
       try {
@@ -188,11 +186,9 @@ const MessengerLog = props => {
       }
 
       const { data: result2 } = await axios.get('/api/adminchatinfo')
-      console.log(result2)
       setAdminChatList(result2.data)
 
       const { data: result3 } = await axios.get('/api/userinfo')
-      console.log(result3)
       setUserList(result3.data)
 
     setLoading(false)
@@ -234,7 +230,6 @@ const MessengerLog = props => {
     e.preventDefault();
     if(adminChat === "") {
       alert("답변을 입력해주세요")
-      console.log(chat_id)
     } else {
       const { data: response } = await axios.get('/api/auth')
         await axios.post("/api/addadminchat", {

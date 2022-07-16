@@ -29,6 +29,7 @@ import UserInfo from './Manager/UserInfo';
 import UserList from './Manager/UserList';
 
 import AddCommunity from './Community/AddCommunity';
+import EditCommunity from './Community/EditCommunity';
 import Community from './Community/Community';
 import CommunityList from './Community/CommunityList';
 
@@ -105,6 +106,7 @@ const App = () => {
                 <Route exact path="/community/:pk" component={Community} />
                 <Route exact path="/communitylist/:pk" component={CommunityList} />
                 <Route exact path="/addcommunity/:pk" component={AddCommunity} />
+                <Route exact path="/editcommunity/:pk" component={EditCommunity} />
 
                 <Route exact path="/searchresult" component={SearchResult} />
 

@@ -14,47 +14,50 @@ import SubTitle from '../../components/elements/SubTitle';
 import RightButtonContainer from '../../components/elements/RightButtonContainer';
 import Textarea from '../../components/elements/Textarea';
 import CenterButtonContainer from '../../components/elements/CenterButtonContainer';
-const AddCommunity = () => {
+const EditCommunity = () => {
     //----------------------------------------공통
     const history = useHistory()
     const params = useParams()
 
     const [loading, setLoading] = useState(false)
-    const [title, setTitle] = useState('')
-    const [note, setNote] = useState('')
     const [myPk, setMyPk] = useState(0)
     const [myNickname, setMyNickname] = useState('')
+    const [community, setCommunity] = useState({
+        title: "",
+        content: "",
+    });
+
+    const { title, content } = community
+
     const isAdmin = async () => {
         setLoading(true)
         const { data: response0 } = await axios.get('/api/auth')
-        if (!response0.first && params.pk==1) {
-            alert("관리자만 접근 가능합니다.")
-            history.push('/')
-        } else if(!response0.pk){
+            if(!response0.pk){
             alert("로그인 후 이용해 주세요.")
             history.push('/')
         }
         setMyPk(response0.pk)
         setMyNickname(response0.nick_name)
         setLoading(false)
+        const { data: response } = await axios.post('/api/community', {pk: params.pk})
+        setCommunity(response.data)
     }
     useEffect(() => {
         isAdmin()
     }, [])
-    const onChangeTitle= (e) =>{
-        setTitle(e.target.value)
+
+    const onChangeCommunity= (e) =>{
+        setCommunity({...community, [e.target.name]: e.target.value})
     }
-    const onChangeNote = (e) =>{
-        setNote(e.target.value)
-    }
-    const upLoad = async (e) =>{
-        if(title==="" || note==="") {
-            alert("제목과 내용을 입력해주세요")
+
+    const Edit = async (e) =>{
+        if(title==="" || content==="") {
+            alert("제목과 내용을 작성해주세요.")
         } else {
-            const {data:response} = await axios.post('/api/addCommunity',{
-                title:title,
-                content:note,
-                kind:params.pk,
+            const {data:response} = await axios.post('/api/editcommunity',{
+                pk:params.pk,
+                title: title,
+                content: content,
                 userPk:myPk,
                 nickname:myNickname
             })
@@ -62,7 +65,7 @@ const AddCommunity = () => {
                 alert(response.message)
             }
             else{
-                alert('성공적으로 등록되었습니다')
+                alert('게시글이 수정되었습니다')
                 history.goBack()
             }
         }
@@ -75,32 +78,32 @@ const AddCommunity = () => {
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`
             }}>
                 
-                <Title>{params.pk==1?'공지사항 추가':'자유게시판 추가'}</Title>
+                <Title>게시판 수정</Title>
                 
                 <Container>
                     <Content>
                         <SubTitle>제목</SubTitle>
                     </Content>
                     <Content>
-                        <Input type={'text'} onChange={onChangeTitle} />
+                        <Input type={'text'} value={title} name="title" onChange={e => onChangeCommunity(e)} />
                     </Content>
                     <Content>
                         <SubTitle>설명</SubTitle>
                     </Content>
                     <Content>
-                        <Textarea onChange={onChangeNote} />
+                        <Textarea value={content} name="content" onChange={e => onChangeCommunity(e)} />
                     </Content>
                 </Container>
                 <CenterButtonContainer>
                 <Button onClick={()=>{history.goBack()}}>
                         뒤로가기
                     </Button>
-                    <Button onClick={upLoad}>
-                        업로드
+                    <Button onClick={Edit}>
+                        수정
                     </Button>
                 </CenterButtonContainer>
             </ContentsWrapper>
         </Wrapper>
     );
 };
-export default AddCommunity;
+export default EditCommunity;

@@ -17,7 +17,7 @@ import axios from 'axios';
 import { CgDetailsMore } from 'react-icons/cg'
 import Button from '../../components/elements/Button';
 import RightButtonContainer from '../../components/elements/RightButtonContainer';
-import { AiFillDelete } from 'react-icons/ai'
+import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 const P = styled.td`
 padding-left 0.2rem;
 font-size: 0.9rem; 
@@ -45,6 +45,7 @@ const CommunityList = () => {
             setLoading(true)
             const { data: response0 } = await axios.get('/api/auth')
             setMyLevel(response0?.level ?? -100)
+            setMyPk(response0?.pk ?? -100)
             let url = '';
             let obj = {};
             if (params.pk == 1 || params.pk == 2) {
@@ -159,7 +160,8 @@ const CommunityList = () => {
                                                 <Td>제목</Td>
                                                 <Td>상세보기</Td>
                                                 <Date style={{ marginRight: '5.4rem' }}>등록일</Date>
-                                                {myLevel >= 40 ? <Td>삭제</Td> : <></>}
+                                                <Td>수정</Td>
+                                                <Td>삭제</Td>
                                             </>
                                             :
                                             <>
@@ -195,7 +197,11 @@ const CommunityList = () => {
                                                     <Td>{post.title}</Td>
                                                     <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/community/${post.pk}`) }} /></Td>
                                                     <Date style={{ marginRight: '5.4rem' }}>{post.create_time}</Date>
-                                                    {myLevel >= 40 ? <P><AiFillDelete style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
+                                                    {myLevel >= 40 || post.user_pk === myPk ? <P><AiFillEdit style={{ color: '289AFF', fontSize: '1.3rem', cursor: 'pointer' }}
+                                                        onClick={() => {
+                                                            history.push(`/editcommunity/${post.pk}`)
+                                                        }} /></P> : <></>}
+                                                    {myLevel >= 40 || post.user_pk === myPk ? <P><AiFillDelete style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
                                                         onClick={() => {
                                                             if (window.confirm("정말로 삭제하시겠습니까?")) {
                                                                 deleteArticle(post.pk)

@@ -472,6 +472,7 @@ router.post('/communitylist', (req, res, next) => {
         response(req, res, -200, "서버 에러 발생", [])
     }
 })
+
 router.post('/addcommunity', (req, res, next) => {
     try {
         const kind = req.body.kind
@@ -510,6 +511,27 @@ router.post('/addcommunity', (req, res, next) => {
     }
 })
 
+router.post('/editcommunity', (req, res, next) => {
+    try {
+        const pk = req.body.pk;
+        const title = req.body.title;
+        const content = req.body.content
+
+        db.query(`UPDATE community_table SET title=?, content=? WHERE pk=?`, [title, content, pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "업로드 실패", [])
+            } else {
+                response(req, res, 200, "업로드 성공")
+            }
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 router.post('/delete', (req, res, next) => {
     try {
         console.log(req.body)
@@ -530,6 +552,41 @@ router.post('/delete', (req, res, next) => {
         response(req, res, -200, "서버 에러 발생", [])
     }
 })
+
+// 커뮤니티 댓글 추가
+router.post('/addcomment', (req, res, next) => {
+    try {
+        const community_pk = req.body.pk;
+        const comment_user_pk = req.body.user_pk;
+        const comment_user_nickname = req.body.user_nickname;
+        const comment_content = req.body.comment_content
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = ('0' + (today.getMonth() + 1)).slice(-2);
+        var day = ('0' + today.getDate()).slice(-2);
+        var dateString = year + '-' + month + '-' + day;
+        var hours = ('0' + today.getHours()).slice(-2);
+        var minutes = ('0' + today.getMinutes()).slice(-2);
+        var seconds = ('0' + today.getSeconds()).slice(-2);
+        var timeString = hours + ':' + minutes + ':' + seconds;
+        let moment = dateString + ' ' + timeString;
+
+        const sql = 'INSERT INTO community_comment (community_pk, comment_user_pk, comment_user_nickname, comment_content, create_time) VALUES (?,?,?,?,?)'
+
+        db.query(sql, [community_pk, comment_user_pk, comment_user_nickname, comment_content, moment], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "댓글 추가 실패", [])
+            } else {
+                response(req, res, 200, "댓글 추가 성공", result)
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 router.get('/ranking', (req, res, next) => {
     try {
 

@@ -25,7 +25,7 @@ const UserImageStyle = styled.img`
 
 const UserNameStyle = styled.h4`
     padding: 10px;
-    margin-left: 195px;
+    margin-left: 200px;
     border-radius: 20px;
     color: black;
     background-color: #FFF0F5;
@@ -111,7 +111,6 @@ const Messenger = props => {
 
     const noticeList = messengerList.filter(message => message.notice === 1 && message.post_id !== '0' && message.user_name !== myNickName)
     const noticeList2 = messengerList.filter(message => message.notice ===1 && message.post_id === '0' && message.user_name !== myNickName)
-    console.log(noticeList)
 
   return (
     <div>
@@ -126,7 +125,9 @@ const Messenger = props => {
                     >
                         <img width={25} src={setIcon(myIcon)}/>
                         <img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
-                    <UserNotice>{noticeList.length + noticeList2.length}</UserNotice>
+                    {noticeList.length + noticeList2.length > 0 &&
+                    <UserNotice style={{marginLeft: '-20px'}} >{ noticeList.length + noticeList2.length}</UserNotice>
+                    }
                     <UserImageStyle 
                         onMouseEnter={() => {setHovered(true)}}
                         onMouseLeave={() => {setHovered(false)}}
