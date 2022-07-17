@@ -108,7 +108,7 @@ const IconComponent = (props) => {
         point: point,
       })
       alert(`${name}아이콘을 구매했습니다.`)
-      window.location.reload();
+      window.location.reload()
     }
   }
 
@@ -121,7 +121,7 @@ const IconComponent = (props) => {
         name: name,
       })
       alert(`${name}아이콘을 적용했습니다. 재로그인 시 아이콘이 표시됩니다.`)
-      window.location.reload();
+      window.location.reload()
     }
   }
 

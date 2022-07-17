@@ -15,6 +15,7 @@ import { CgDetailsMore } from 'react-icons/cg'
 import { useSelector } from 'react-redux'
 import setLevel from '../../data/Level';
 import { setIcon } from '../../data/Icon';
+import $ from 'jquery'
 
 const Button = styled.button`
 width:12.2rem;
@@ -226,7 +227,7 @@ const Info = () => {
         setUserTag(e.target.value)
     }
 
-    const addTag = (e) => {
+    const addTag = async (e) => {
         if(userTag==="") {
             alert("태그를 입력해주세요")
         } else {
@@ -235,11 +236,24 @@ const Info = () => {
                 userTag: userTag,
             })
                 alert('태그가 등록되었습니다')
-                window.location.reload()
+                $("$tag").val("");
+                const { data: response2 } = await axios.post('/api/info', {
+                    pk: params.pk
+                })
+                try {
+                    const { data: result } = await axios.post('/api/usertaginfo', {
+                        user_name: response2.data.info[0].nick_name
+                    })
+                    if (result.data) {
+                        setUserTagInfo(result.data.userTag[0].userTag)
+                    } else {
+                    }
+                } catch {
+                }
         }
     }
 
-    const editTag = (e) => {
+    const editTag = async (e) => {
         if(userTag==="") {
             alert("태그를 입력해주세요")
         } else {
@@ -248,7 +262,20 @@ const Info = () => {
                 userTag: userTag,
             })
                 alert('태그가 수정되었습니다')
-                window.location.reload()
+                $("#tag2").val("");
+                const { data: response2 } = await axios.post('/api/info', {
+                    pk: params.pk
+                })
+                try {
+                    const { data: result } = await axios.post('/api/usertaginfo', {
+                        user_name: response2.data.info[0].nick_name
+                    })
+                    if (result.data) {
+                        setUserTagInfo(result.data.userTag[0].userTag)
+                    } else {
+                    }
+                } catch {
+                }
         }
     }
 
@@ -324,7 +351,7 @@ const Info = () => {
                         {userTagInfo ? ( 
                         <>
                             <Content>
-                                <Input type='text' onChange={onChangeTag} />
+                                <Input id="tag2" type='text' onChange={onChangeTag} />
                             </Content>
                             <Button style={{ marginBottom: '2rem' }}
                                 onClick={editTag}>태그 수정하기</Button>
@@ -333,7 +360,7 @@ const Info = () => {
                         (
                         <>
                             <Content>
-                                <Input type='text' onChange={onChangeTag} />
+                                <Input id="tag" type='text' onChange={onChangeTag} />
                             </Content>
                             <Button style={{ marginBottom: '2rem' }}
                                 onClick={addTag}>태그 등록하기</Button> 

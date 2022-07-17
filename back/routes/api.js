@@ -587,6 +587,42 @@ router.post('/addcomment', (req, res, next) => {
     }
 })
 
+router.post('/comment', (req, res, next) => {
+    try {
+        const pk = req.body.pk
+    
+        db.query('SELECT * FROM community_comment WHERE community_pk=?', [pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "댓글 불러오기 실패", [])
+            } else {
+                response(req, res, 200, "댓글 불러오기 성공", result)
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/deletecomment', (req, res, next) => {
+    try {
+        const pk = req.body.pk;
+
+        db.query('DELETE FROM community_comment WHERE pk=?', [pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "댓글 삭제 실패", [])
+            } else {
+                response(req, res, 200, "댓글 삭제 성공", result)
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 router.get('/ranking', (req, res, next) => {
     try {
 

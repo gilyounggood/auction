@@ -3,6 +3,7 @@ import { useHistory, BrowserRouter as Routes, Link, Router, Route } from 'react-
 import styled from 'styled-components';
 import setLevel from '../data/Level';
 import { setIcon } from '../data/Icon';
+import $ from 'jquery'
 import axios from 'axios';
 
 const UserLogStyle = styled.div`
@@ -66,8 +67,8 @@ const Span = styled.span`
 `;
 
 const InputContainer = styled.div`
-  border:1px solid blue;
-  border-radius:0.6rem;
+  border: 1px solid #0064FF;
+  border-radius:0.5rem;
   align-items:center;
   padding:8px 0;
   display:flex;
@@ -75,8 +76,8 @@ const InputContainer = styled.div`
   background:#fff;
   position: fixed; /* 이 부분을 고정 */
   bottom: 98px; /* 하단에 여백 없이 */
-  width: 13.5%;
   height: 30px;
+  width: 250px;
 `
 
 const MessengerInput = styled.input`
@@ -96,7 +97,7 @@ const MessengerButton = styled.button`
 	font-size: 16px;
 	border:none;
 	border-radius: 10px;
-	box-shadow: 0 4px 16px rgba(0,79,255,0.3);
+	box-shadow: 0 1px 2px rgba(0,79,255,0.3);
 	transition:0.3s;
 	position: absolute;
 	transform: translate(-50%,-50%);
@@ -222,7 +223,10 @@ const MessengerLog = props => {
           chat_message: adminChat,
       }) 
       alert("문의사항이 등록 되었습니다")
-      window.location.reload()
+      $("#chat").val("");
+      const { data: result2 } = await axios.get('/api/adminchatinfo')
+      setAdminChatList(result2.data)
+      $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
     }
   }
 
@@ -238,7 +242,12 @@ const MessengerLog = props => {
           chat_message: adminChat,
       }) 
       alert("답변이 등록 되었습니다")
-      window.location.reload()
+      $("#chat2").val("");
+      const { data: response2 } = await axios.post('/api/adminchatinfo/user', {
+        chat_name: chat_id,
+      })
+      setAdminUserChatList(response2.data)
+      $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
     }
   }
 
@@ -265,6 +274,7 @@ const MessengerLog = props => {
   return (
     <>
     <UserLogStyle
+      id="chating"
       style={{
           marginBottom: "15px",
           ...{ 
@@ -318,7 +328,8 @@ const MessengerLog = props => {
               )
             })}
         </div>
-        <div className='messenger_chat'
+        <div 
+          className='messenger_chat'
           style={{display: chat ? "block" : "none" }}
         >
           <LogTitle>{myNickName !== "관리자" ? "관리자에게 1:1 문의하기" : "유저 문의 관리하기"}</LogTitle>
@@ -336,7 +347,8 @@ const MessengerLog = props => {
                     </ChatMessage>
                   }
                   <InputContainer>
-                  <MessengerInput 
+                  <MessengerInput
+                      id="adchat" 
                       placeholder= {'문의사항을 적어주세요'}
                       onChange={e=> setAdminChat(e.target.value)}
                     />
@@ -376,6 +388,7 @@ const MessengerLog = props => {
                     <>
                       <InputContainer>
                       <MessengerInput 
+                          id="adchat2"
                           placeholder= {"유저에게 답변하기"}
                           onChange={e=> setAdminChat(e.target.value)}
                         />

@@ -13,12 +13,41 @@ import SubTitle from '../../components/elements/SubTitle';
 import Textarea from '../../components/elements/Textarea';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
 import { IoCompassOutline } from 'react-icons/io5';
+import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
+import $ from 'jquery'
+
+const CommentName = styled.div`
+  color: #0A6EFF;
+  font-size: 0.9rem;
+  margin-left: 6px;
+}
+`
+
+const CommentTime = styled.span`
+  margin-left: 3px;
+  color: gray;
+  font-size: 0.8rem;
+`
+
+const CommentContent = styled.div`
+  color: black;
+  font-size: 0.9rem;
+  margin-left: 6px;
+  padding-top: 5px;
+  padding-bottom: 25px;
+  &: last-child {
+    padding-bottom: 10px;
+  }
+`
+
 const Community = () => {
   const params = useParams()
   const [myPk, setMyPk] = useState(0);
   const [myNickName, setMyNickName] = useState("")
   const [data, setData] = useState({})
   const [comment, setComment] = useState("")
+  const [commentList, setCommentList] = useState([])
+  const [input, setInput] = useState(false)
 
   async function fetchPosts(){
     const {data: response0} = await axios.get('/api/auth')
@@ -27,6 +56,9 @@ const Community = () => {
 
     const {data:response} = await axios.post('/api/community',{pk:params.pk})
     setData(response.data)
+
+    const {data: response2} = await axios.post('/api/comment', {pk:params.pk})
+    setCommentList(response2.data)
   }
 
   useEffect(()=>{
@@ -43,13 +75,29 @@ const Community = () => {
         user_nickname: myNickName,
         comment_content: comment,
       })
+      $('#comment').val("");
       if(response.result<0) {
         alert(response.message)
       } else {
-        alert("댓글이 등록되었습니다.")
-        window.location.reload()
+        const {data:response2} = await axios.post('/api/comment', {pk: params.pk})
+        setCommentList(response2.data)
       }
     }
+  }
+
+  const deleteComment = async (pk) => {
+    const {data: response0} = await axios.post('/api/deletecomment', {pk: pk})
+    if(response0.result>0) {
+      alert("댓글이 삭제되었습니다.")
+    }
+    const {data:response} = await axios.post('/api/comment', {pk: params.pk})
+    if(response.result>0) {
+      setCommentList(response.data)
+    }
+  }
+
+  const handleClick = () => {
+    setInput(!input)
   }
 
   return (
@@ -84,11 +132,38 @@ const Community = () => {
                     <Content>
                         <SubTitle>댓글 목록</SubTitle>
                     </Content>
-                    <Content>
-                        <SubTitle>댓글 작성하기</SubTitle>
+                    <Content style={{flexDirection: "column"}}>
+                        {commentList.map(comment => {
+                          return( 
+                            <React.Fragment key={comment.pk}>
+                              <CommentName>{comment.comment_user_nickname}<CommentTime>({comment.create_time})</CommentTime></CommentName>
+                              <CommentContent>
+                                {comment.comment_content}
+                                {comment.comment_user_nickname === myNickName &&
+                                  <>
+                                    <AiFillEdit
+                                      style={{color: '#0A82FF',marginLeft: '50px', cursor: 'pointer'}}
+                                      onClick={handleClick}
+                                    />
+                                    <AiFillDelete 
+                                      style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
+                                      onClick={() => { 
+                                          if(window.confirm('댓글을 삭제하시겠습니까?')) {
+                                          deleteComment(comment.pk)
+                                        }
+                                      }}
+                                    />
+                                  </>
+                                }
+                              </CommentContent>
+
+                            </React.Fragment>
+                          )
+                        })}
                     </Content>
                     <Content>
                         <Textarea 
+                          id="comment"
                           style={{height: "3rem", border: "1px solid gray"}}
                           placeholder="댓글 작성하기"
                           onChange={e => setComment(e.target.value)}
