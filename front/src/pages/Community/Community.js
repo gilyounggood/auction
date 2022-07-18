@@ -47,7 +47,12 @@ const Community = () => {
   const [data, setData] = useState({})
   const [comment, setComment] = useState("")
   const [commentList, setCommentList] = useState([])
-  const [input, setInput] = useState(false)
+  const [input, setInput] = useState(0)
+  const [commentContent, setCommentContent] = useState({
+    comment_content: ""
+  })
+
+  const {comment_content} = commentContent
 
   async function fetchPosts(){
     const {data: response0} = await axios.get('/api/auth')
@@ -81,6 +86,7 @@ const Community = () => {
       } else {
         const {data:response2} = await axios.post('/api/comment', {pk: params.pk})
         setCommentList(response2.data)
+        alert("댓글을 등록했습니다.")
       }
     }
   }
@@ -96,8 +102,31 @@ const Community = () => {
     }
   }
 
-  const handleClick = () => {
-    setInput(!input)
+  const handleClick = async (pk) => {
+    const {data: response} = await axios.post('/api/commentinfo', {pk: pk})
+    setCommentContent(response.data)
+    setInput(pk)
+  }
+
+  const handleChange = (e) => {
+    setCommentContent({...comment_content, [e.target.name]: e.target.value})
+  }
+
+  const editComment = async (pk) => {
+    const {data:response0} = await axios.put('/api/commentedit', {
+      pk: pk,
+      comment_content: comment_content
+    })
+    if(response0.result>0) {
+      const {data:response} = await axios.post('/api/comment', {pk: params.pk})
+      if(response.result>0) {
+        setCommentList(response.data)
+      }
+      alert("댓글 수정이 되었습니다.")
+      setInput(0)
+    } else {
+      alert("서버 에러 발생")
+    }
   }
 
   return (
@@ -115,19 +144,19 @@ const Community = () => {
                         <SubTitle>작성자</SubTitle>
                     </Content>
                     <Content>
-                      <Input type={'text'} disabled={true} defaultValue={data?.user_nickname} />
+                      <Input type={'text'} disabled={true} defaultValue={data?.user_nickname} style={{backgroundColor: 'white'}}/>
                     </Content>
                     <Content>
                         <SubTitle>제목</SubTitle>
                     </Content>
                     <Content>
-                      <Input type={'text'} disabled={true} defaultValue={data?.title} />
+                      <Input type={'text'} disabled={true} defaultValue={data?.title} style={{backgroundColor: 'white'}}/>
                     </Content>
                     <Content>
                         <SubTitle>설명</SubTitle>
                     </Content>
                     <Content>
-                        <Textarea disabled={true}  defaultValue={data?.content}/>
+                        <Textarea disabled={true}  defaultValue={data?.content} style={{backgroundColor: 'white'}}/>
                     </Content>
                     <Content>
                         <SubTitle>댓글 목록</SubTitle>
@@ -138,12 +167,25 @@ const Community = () => {
                             <React.Fragment key={comment.pk}>
                               <CommentName>{comment.comment_user_nickname}<CommentTime>({comment.create_time})</CommentTime></CommentName>
                               <CommentContent>
-                                {comment.comment_content}
-                                {comment.comment_user_nickname === myNickName &&
+                                {input === comment.pk ?
+                                  <Content>
+                                    <Textarea 
+                                      id="comment"
+                                      name= "comment_content"
+                                      style={{height: "3rem", border: "1px solid gray", margin: '0'}}
+                                      value={comment_content}
+                                      onChange={e => handleChange(e)}
+                                    />
+                                    <Button onClick={()=> {editComment(comment.pk)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >수정</Button>
+                                    <Button onClick={()=> {setInput(0)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >취소</Button>
+                                  </Content> 
+                                : comment.comment_content
+                                }
+                                {comment.comment_user_nickname === myNickName && input !== comment.pk &&
                                   <>
                                     <AiFillEdit
                                       style={{color: '#0A82FF',marginLeft: '50px', cursor: 'pointer'}}
-                                      onClick={handleClick}
+                                      onClick={()=> {handleClick(comment.pk)}}
                                     />
                                     <AiFillDelete 
                                       style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
@@ -168,7 +210,7 @@ const Community = () => {
                           placeholder="댓글 작성하기"
                           onChange={e => setComment(e.target.value)}
                         />
-                        <Button onClick={addComment} style={{width: "6.5rem", height: "3.5rem"}} >댓글 등록</Button>
+                        <Button onClick={addComment} style={{width: "6.5rem", height: "3.5rem", marginLeft: "1px"}} >댓글 등록</Button>
                     </Content>
                 </Container>
 

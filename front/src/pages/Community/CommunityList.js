@@ -63,7 +63,6 @@ const CommunityList = () => {
                 history.push('/selectcommunity')
             }
             const { data: response } = await axios.post(url, obj)
-            console.log(response)
             setSlide(params.pk)
             setPosts(response.data.result)
             setMaxPage(response.data.maxPage)

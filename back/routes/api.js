@@ -605,6 +605,43 @@ router.post('/comment', (req, res, next) => {
     }
 })
 
+router.post('/commentinfo', (req, res, next) => {
+    try {
+        const pk = req.body.pk;
+
+        db.query('SELECT comment_content FROM community_comment WHERE pk=?', [pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "댓글 정보 불러오기 실패", [])
+            } else {
+                response(req, res, 200, "댓글 정보 불러오기 성공", result[0])
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.put('/commentedit', (req, res, next) => {
+    try {
+        const pk = req.body.pk
+        const comment_content = req. body.comment_content
+
+        db.query('UPDATE community_comment SET comment_content=? WHERE pk=?', [comment_content, pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "댓글 수정 실패", [])
+            } else {
+                response(req, res, 200,"댓글 수정 성공")
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 router.post('/deletecomment', (req, res, next) => {
     try {
         const pk = req.body.pk;
