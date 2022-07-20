@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useHistory, Link, useLocation } from 'react-router-dom';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
 import Wrapper from '../../components/elements/Wrapper';
@@ -74,6 +74,7 @@ const CommunityList = () => {
             }
             setPageList(arr)
             setLoading(false)
+            
         }
         fetchPosts()
     }, [location.pathname])
@@ -155,10 +156,12 @@ const CommunityList = () => {
                                     {
                                         slide == 1 || slide == 2 ?
                                             <>
+                                                <Td>번호</Td>
                                                 <Td>작성자</Td>
                                                 <Td>제목</Td>
                                                 <Td>상세보기</Td>
-                                                <Date style={{ marginRight: '5.4rem' }}>등록일</Date>
+                                                <Td>등록일</Td>
+                                                <Td>조회</Td>
                                                 <Td>수정</Td>
                                                 <Td>삭제</Td>
                                             </>
@@ -192,10 +195,12 @@ const CommunityList = () => {
                                         {
                                             slide == 1 || slide == 2 ?
                                                 <>
+                                                    <Td>{post.pk}</Td>
                                                     <Td>{post.user_nickname}</Td>
                                                     <Td>{post.title}</Td>
                                                     <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/community/${post.pk}`) }} /></Td>
-                                                    <Date style={{ marginRight: '5.4rem' }}>{post.create_time}</Date>
+                                                    <Td>{post.create_time}</Td>
+                                                    <Td>{post.views}</Td>
                                                     {myLevel >= 40 || post.user_pk === myPk ? <P><AiFillEdit style={{ color: '289AFF', fontSize: '1.3rem', cursor: 'pointer' }}
                                                         onClick={() => {
                                                             history.push(`/editcommunity/${post.pk}`)

@@ -28,7 +28,7 @@ const Home = () => {
   useEffect(()=>{
     async function fetchPosts(){
       const {data:response} = await axios.post('/api/home')
-      console.log(response)
+      console.log(response.data)
       setAuctionList(response.data)
     }
     fetchPosts()
@@ -46,7 +46,7 @@ const Home = () => {
             <div key={post.pk}>
             <AuctionComponent pk={post.pk} main_image={post.main_image} name={post.name} buy_count={post.buy_count} 
                               create_time={post.create_time} end_date={post.end_date} seller_nickname={post.seller_nickname} seller_reliability={post.seller_reliability} bid_price={post.bid_price}  
-                              seller_icon={post.seller_icon}    />
+                              seller_icon={post.seller_icon} views={post.views}   />
             </div>
           ))}
       </ContentsWrapper>

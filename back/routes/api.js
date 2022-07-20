@@ -382,6 +382,13 @@ router.post('/item', (req, res, next) => {
                 })
             }
         })
+        db.query('UPDATE item_table SET views=views+1 WHERE pk=?',[pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            } else {
+            }
+        })
     }
     catch (err) {
         console.log(err)
@@ -490,7 +497,7 @@ router.post('/addcommunity', (req, res, next) => {
         var seconds = ('0' + today.getSeconds()).slice(-2);
         var timeString = hours + ':' + minutes + ':' + seconds;
         let moment = dateString + ' ' + timeString;
-        db.query(`INSERT INTO community_table (kind, title, content, user_pk, create_time, user_nickname ) VALUES (?,?,?,?, ?, ?)`, [kind, title, content, userPk, moment, nickname], (err, result) => {
+        db.query(`INSERT INTO community_table (kind, title, content, user_pk, create_time, user_nickname, views ) VALUES (?,?,?,?,?,?,?)`, [kind, title, content, userPk, moment, nickname,0], (err, result) => {
             if (err) {
                 console.log(err)
                 response(req, res, -200, "업로드 실패", [])
@@ -693,6 +700,13 @@ router.post('/community', (req, res) => {
                 response(req, res, -200, "실패", [])
             } else {
                 response(req, res, 200, "성공", result[0])
+            }
+        })
+        db.query('UPDATE community_table SET views= views+1 WHERE pk=?',[pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "실패", [])
+            } else {
             }
         })
     }

@@ -81,12 +81,6 @@ margin-bottom:2rem;
   }
 overflow-y:auto;
 `
-const LeftBubble = styled.div`
-
-`
-const RightBubble = styled.div`
-
-`
 const InputAndButton = styled.div`
 display:flex;
 @media screen and (max-width:600px) {
@@ -266,6 +260,7 @@ const Auction = () => {
       }}>
         <Container2>
           <Title>상품정보</Title>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#464646', fontSize: '1rem' }}>조회: {item?.views}</LeftTextBox>
           {auth.pk?
           <>
           <LeftTextBox><AiFillStar style={{fontSize:'2rem',cursor:'pointer',color:`${favorite?'yellow':'#f1f2f6'}`}} 

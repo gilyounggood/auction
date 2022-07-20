@@ -140,23 +140,29 @@ const Community = () => {
                 <Title>{params.pk==1?'공지사항':'자유게시판'}</Title>
                 
                 <Container>
-                <Content>
-                        <SubTitle>작성자</SubTitle>
-                    </Content>
-                    <Content>
-                      <Input type={'text'} disabled={true} defaultValue={data?.user_nickname} style={{backgroundColor: 'white'}}/>
-                    </Content>
                     <Content>
                         <SubTitle>제목</SubTitle>
                     </Content>
                     <Content>
-                      <Input type={'text'} disabled={true} defaultValue={data?.title} style={{backgroundColor: 'white'}}/>
+                      <Input type={'text'} disabled={true} defaultValue={data?.title} style={{backgroundColor: 'white', border: 'none'}}/>
+                    </Content>
+                    <Content>
+                        <SubTitle>조회수</SubTitle>
+                    </Content>
+                    <Content>
+                      <Input type={'text'} disabled={true} defaultValue={data?.views} style={{backgroundColor: 'white', border: 'none'}}/>
+                    </Content>
+                    <Content>
+                        <SubTitle>작성자</SubTitle>
+                    </Content>
+                    <Content>
+                      <Input type={'text'} disabled={true} defaultValue={data?.user_nickname} style={{backgroundColor: 'white', border: 'none'}}/>
                     </Content>
                     <Content>
                         <SubTitle>설명</SubTitle>
                     </Content>
                     <Content>
-                        <Textarea disabled={true}  defaultValue={data?.content} style={{backgroundColor: 'white'}}/>
+                        <Textarea disabled={true}  defaultValue={data?.content} style={{backgroundColor: 'white', border: 'none'}}/>
                     </Content>
                     <Content>
                         <SubTitle>댓글 목록</SubTitle>

@@ -54,7 +54,7 @@ app.get('*', (req, res) => {
 
 app.post('/api/addauction', upload.single('image'), (req, res) =>{
         try{
-                const sql = 'INSERT INTO item_table (name, min_price, bid_price, category_list, seller_pk, seller_nickname, seller_reliability, seller_icon, end_date, create_time, main_image) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ?, ?, ?)'
+                const sql = 'INSERT INTO item_table (name, min_price, bid_price, category_list, seller_pk, seller_nickname, seller_reliability, seller_icon, end_date, create_time, main_image, views) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ?, ?, ?, ?)'
                 var today = new Date();
                 var year = today.getFullYear();
                 var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -75,7 +75,7 @@ app.post('/api/addauction', upload.single('image'), (req, res) =>{
                 const endDate = req.body.endDate
 
                 const {image, isNull} = namingImagesPath("ad", req.file)
-                const param = [name, minPrice,minPrice,categoryList, sellerPk, sellerNickname, sellerReliability, sellerIcon, endDate, moment, image]
+                const param = [name, minPrice,minPrice,categoryList, sellerPk, sellerNickname, sellerReliability, sellerIcon, endDate, moment, image, 0]
                 db.query(sql, param, (err, rows, feild)=>{
                         if (err) {
                                 console.log(err)
