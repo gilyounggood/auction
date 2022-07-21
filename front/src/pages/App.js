@@ -113,7 +113,6 @@ const App = () => {
                 <Route exact path="/usermanage" component={UserManage} />
                 <Route exact path="/pointshop" component={PointShop} />
 
-
                 </Switch>
                 
                 <div ref={ref} style={{ position: "fixed", bottom: "24px", right: "24px" }}>

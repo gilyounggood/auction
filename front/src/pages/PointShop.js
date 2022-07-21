@@ -7,6 +7,8 @@ import Wrapper from '../components/elements/Wrapper';
 import IconComponent from '../components/IconComponent';
 import IconList from '../data/Icon';
 import ScaleLoader from "react-spinners/ScaleLoader";
+import Button from '../components/elements/Button';
+import Payment from '../payment/Payment';
 import '../styles/style.css'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -16,6 +18,8 @@ const PointShop = () => {
     const [loading, setLoading] = useState(false)
     const [myNickName, setMyNickName] = useState("")
     const[myPoint, setMyPoint] = useState(0)
+
+    const history = useHistory()
 
     async function fecthUser() {
       setLoading(true)
@@ -53,11 +57,19 @@ const PointShop = () => {
       <>
         <ContentsWrapper style={{
         borderRadius: '1rem', fontSize: '1rem', color: '#8e44ad', fontWeight: 'bold', borderRadius: '0.5rem'
-        , alignItems: 'center', fontSize: '1.3rem'
+        , alignItems: 'center', fontSize: '1.3rem', display:'flex', justifyContent: 'center', flexDirection: 'row'
       }}>
         {auth? 
         <>
           {myNickName}님의 포인트: {myPoint} Point
+          <Button
+            style={{width: '6rem', height: '2rem', marginLeft: '10px'}}
+            onClick={()=> {
+              Payment()
+            }}
+          >
+            충전하기
+          </Button>
         </> 
         :
         <>
