@@ -12,7 +12,7 @@ import Content from '../../components/elements/Content';
 import SubTitle from '../../components/elements/SubTitle';
 import Textarea from '../../components/elements/Textarea';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
-import { IoCompassOutline } from 'react-icons/io5';
+import { IoCompassOutline, IoConstructOutline } from 'react-icons/io5';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import $ from 'jquery'
 
@@ -42,6 +42,7 @@ const CommentContent = styled.div`
 
 const Community = () => {
   const params = useParams()
+  const [auth, setAuth] = useState(false)
   const [myPk, setMyPk] = useState(0);
   const [myNickName, setMyNickName] = useState("")
   const [data, setData] = useState({})
@@ -56,9 +57,13 @@ const Community = () => {
 
   async function fetchPosts(){
     const {data: response0} = await axios.get('/api/auth')
-    setMyPk(response0.pk)
-    setMyNickName(response0.nick_name)
-
+    if(!response0.second) {
+      setAuth(false)
+    } else {
+      setAuth(true)
+      setMyPk(response0.pk)
+      setMyNickName(response0.nick_name)
+    }
     const {data:response} = await axios.post('/api/community',{pk:params.pk})
     setData(response.data)
 
@@ -68,25 +73,30 @@ const Community = () => {
 
   useEffect(()=>{
     fetchPosts()
+    console.log(auth)
   },[])
 
-  const addComment = async () => { 
-    if(comment==="") {
-      alert("댓글 내용을 입력해주세요.")
+  const addComment = async () => {
+    if(!auth) {
+      alert("로그인 후 이용가능합니다")
     } else {
-      const {data:response} = await axios.post('/api/addcomment', {
-        pk: params.pk,
-        user_pk: myPk,
-        user_nickname: myNickName,
-        comment_content: comment,
-      })
-      $('#comment').val("");
-      if(response.result<0) {
-        alert(response.message)
+      if(comment==="") {
+        alert("댓글 내용을 입력해주세요.")
       } else {
-        const {data:response2} = await axios.post('/api/comment', {pk: params.pk})
-        setCommentList(response2.data)
-        alert("댓글을 등록했습니다.")
+        const {data:response} = await axios.post('/api/addcomment', {
+          pk: params.pk,
+          user_pk: myPk,
+          user_nickname: myNickName,
+          comment_content: comment,
+        })
+        $('#comment').val("");
+        if(response.result<0) {
+          alert(response.message)
+        } else {
+          const {data:response2} = await axios.post('/api/comment', {pk: params.pk})
+          setCommentList(response2.data)
+          alert("댓글을 등록했습니다.")
+        }
       }
     }
   }
@@ -137,7 +147,7 @@ const Community = () => {
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`
             }}>
                 
-                <Title>{params.pk==1?'공지사항':'자유게시판'}</Title>
+                <Title>{data.kind===1?'공지사항':'자유게시판'}</Title>
                 
                 <Container>
                     <Content>
@@ -213,7 +223,7 @@ const Community = () => {
                         <Textarea 
                           id="comment"
                           style={{height: "3rem", border: "1px solid gray"}}
-                          placeholder="댓글 작성하기"
+                          placeholder={auth ? "댓글 작성하기" : "로그인 후 이용 가능합니다"}
                           onChange={e => setComment(e.target.value)}
                         />
                         <Button onClick={addComment} style={{width: "6.5rem", height: "3.5rem", marginLeft: "1px"}} >댓글 등록</Button>
