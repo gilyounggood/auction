@@ -1,13 +1,13 @@
 import React from 'react';
 
-const Payment = (username, phone, email ,pay) => {
+const Payment = (username, phone, email ,pay, method) => {
     const onClickPayment = () => {
         const { IMP } = window;
         IMP.init('imp62845076');
 
         const data = {
             pg: 'html5_inicis',
-            pay_method: 'vbank',
+            pay_method: method,
             merchant_uid: `mid_${new Date().getTime()}`,
             name: '포인트 충전',
             amount: pay,

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import ContentsWrapper from '../elements/ContentWrapper'
 import Button from '../elements/Button'
 import Payment from '../../payment/Payment'
+import $ from 'jquery'
 
 const Modal = styled.div`
     position: fixed;
@@ -64,9 +65,23 @@ const PointModal = (props) => {
 
     const {open ,close} = props;
 
-    const pay = (username, phone, email, pay) => {
-        close()
-        Payment(username, phone, email ,pay)
+    const [payName, setPayName] = useState("")
+    const [payPhone, setPayPhone] = useState("")
+    const [payEmail, setPayEmail] = useState("")
+    const [payAmount, setPayAmount] = useState("")
+    const [payMethod, setPayMethod] = useState("")
+
+    const pay = (username, phone, email, amount, method) => {
+        if(username===""||phone===""||email===""||amount===""||method==="") {
+            alert("필요값을 전부 입력해주세요.")
+        } else {
+            if(isNaN(parseInt($('#pay_amount').val()))) {
+                alert("결제 금액은 숫자만 입력해주세요.")
+            } else {
+                close()
+                Payment(username, phone, email ,amount, method)
+            }
+        }
     }
 
   return (
@@ -88,23 +103,38 @@ const PointModal = (props) => {
                 <ModalSubTitle>
                         구매자 이름:
                 </ModalSubTitle>
-                <ModalInput placeholder= '홍길동' />
+                <ModalInput 
+                    placeholder= '홍길동'
+                    onChange={e => {setPayName(e.target.value)}}
+                />
                 <ModalSubTitle>
                         구매자 전화번호:
                 </ModalSubTitle>
-                <ModalInput placeholder= '01012345678' />
+                <ModalInput 
+                    placeholder= '01012345678'
+                    onChange={e => {setPayPhone(e.target.value)}} 
+                />
                 <ModalSubTitle>
                         구매자 이메일:
                 </ModalSubTitle>
-                <ModalInput placeholder= 'xxx@xxx.com' />
+                <ModalInput 
+                    placeholder= 'xxx@xxx.com'
+                    onChange={e => {setPayEmail(e.target.value)}}
+                />
                 <ModalSubTitle>
                         충전 금액:
                 </ModalSubTitle>
-                <ModalInput placeholder= '1원당 1포인트' />
+                <ModalInput 
+                    id="pay_amount"
+                    placeholder= '1원당 1포인트'
+                    onChange={e => {setPayAmount(e.target.value)}}
+                />
                 <ModalSubTitle>
                         결제 수단:
                 </ModalSubTitle>
-                <ModalSelect>
+                <ModalSelect
+                    onChange={e => {setPayMethod(e.target.value)}}
+                >
                     <option value="" selected>결제 수단 선택</option>
                     <option value="card">카드</option>
                     <option value="vbank">계좌이체</option>
@@ -113,7 +143,7 @@ const PointModal = (props) => {
             <ModalBottom>
                 <Button
                 style={{width: '6rem', height: '2rem'}}
-                onClick={()=> {pay('홍길동', '01012345678', '123.123.com', 20000)}}
+                onClick={()=> {pay(payName, payPhone, payEmail, payAmount, payMethod)}}
                 >
                   충전하기
                 </Button>
