@@ -16,6 +16,8 @@ import ScaleLoader from "react-spinners/ScaleLoader";
 import axios from 'axios';
 import { CgDetailsMore } from 'react-icons/cg'
 import Button from '../../components/elements/Button';
+import setLevel from '../../data/Level';
+import { setIcon } from '../../data/Icon';
 import RightButtonContainer from '../../components/elements/RightButtonContainer';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 const P = styled.td`
@@ -196,7 +198,9 @@ const CommunityList = () => {
                                             slide == 1 || slide == 2 ?
                                                 <>
                                                     <Td>{post.pk}</Td>
-                                                    <Td>{post.user_nickname}</Td>
+                                                    <Td>{post.user_icon && <img width={15} src={setIcon(post.user_icon)}/>}
+                                                        <img src={setLevel(post.user_reliability)}/>{post.user_nickname}
+                                                    </Td>
                                                     <Td>{post.title}</Td>
                                                     <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/community/${post.pk}`) }} /></Td>
                                                     <Td>{post.create_time}</Td>

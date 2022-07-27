@@ -487,6 +487,8 @@ router.post('/addcommunity', (req, res, next) => {
         const content = req.body.content
         const userPk = req.body.userPk
         const nickname = req.body.nickname
+        const user_reliability = req.body.user_reliability
+        const user_icon = req.body.user_icon
         var today = new Date();
         var year = today.getFullYear();
         var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -497,7 +499,7 @@ router.post('/addcommunity', (req, res, next) => {
         var seconds = ('0' + today.getSeconds()).slice(-2);
         var timeString = hours + ':' + minutes + ':' + seconds;
         let moment = dateString + ' ' + timeString;
-        db.query(`INSERT INTO community_table (kind, title, content, user_pk, create_time, user_nickname, views ) VALUES (?,?,?,?,?,?,?)`, [kind, title, content, userPk, moment, nickname,0], (err, result) => {
+        db.query(`INSERT INTO community_table (kind, title, content, user_pk, create_time, user_nickname, views, user_reliability, user_icon) VALUES (?,?,?,?,?,?,?,?,?)`, [kind, title, content, userPk, moment, nickname,0,user_reliability, user_icon], (err, result) => {
             if (err) {
                 console.log(err)
                 response(req, res, -200, "업로드 실패", [])
@@ -567,6 +569,8 @@ router.post('/addcomment', (req, res, next) => {
         const comment_user_pk = req.body.user_pk;
         const comment_user_nickname = req.body.user_nickname;
         const comment_content = req.body.comment_content
+        const user_reliability= req.body.user_reliability
+        const user_icon= req.body.user_icon
         var today = new Date();
         var year = today.getFullYear();
         var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -578,9 +582,9 @@ router.post('/addcomment', (req, res, next) => {
         var timeString = hours + ':' + minutes + ':' + seconds;
         let moment = dateString + ' ' + timeString;
 
-        const sql = 'INSERT INTO community_comment (community_pk, comment_user_pk, comment_user_nickname, comment_content, create_time) VALUES (?,?,?,?,?)'
+        const sql = 'INSERT INTO community_comment (community_pk, comment_user_pk, comment_user_nickname, comment_content, create_time, comment_user_reliability, comment_user_icon) VALUES (?,?,?,?,?,?,?)'
 
-        db.query(sql, [community_pk, comment_user_pk, comment_user_nickname, comment_content, moment], (err, result) => {
+        db.query(sql, [community_pk, comment_user_pk, comment_user_nickname, comment_content, moment, user_reliability, user_icon], (err, result) => {
             if(err) {
                 console.log(err)
                 response(req, res, -200, "댓글 추가 실패", [])

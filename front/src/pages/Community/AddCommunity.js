@@ -24,6 +24,8 @@ const AddCommunity = () => {
     const [note, setNote] = useState('')
     const [myPk, setMyPk] = useState(0)
     const [myNickname, setMyNickname] = useState('')
+    const [myReliability, setMyReliability] = useState(0)
+    const [myIcon, setMyIcon] = useState("")
     const isAdmin = async () => {
         setLoading(true)
         const { data: response0 } = await axios.get('/api/auth')
@@ -36,6 +38,8 @@ const AddCommunity = () => {
         }
         setMyPk(response0.pk)
         setMyNickname(response0.nick_name)
+        setMyReliability(response0.reliability)
+        setMyIcon(response0.user_use_icon)
         setLoading(false)
     }
     useEffect(() => {
@@ -56,7 +60,9 @@ const AddCommunity = () => {
                 content:note,
                 kind:params.pk,
                 userPk:myPk,
-                nickname:myNickname
+                nickname:myNickname,
+                user_reliability:myReliability,
+                user_icon:myIcon
             })
             if(response.result<0){
                 alert(response.message)

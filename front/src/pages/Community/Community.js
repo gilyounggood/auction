@@ -12,9 +12,17 @@ import Content from '../../components/elements/Content';
 import SubTitle from '../../components/elements/SubTitle';
 import Textarea from '../../components/elements/Textarea';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
+import setLevel from '../../data/Level';
+import { setIcon } from '../../data/Icon';
 import { IoCompassOutline, IoConstructOutline } from 'react-icons/io5';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import $ from 'jquery'
+
+const PostInfo = styled.div`
+font-size:0.9rem;
+margin-left:0.3rem;
+width:12rem;
+`
 
 const CommentName = styled.div`
   color: #0A6EFF;
@@ -45,6 +53,8 @@ const Community = () => {
   const [auth, setAuth] = useState(false)
   const [myPk, setMyPk] = useState(0);
   const [myNickName, setMyNickName] = useState("")
+  const [myReliability, setMyReliability] = useState(0)
+  const [myIcon, setMyIcon] = useState("")
   const [data, setData] = useState({})
   const [comment, setComment] = useState("")
   const [commentList, setCommentList] = useState([])
@@ -63,6 +73,8 @@ const Community = () => {
       setAuth(true)
       setMyPk(response0.pk)
       setMyNickName(response0.nick_name)
+      setMyReliability(response0.reliability)
+      setMyIcon(response0.user_use_icon)
     }
     const {data:response} = await axios.post('/api/community',{pk:params.pk})
     setData(response.data)
@@ -88,6 +100,8 @@ const Community = () => {
           user_pk: myPk,
           user_nickname: myNickName,
           comment_content: comment,
+          user_reliability: myReliability,
+          user_icon: myIcon
         })
         $('#comment').val("");
         if(response.result<0) {
@@ -154,25 +168,38 @@ const Community = () => {
                         <SubTitle>제목</SubTitle>
                     </Content>
                     <Content>
-                      <Input type={'text'} disabled={true} defaultValue={data?.title} style={{backgroundColor: 'white', border: 'none'}}/>
+                      <PostInfo>
+                        {data?.title}
+                      </PostInfo>
                     </Content>
                     <Content>
                         <SubTitle>조회수</SubTitle>
                     </Content>
                     <Content>
-                      <Input type={'text'} disabled={true} defaultValue={data?.views} style={{backgroundColor: 'white', border: 'none'}}/>
+                     <PostInfo
+                      style={{marginLeft: '0.4rem'}}
+                     >
+                        {data?.views}
+                      </PostInfo>
                     </Content>
                     <Content>
                         <SubTitle>작성자</SubTitle>
                     </Content>
                     <Content>
-                      <Input type={'text'} disabled={true} defaultValue={data?.user_nickname} style={{backgroundColor: 'white', border: 'none'}}/>
+                      <PostInfo>
+                        {data?.user_icon && <img width={15} src={setIcon(data?.user_icon)}/>}
+                        <img src={setLevel(data?.user_reliability)}/>{data?.user_nickname}
+                      </PostInfo>
                     </Content>
                     <Content>
                         <SubTitle>설명</SubTitle>
                     </Content>
                     <Content>
-                        <Textarea disabled={true}  defaultValue={data?.content} style={{backgroundColor: 'white', border: 'none'}}/>
+                      <PostInfo
+                        style={{minHeight: '12rem'}}
+                      >
+                        {data?.content}
+                      </PostInfo>
                     </Content>
                     <Content>
                         <SubTitle>댓글 목록</SubTitle>
@@ -181,7 +208,12 @@ const Community = () => {
                         {commentList.map(comment => {
                           return( 
                             <React.Fragment key={comment.pk}>
-                              <CommentName>{comment.comment_user_nickname}<CommentTime>({comment.create_time})</CommentTime></CommentName>
+                              <CommentName>
+                                {comment.comment_user_icon && <img width={15} src={setIcon(comment.comment_user_icon)} />}
+                                <img src={setLevel(comment.comment_user_reliability)}/>
+                                {comment.comment_user_nickname}
+                                <CommentTime>({comment.create_time})</CommentTime>
+                              </CommentName>
                               <CommentContent>
                                 {input === comment.pk ?
                                   <Content>
