@@ -214,7 +214,7 @@ router.post('/login', (req, res, next) => {
         passport.authenticate('local', { session: false }, async (err, user, info) => {
 
             if (!user)
-                return response(req, res, -200, "해당 계정이 존재하지 않습니다.", []);
+                return response(req, res, -200, "아이디나 비밀번호가 일치하지 않습니다.", []);
 
             try {
                 var expiresTime;
@@ -671,9 +671,68 @@ router.post('/deletecomment', (req, res, next) => {
     }
 })
 
+// 커뮤니티 답글 추가
+
+router.post('/addreply', (req, res, next) => {
+    try {
+        const comment_pk = req.body.comment_pk 
+        const user_pk = req.body.user_pk
+        const user_nickname = req.body.user_nickname
+        const reply_content = req.body.reply_content
+        const user_icon = req.body.user_icon
+        const user_reliability = req.body.user_reliability
+        const community_pk = req.body.community_pk
+
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = ('0' + (today.getMonth() + 1)).slice(-2);
+        var day = ('0' + today.getDate()).slice(-2);
+        var dateString = year + '-' + month + '-' + day;
+        var hours = ('0' + today.getHours()).slice(-2);
+        var minutes = ('0' + today.getMinutes()).slice(-2);
+        var seconds = ('0' + today.getSeconds()).slice(-2);
+        var timeString = hours + ':' + minutes + ':' + seconds;
+        let moment = dateString + ' ' + timeString;
+        
+        let sql = 'INSERT INTO community_reply (community_comment_pk, reply_user_pk, reply_user_nickname, reply_content, create_time, reply_user_icon, reply_user_reliability, community_pk) VALUES (?,?,?,?,?,?,?,?)'
+
+        db.query(sql, [comment_pk, user_pk, user_nickname, reply_content, moment, user_icon, user_reliability, community_pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, '답글 등록 실패', [])
+            } else {
+                response(req, res, 200, '답글 등록 성공', result)
+            }
+        })
+
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, '서버 에러 발생', [])
+    }
+})
+
+router.post('/reply', (req, res, next) => {
+    try {
+        const pk = req.body.pk
+
+        db.query('SELECT * FROM community_reply WHERE community_pk=?', [pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "답글 불러오기 실패", [])
+            } else {
+                response(req, res, 200, "답글 불러오기 성공", result)
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "답글 불러오기 실패", [])
+    }
+})
+
+// 랭킹 불러오기
+
 router.get('/ranking', (req, res, next) => {
     try {
-
         db.query(`SELECT * FROM user_table ORDER BY reliability DESC LIMIT 10`, (err, result) => {
             if (err) {
                 console.log(err)

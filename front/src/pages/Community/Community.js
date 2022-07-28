@@ -16,6 +16,8 @@ import setLevel from '../../data/Level';
 import { setIcon } from '../../data/Icon';
 import { IoCompassOutline, IoConstructOutline } from 'react-icons/io5';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
+import { BsArrowReturnRight } from 'react-icons/bs'
+import { IoChatbubbleEllipses } from 'react-icons/io5'
 import $ from 'jquery'
 
 const PostInfo = styled.div`
@@ -48,6 +50,15 @@ const CommentContent = styled.div`
   }
 `
 
+const Reply = styled.div`
+  color: gray;
+  cursor: pointer;
+  float: right;
+  &:hover{
+    color: black;
+  }
+`
+
 const Community = () => {
   const params = useParams()
   const [auth, setAuth] = useState(false)
@@ -59,9 +70,12 @@ const Community = () => {
   const [comment, setComment] = useState("")
   const [commentList, setCommentList] = useState([])
   const [input, setInput] = useState(0)
+  const [replyInput, setReplyInput] = useState(0)
   const [commentContent, setCommentContent] = useState({
     comment_content: ""
   })
+  const [reply, setReply] = useState("")
+  const [replyLise, setReplyList] = useState([])
 
   const {comment_content} = commentContent
 
@@ -81,11 +95,13 @@ const Community = () => {
 
     const {data: response2} = await axios.post('/api/comment', {pk:params.pk})
     setCommentList(response2.data)
+
+    const {data: response3} = await axios.post('/api/reply', {pk:params.pk})
+    setReplyList(response3.data)
   }
 
   useEffect(()=>{
     fetchPosts()
-    console.log(auth)
   },[])
 
   const addComment = async () => {
@@ -153,6 +169,34 @@ const Community = () => {
     }
   }
 
+  const addReply = async (pk) => {
+    if(!auth) {
+      alert("로그인 후 이용가능합니다")
+    } else {
+      if(reply==="") {
+        alert("답글 내용을 입력해주세요.")
+      } else {
+        const {data:response} = await axios.post('/api/addreply', {
+          comment_pk: pk,
+          user_pk: myPk,
+          user_nickname: myNickName,
+          reply_content: comment,
+          user_icon: myIcon,
+          user_reliability: myReliability,
+          community_pk: params.pk
+        })
+        $('#reply').val("");
+        if(response.result<0) {
+          alert(response.message)
+        } else {
+          const {data:response2} = await axios.post('/api/comment', {pk: pk})
+          setCommentList(response2.data)
+          alert("답글을 등록했습니다.")
+        }
+      }
+    }
+  }
+
   return (
     <Wrapper>
       
@@ -202,7 +246,9 @@ const Community = () => {
                       </PostInfo>
                     </Content>
                     <Content>
-                        <SubTitle>댓글 목록</SubTitle>
+                        <SubTitle>
+                          <IoChatbubbleEllipses style={{fontSize:'18px'}}/> 댓글 목록 <span style={{color: 'black'}}>({commentList.length})</span>
+                        </SubTitle>
                     </Content>
                     <Content style={{flexDirection: "column"}}>
                         {commentList.map(comment => {
@@ -227,7 +273,10 @@ const Community = () => {
                                     <Button onClick={()=> {editComment(comment.pk)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >수정</Button>
                                     <Button onClick={()=> {setInput(0)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >취소</Button>
                                   </Content> 
-                                : comment.comment_content
+                                : 
+                                  <>
+                                    {comment.comment_content}
+                                  </>
                                 }
                                 {comment.comment_user_nickname === myNickName && input !== comment.pk &&
                                   <>
@@ -245,8 +294,26 @@ const Community = () => {
                                     />
                                   </>
                                 }
+                                  <Reply
+                                    onClick={() => {setReplyInput(comment.pk)}}
+                                  >
+                                    답글
+                                  </Reply>
+                                  {replyInput === comment.pk &&
+                                    <Content style={{paddingTop: '15px'}}>
+                                      <BsArrowReturnRight style={{color: 'gray', fontSize:'20px', margin: 'auto 0'}} />
+                                      <Textarea 
+                                        id="reply"
+                                        name= "reply_content"
+                                        placeholder={auth ? "댓글 작성하기" : "로그인 후 이용 가능합니다"}
+                                        style={{height: "3rem", border: "1px solid gray", margin: '0'}}
+                                        onChange={e => setReply(e)}
+                                      />
+                                      <Button onClick={()=> {addReply(comment.pk)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >답글 등록</Button>
+                                      <Button onClick={()=> {setReplyInput(0)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >취소</Button>
+                                    </Content> 
+                                  }
                               </CommentContent>
-
                             </React.Fragment>
                           )
                         })}
