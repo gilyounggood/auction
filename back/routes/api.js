@@ -725,7 +725,62 @@ router.post('/reply', (req, res, next) => {
         })
     } catch (err) {
         console.log(err)
-        response(req, res, -200, "답글 불러오기 실패", [])
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/replyinfo', (req, res, next) => {
+    try {
+        const pk = req.body.pk
+
+        db.query('SELECT reply_content FROM community_reply WHERE pk=?', [pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "답글 정보 불러오기 실패", [])
+            } else {
+                response(req, res, 200, "답글 정보 불러오기 성공", result[0])
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.put('/editreply', (req, res, next) => {
+    try {
+        const pk = req.body.pk
+        const reply_content = req.body.reply_content
+
+        db.query('UPDATE community_reply SET reply_content=? WHERE pk=?', [reply_content, pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "답글 수정 실패", [])
+            } else {
+                response(req, res, 200, "답글 수정 성공")
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/deletereply', (req, res, next) => {
+    try {
+        const pk = req.body.pk
+
+        db.query('DELETE FROM community_reply WHERE pk=?', [pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "답글 삭제 실패", [])
+            } else {
+                response(req, res, 200, "답글 삭제 성공", result)
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
     }
 })
 

@@ -18,7 +18,7 @@ import { IoCompassOutline, IoConstructOutline } from 'react-icons/io5';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { BsArrowReturnRight } from 'react-icons/bs'
 import { IoChatbubbleEllipses } from 'react-icons/io5'
-import $ from 'jquery'
+import $, { ajaxPrefilter } from 'jquery'
 
 const PostInfo = styled.div`
 font-size:0.9rem;
@@ -44,19 +44,27 @@ const CommentContent = styled.div`
   font-size: 0.9rem;
   margin-left: 6px;
   padding-top: 5px;
-  padding-bottom: 25px;
   &: last-child {
     padding-bottom: 10px;
   }
 `
 
 const Reply = styled.div`
+  display: block;
   color: gray;
   cursor: pointer;
   float: right;
+  padding-bottom: 3px;
   &:hover{
     color: black;
   }
+`
+
+const ReplyWrapper = styled.div`
+  display: block;
+  width: 100%;
+  background-color: #f3f3f3;
+  min-height: 60px;
 `
 
 const Community = () => {
@@ -70,14 +78,19 @@ const Community = () => {
   const [comment, setComment] = useState("")
   const [commentList, setCommentList] = useState([])
   const [input, setInput] = useState(0)
+  const [input2, setInput2] = useState(0)
   const [replyInput, setReplyInput] = useState(0)
   const [commentContent, setCommentContent] = useState({
     comment_content: ""
   })
   const [reply, setReply] = useState("")
-  const [replyLise, setReplyList] = useState([])
+  const [replyList, setReplyList] = useState([])
+  const [replyContent, setReplyContent] = useState({
+    reply_content: ""
+  })
 
   const {comment_content} = commentContent
+  const {reply_content} = replyContent
 
   async function fetchPosts(){
     const {data: response0} = await axios.get('/api/auth')
@@ -162,7 +175,7 @@ const Community = () => {
       if(response.result>0) {
         setCommentList(response.data)
       }
-      alert("댓글 수정이 되었습니다.")
+      alert("댓글 수정이 완료 되었습니다.")
       setInput(0)
     } else {
       alert("서버 에러 발생")
@@ -180,7 +193,7 @@ const Community = () => {
           comment_pk: pk,
           user_pk: myPk,
           user_nickname: myNickName,
-          reply_content: comment,
+          reply_content: reply,
           user_icon: myIcon,
           user_reliability: myReliability,
           community_pk: params.pk
@@ -189,11 +202,50 @@ const Community = () => {
         if(response.result<0) {
           alert(response.message)
         } else {
-          const {data:response2} = await axios.post('/api/comment', {pk: pk})
-          setCommentList(response2.data)
+          const {data:response2} = await axios.post('/api/reply', {pk: params.pk})
+          setReplyList(response2.data)
           alert("답글을 등록했습니다.")
+          setReplyInput(0)
         }
       }
+    }
+  }
+
+  const replyHandleClick = async (pk) => {
+    const {data:response} = await axios.post('/api/replyinfo', {pk: pk})
+    setReplyContent(response.data)
+    setInput2(pk)
+  }
+
+  const replyHandleChange = e => {
+    setReplyContent({...replyContent, [e.target.name]: e.target.value})
+  } 
+
+  const editReply = async (pk) => {
+    const {data:response} = await axios.put('/api/editreply', {
+      pk: pk,
+      reply_content: reply_content
+    })
+    if(response.result>0) {
+      const {data:response2} = await axios.post('/api/reply', {pk: params.pk})
+      if(response2.result>0) {
+        setReplyList(response2.data)
+      }
+      alert("답글이 수정되었습니다.")
+      setInput2(0)
+    } else {
+      alert("서버 에러 발생")
+    }
+  }
+
+  const deleteReply = async (pk) => {
+    const {data:response} = await axios.post('/api/deletereply', {pk: pk})
+    if(response.result>0) {
+      alert("답글이 삭제되었습니다")
+    }
+    const {data:response2} = await axios.post('/api/reply', {pk: params.pk})
+    if(response2.result>0) {
+      setReplyList(response2.data)
     }
   }
 
@@ -247,7 +299,7 @@ const Community = () => {
                     </Content>
                     <Content>
                         <SubTitle>
-                          <IoChatbubbleEllipses style={{fontSize:'18px'}}/> 댓글 목록 <span style={{color: 'black'}}>({commentList.length})</span>
+                          <IoChatbubbleEllipses style={{fontSize:'18px'}}/> 댓글 목록 <span style={{color: 'black'}}>({commentList.length+replyList.length})</span>
                         </SubTitle>
                     </Content>
                     <Content style={{flexDirection: "column"}}>
@@ -275,39 +327,95 @@ const Community = () => {
                                   </Content> 
                                 : 
                                   <>
+                                  <div style={{paddingBottom: '10px'}}>
                                     {comment.comment_content}
-                                  </>
+                                    {comment.comment_user_nickname === myNickName && input !== comment.pk &&
+                                      <>
+                                        <AiFillEdit
+                                          style={{color: '#0A82FF',marginLeft: '50px', cursor: 'pointer'}}
+                                          onClick={()=> {handleClick(comment.pk)}}
+                                        />
+                                        <AiFillDelete 
+                                          style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
+                                          onClick={() => { 
+                                              if(window.confirm('댓글을 삭제하시겠습니까?')) {
+                                              deleteComment(comment.pk)
+                                            }
+                                          }}
+                                        />
+                                      </>
+                                     }
+                                  </div>
+                                      <Reply
+                                        onClick={() => {setReplyInput(comment.pk)}}
+                                      >
+                                        답글
+                                      </Reply>
+                                    </>
                                 }
-                                {comment.comment_user_nickname === myNickName && input !== comment.pk &&
-                                  <>
-                                    <AiFillEdit
-                                      style={{color: '#0A82FF',marginLeft: '50px', cursor: 'pointer'}}
-                                      onClick={()=> {handleClick(comment.pk)}}
-                                    />
-                                    <AiFillDelete 
-                                      style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
-                                      onClick={() => { 
-                                          if(window.confirm('댓글을 삭제하시겠습니까?')) {
-                                          deleteComment(comment.pk)
+                                  {replyList.map(reply => {
+                                    return(
+                                      <React.Fragment key={reply.pk}>
+                                        {reply.community_comment_pk === comment.pk &&
+                                          <Content style={{width: '100%'}}>
+                                            <BsArrowReturnRight style={{color: 'gray', fontSize:'20px', margin: 'auto 0'}} />
+                                            <ReplyWrapper>
+                                              <CommentName>
+                                                {reply.reply_user_icon && <img width={15} src={setIcon(reply.reply_user_icon)} />}
+                                                <img src={setLevel(reply.reply_user_reliability)}/>
+                                                {reply.reply_user_nickname}
+                                                <CommentTime>({reply.create_time})</CommentTime>
+                                              </CommentName>
+                                              <CommentContent>
+                                              {input2 === reply.pk ?
+                                                <Content>
+                                                  <Textarea 
+                                                    id="reply"
+                                                    name= "reply_content"
+                                                    style={{height: "3rem", border: "1px solid gray", margin: '0'}}
+                                                    value={reply_content}
+                                                    onChange={e => replyHandleChange(e)}
+                                                  />
+                                                  <Button onClick={()=> {editReply(reply.pk)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >수정</Button>
+                                                  <Button onClick={()=> {setInput2(0)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >취소</Button>
+                                                </Content> 
+                                              : 
+                                                <>
+                                                  {reply.reply_content}
+                                                </>
+                                              }
+                                              {reply.reply_user_nickname === myNickName && input2 !== reply.pk &&
+                                                <>
+                                                  <AiFillEdit
+                                                    style={{color: '#0A82FF',marginLeft: '50px', cursor: 'pointer'}}
+                                                    onClick={()=> {replyHandleClick(reply.pk)}}
+                                                  />
+                                                  <AiFillDelete 
+                                                    style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
+                                                    onClick={() => { 
+                                                        if(window.confirm('답글을 삭제하시겠습니까?')) {
+                                                        deleteReply(reply.pk)
+                                                      }
+                                                    }}
+                                                  />
+                                                </>
+                                              }
+                                              </CommentContent>
+                                            </ReplyWrapper>
+                                          </Content>
                                         }
-                                      }}
-                                    />
-                                  </>
-                                }
-                                  <Reply
-                                    onClick={() => {setReplyInput(comment.pk)}}
-                                  >
-                                    답글
-                                  </Reply>
+                                      </React.Fragment>
+                                    )
+                                  })}
                                   {replyInput === comment.pk &&
-                                    <Content style={{paddingTop: '15px'}}>
+                                    <Content style={{paddingTop: '15px', width: '100%'}}>
                                       <BsArrowReturnRight style={{color: 'gray', fontSize:'20px', margin: 'auto 0'}} />
                                       <Textarea 
                                         id="reply"
                                         name= "reply_content"
-                                        placeholder={auth ? "댓글 작성하기" : "로그인 후 이용 가능합니다"}
+                                        placeholder={auth ? "답글 작성하기" : "로그인 후 이용 가능합니다"}
                                         style={{height: "3rem", border: "1px solid gray", margin: '0'}}
-                                        onChange={e => setReply(e)}
+                                        onChange={e => setReply(e.target.value)}
                                       />
                                       <Button onClick={()=> {addReply(comment.pk)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >답글 등록</Button>
                                       <Button onClick={()=> {setReplyInput(0)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >취소</Button>
@@ -328,7 +436,6 @@ const Community = () => {
                         <Button onClick={addComment} style={{width: "6.5rem", height: "3.5rem", marginLeft: "1px"}} >댓글 등록</Button>
                     </Content>
                 </Container>
-
             </ContentsWrapper>
 
     </Wrapper>
