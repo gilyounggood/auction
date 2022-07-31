@@ -18,7 +18,7 @@ import { IoCompassOutline, IoConstructOutline } from 'react-icons/io5';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { BsArrowReturnRight } from 'react-icons/bs'
 import { IoChatbubbleEllipses } from 'react-icons/io5'
-import $, { ajaxPrefilter } from 'jquery'
+import $ from 'jquery'
 
 const PostInfo = styled.div`
 font-size:0.9rem;

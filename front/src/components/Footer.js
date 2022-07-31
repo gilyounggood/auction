@@ -39,7 +39,7 @@ const Border = styled.div`
 const Footer = () => {
   return (
 
-    <Container>
+    <Container style={{justifyContent: 'center', textAlign: 'center'}}>
       <Border/>
       <TextTitle>개인정보처리방침 | 사용약관</TextTitle>
       <Text>Auction | 사업자번호 : 111-11-111111  </Text>
