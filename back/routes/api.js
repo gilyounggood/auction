@@ -309,6 +309,7 @@ router.post('/logout', (req, res, next) => {
         response(req, res, -200, "서버 에러 발생", [])
     }
 });
+// 홈 화면
 router.post('/home', async (req, res, next) => {
     try {
         var today = new Date();
@@ -327,7 +328,7 @@ router.post('/home', async (req, res, next) => {
                 response(req, res, -200, "fail", [])
             }
         })
-        let sql = 'SELECT * FROM item_table WHERE buy_count=0 ORDER BY RAND() LIMIT 20'
+        let sql = 'SELECT * FROM item_table WHERE buy_count=0 ORDER BY RAND() LIMIT 12'
         await db.query(sql, (err, result) => {
             if (err) {
                 console.log(err)
@@ -342,6 +343,28 @@ router.post('/home', async (req, res, next) => {
         response(req, res, -200, "서버 에러 발생", [])
     }
 })
+
+router.post('/home2', (req, res, next) => {
+    try {
+        const params = req.body.params;
+        let sql = 'SELECT * FROM community_table WHERE kind=? ORDER BY pk DESC LIMIT 5'
+        if(params===3) {
+            sql = 'SELECT * FROM item_table WHERE buy_count=1 ORDER BY pk DESC LIMIT 5' 
+        }
+        db.query(sql, [params], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "홈 불러오기 실패", [])
+            } else {
+                response(req, res, 200, "홈 불러오기 성공", result)
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 router.post('/searchauction', (req, res, next) => {
     try {
         const keyword = req.body.keyword ? req.body.keyword  :  "";

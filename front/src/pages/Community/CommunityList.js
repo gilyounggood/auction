@@ -179,6 +179,7 @@ const CommunityList = () => {
                                                 <Td>상품명</Td>
                                                 <Td>구매자</Td>
                                                 <Td>판매자</Td>
+                                                <Td>상세보기</Td>
                                                 <Date style={{ marginRight: '5.4rem' }}>낙찰일</Date>
                                                 {myLevel >= 40 ? <Td>삭제</Td> : <></>}
                                             </>
@@ -227,6 +228,7 @@ const CommunityList = () => {
                                                     <Td>{post.name}</Td>
                                                     <Td>{post.buyer_nickname ?? '---'}</Td>
                                                     <Td>{post.seller_nickname ?? '---'}</Td>
+                                                    <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/auction/${post.pk}`) }} /></Td>
                                                     <Date style={{ marginRight: '5.4rem' }}>{post.end_date}</Date>
                                                     {myLevel >= 40 ? <P><AiFillDelete style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
                                                         onClick={() => {
