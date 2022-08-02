@@ -132,6 +132,10 @@ const Auction = () => {
     fetchPosts()
   }, [])
   const addChat = async (e) => {
+    if ($('#chat').val()==="") {
+      alert("내용을 입력해주세요")
+      return;
+    }
     const { data: response } = await axios.post('/api/addchat', {
       nickname: auth.nick_name,
       userPk: auth.pk,
@@ -298,7 +302,7 @@ const Auction = () => {
           <LeftTextBox>
             {item?.min_price ?? ''} 원
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>현재가</LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>{item?.buy_count===0 ? "현재가" : "마감가"}</LeftTextBox>
           <LeftTextBox>
             {item?.bid_price ?? ''} 원
           </LeftTextBox>
@@ -334,7 +338,7 @@ const Auction = () => {
             </>
             :
             <></>}
-            {auth.pk?
+            {auth.pk && auth.pk !== item.seller_pk ?
             <>
  {item.bid_price == item.min_price ?
                 <>
@@ -456,7 +460,6 @@ const Auction = () => {
         <>
         </>
       }
-
 
     </Wrapper>
   );

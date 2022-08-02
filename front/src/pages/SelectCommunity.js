@@ -45,8 +45,14 @@ const SelectCommunity = () => {
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`,minHeight:'28rem'
             }}>
                 <CityContainer>
-
                     <ThemeList>
+                            <Theme onClick={() => history.push('/auctionlist')}>
+                                <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>진행중인 경매 목록</p>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
+                                    <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
+                                </div>
+                            </Theme>
                         {themeList.map((theme, index) => (
                             <Theme key={theme} onClick={() => { goToPage(index+1)}} style={{display:`${index%2==0?'':'none'}`}}>
                                 <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>{theme}</p>

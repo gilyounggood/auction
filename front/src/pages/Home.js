@@ -122,7 +122,7 @@ const Home = () => {
         <div style={{marginLeft: '75px'}}>
           <RiAuctionLine style={{marginRight: '5px'}} />진행중인 경매 목록
         </div>
-        <Link onClick={()=> history.push('/communitylist/2')}>
+        <Link onClick={()=> history.push('/auctionlist')}>
           더보기<AiOutlinePlus/>
         </Link>
       </ContentsWrapper>

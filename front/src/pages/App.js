@@ -24,7 +24,7 @@ import SignUp from './Auth/SignUp';
 import Info from './Auth/Info';
 import Favorite from './Auth/Favorite';
 
-import AuctionList from './Manager/AuctionList';
+import AuctionList from './Auction/AuctionList';
 import UserInfo from './Manager/UserInfo';
 import UserList from './Manager/UserList';
 
@@ -88,13 +88,13 @@ const App = () => {
                 <Route exact path="/search" component={Search} />
                 <Route exact path="/selectcommunity" component={SelectCommunty} />
 
+                <Route exact path="/auctionlist" component={AuctionList} />
                 <Route exact path="/auction/:pk" component={Auction} />
 
                 <Route exact path="/addauction" component={AddAuction} />
                 <Route exact path="/changecategory" component={ChangeCategory} />
                 <Route exact path="/changepassword" component={ChangePassword} />
                 <Route exact path="/login" component={Login} />
-                <Route exact path="/myauctionlist" component={MyAuctionList} />
                 <Route exact path="/signup" component={SignUp} />
                 <Route exact path='/info/:pk' component={Info}/>
                 <Route exact path='/favorite' component={Favorite}/>
