@@ -383,7 +383,7 @@ router.post('/searchauction', (req, res, next) => {
         response(req, res, -200, "서버 에러 발생", [])
     }
 })
-
+// 경매 불러오기
 router.post('/item', (req, res, next) => {
     try {
         const pk = req.body.pk
@@ -419,7 +419,57 @@ router.post('/item', (req, res, next) => {
     }
 })
 
-
+router.post('/auctionlist', async (req, res, next) => {
+    try {
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = ('0' + (today.getMonth() + 1)).slice(-2);
+        var day = ('0' + today.getDate()).slice(-2);
+        var dateString = year + '-' + month + '-' + day;
+        var hours = ('0' + today.getHours()).slice(-2);
+        var minutes = ('0' + today.getMinutes()).slice(-2);
+        var seconds = ('0' + today.getSeconds()).slice(-2);
+        var timeString = hours + ':' + minutes + ':' + seconds;
+        let moment = dateString + ' ' + timeString;
+        await db.query('UPDATE item_table SET  buy_count=1 WHERE end_date < ?', [moment], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "fail", [])
+            }
+        })
+        let page = req.body.page ? req.body.page :false;
+        let sql1 = `SELECT COUNT(*) FROM item_table WHERE buy_count=0`;
+        let sql2 = `SELECT * FROM item_table WHERE buy_count=0 ORDER BY pk DESC`;
+        if (page) {
+            sql2 += ` LIMIT ${(page - 1) * 12}, 12 `;
+        }
+        db.query(sql1, async (err, result1) => {
+            if (err) {
+                response(req, res, -200, "fail", [])
+            } else {
+                await db.query(sql2, (err, result2) => {
+                    if (err) {
+                        console.log(err)
+                        response(req, res, -200, "fail", [])
+                    } else {
+                        let maxPage = result1[0]['COUNT(*)'];
+                        if (maxPage % 12) {
+                            maxPage = (maxPage - maxPage % 12) / 12 + 1
+                        }
+                        else {
+                            maxPage = maxPage / 12
+                        }
+                        response(req, res, 200, "성공", { maxPage: maxPage, result: result2 })
+                    }
+                })
+            }
+        })
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
 
 //낙찰된 상품
 router.post('/endauctionlist', (req, res, next) => {
