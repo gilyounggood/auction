@@ -368,7 +368,15 @@ router.post('/home2', (req, res, next) => {
 router.post('/searchauction', (req, res, next) => {
     try {
         const keyword = req.body.keyword ? req.body.keyword  :  "";
-        let sql = `SELECT * FROM item_table WHERE buy_count=0 AND(name LIKE '%${keyword}%' OR category_list LIKE '%${keyword}%')`
+        const kind = req.body.kind ? req.body.kind : "";
+        let sql = ''
+        if(kind==="auction") {
+            sql = `SELECT * FROM item_table WHERE buy_count=0 AND(name LIKE '%${keyword}%' OR category_list LIKE '%${keyword}%')`
+        } else if (kind==="community") {
+            sql = `SELECT * FROM community_table WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%'`
+        } else if (kind==="username") {
+            sql = `SELECT * FROM item_table WHERE buy_count=0 AND(seller_nickname LIKE '%${keyword}%')`
+        }
         db.query(sql, (err, result) => {
             if (err) {
                 console.log(err)

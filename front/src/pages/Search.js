@@ -79,7 +79,7 @@ const Search = () => {
     const [category, setCategory] = useState()
   
     const [keyword, setKeyword] = useState('')
-    const [searchCount, setSearchCount] = useState(0)
+    const [kind, setKind] = useState("auction")
     const themeList = ['의류','뷰티','식품','주방용품','생활용품','가전제품','완구','헬스','음악용품'];
     useEffect(()=>{
         setCategory('search')
@@ -88,8 +88,8 @@ const Search = () => {
         setKeyword(e.target.value)
     }
    
-    async function searchAuction(str){
-        history.push({pathname:'/searchresult',state:{keyword:str??''}})           
+    async function searchAuction(str, kind){
+        history.push({pathname:'/searchresult',state:{keyword:str??'', kind: kind??''}})           
     }
  
     return (
@@ -103,41 +103,39 @@ const Search = () => {
                     </SelectMenu>
                     
                     <SelectMenu onClick={()=>{setCategory('category')}} style={{borderBottom:`${category == 'category' ? '2px solid #8e44ad' : '2px solid #ababab'}`,color:`${category == 'category' ? '#8e44ad' : '#ababab'}`}}>
-                        <p>카테고리</p>
+                        <p>경매 태그</p>
                     </SelectMenu>
                 </SelectContainer>
                 {category == 'search' ?
-                <>
-                <SearchContainer>
-                    <SearchInput placeholder='상품명 혹은 태그' onChange={onChangeKeyword} />
-                    <AiOutlineSearch style={{ fontSize: '1.3rem', padding: '0.3rem 1rem 0.3rem 0.3rem', color: '#8e44ad',cursor:'pointer' }} onClick={()=>{searchAuction(keyword)}} />
-                </SearchContainer>
-                </>
+                    <div style={{display: 'flex'}}>
+                        <select onChange={e => setKind(e.target.value)} style={{marginRight: '5px', borderRadius: '0.5rem', borderColor: 'black', fontSize: '0.9rem', textAlign: 'center'}}>
+                            <option value="auction" selected>경매 검색</option>
+                            <option value="community">커뮤니티 검색</option>
+                            <option value="username">닉네임 검색</option>
+                        </select>
+                        <SearchContainer>
+                            <SearchInput placeholder={kind==="auction" ? '상품명 혹은 태그' : kind==="community" ? "제목 혹은 내용" : "유저 닉네임"} onChange={onChangeKeyword} />
+                            <AiOutlineSearch style={{ fontSize: '1.3rem', padding: '0.3rem 1rem 0.3rem 0.3rem', color: '#8e44ad',cursor:'pointer' }} onClick={()=>{searchAuction(keyword, kind)}} />
+                        </SearchContainer>
+                    </div>
                 :
-              
-                    <>
                     <CityContainer>
-                    
-                    <ThemeList>
-                            {themeList.map((theme,index)=>(
-                                <Theme key={theme} onClick={()=>{searchAuction(theme)}}>
-                                    <p style={{paddingLeft:'0.4rem',fontSize:'1rem'}}>{theme}</p>
-                                    <div style={{display:'flex',alignItems:'center'}}>
-                                        <div style={{fontSize:'0.8rem',color:'#9b59b6'}}>자세히보기</div> 
-                                        <GrNext style={{height:'0.8rem',color:'#9b59b6'}} />
-                                        </div>
-                                </Theme>
-                            ))}
-                    </ThemeList>
-                </CityContainer>
-                    </>
+                        <ThemeList>
+                                {themeList.map((theme,index)=>(
+                                    <Theme key={theme} onClick={()=>{searchAuction(theme)}}>
+                                        <p style={{paddingLeft:'0.4rem',fontSize:'1rem'}}>{theme}</p>
+                                        <div style={{display:'flex',alignItems:'center'}}>
+                                            <div style={{fontSize:'0.8rem',color:'#9b59b6'}}>자세히보기</div> 
+                                            <GrNext style={{height:'0.8rem',color:'#9b59b6'}} />
+                                            </div>
+                                    </Theme>
+                                ))}
+                        </ThemeList>
+                    </CityContainer>
                 }
                 
                 
             </ContentsWrapper>
-            
-           
-
         </Wrapper>
     );
 };
