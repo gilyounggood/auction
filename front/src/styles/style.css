@@ -80,7 +80,27 @@ div.shop-board-container img{
     }
   }
 
-  .blink {
+.blink {
     margin: 0 auto;
     height: 3rem;
-  }
+}
+
+.ck.ck-editor__editable {
+    min-height: 300px;
+}
+
+@media screen and (max-width:790px) { 
+    .ck.ck-editor__editable {
+        width: 270px;
+    }
+    .ck.ck-toolbar {
+        width: 290px !important
+    }
+}
+
+@media screen and (max-width:790px) { 
+    .sc-dPaNzc .dZlqJZ {
+        width: 270px;
+    }
+
+}
