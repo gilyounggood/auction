@@ -13,6 +13,7 @@ import SubTitle from '../../components/elements/SubTitle';
 import Textarea from '../../components/elements/Textarea';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
 import setLevel from '../../data/Level';
+import ReactHtmlParser from 'html-react-parser'
 import { setIcon } from '../../data/Icon';
 import { IoCompassOutline, IoConstructOutline } from 'react-icons/io5';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
@@ -294,7 +295,7 @@ const Community = () => {
                       <PostInfo
                         style={{minHeight: '12rem'}}
                       >
-                        {data?.content}
+                        {ReactHtmlParser(`${data?.content}`)}
                       </PostInfo>
                     </Content>
                     <Content>

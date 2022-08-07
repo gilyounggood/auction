@@ -71,8 +71,8 @@ const AddCommunity = () => {
     const onChangeTitle= (e) =>{
         setTitle(e.target.value)
     }
-    const onChangeNote = (e) =>{
-        setNote(e.target.value)
+    const onChangeNote = (data) =>{
+        setNote(data)
     }
     const upLoad = async (e) =>{
         if(title==="" || note==="") {
@@ -129,6 +129,7 @@ const AddCommunity = () => {
                         onChange={ ( event, editor ) => {
                             const data = editor.getData();
                             console.log( { event, editor, data } );
+                            onChangeNote(data)
                         } }
                         onBlur={ ( event, editor ) => {
                             console.log( 'Blur.', editor );

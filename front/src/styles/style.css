@@ -97,10 +97,3 @@ div.shop-board-container img{
         width: 290px !important
     }
 }
-
-@media screen and (max-width:790px) { 
-    .sc-dPaNzc .dZlqJZ {
-        width: 270px;
-    }
-
-}
