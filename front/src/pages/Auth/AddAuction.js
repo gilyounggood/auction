@@ -5,17 +5,35 @@ import { useHistory } from 'react-router-dom';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
 import Wrapper from '../../components/elements/Wrapper';
 import axios from 'axios';
-import Select from '../../components/elements/Select';
-import Option from '../../components/elements/Option';
 import Container from '../../components/elements/Container';
 import Content from '../../components/elements/Content';
-import Input from '../../components/elements/Input';
-import Textarea from '../../components/elements/Textarea';
 import Title from '../../components/elements/Title';
 import { AiFillFileImage } from 'react-icons/ai'
 import SubTitle from '../../components/elements/SubTitle';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '../../styles/style.css'
 import $ from 'jquery'
+
+const Input = styled.input`
+    outline: 1px solid #c4c4c4;
+    font-size:1rem;
+    border:none;
+    margin-left:0.3rem;
+    width:39.2rem;
+    height: 2rem;
+    padding-bottom:0.2rem;
+    ::placeholder {
+        color: #cccccc;
+    }
+    @media screen and (max-width: 790px) {
+        width: 285px;
+    }
+    &:focus {
+        outline: 1px solid #0078FF;
+        box-shadow: 0px 0px 2px black;
+    }
+`
 const Button = styled.button`
 width:22rem;
 height:3rem;
@@ -53,6 +71,7 @@ const AddAuction = () => {
     const [url, setUrl] = useState('')
     const [formData] = useState(new FormData())
     const [tagList, setTagList] = useState([])
+    const [note, setNote] = useState("")
     const isAdmin = async () => {
 
         const { data: response } = await axios.get('/api/auth')
@@ -95,6 +114,7 @@ const AddAuction = () => {
         formData.append("endDate",date+' '+time+':00')
         formData.append("categoryList",arr)
         formData.append("image", content)
+        formData.append("content", note)
         url = '/api/addauction'
         const {data:response} = await axios.post(url,formData)
         console.log(response)
@@ -138,31 +158,33 @@ const AddAuction = () => {
                 <Title>경매등록</Title>
 
 
-                <Container>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>상품명</div>
+                <Container style={{alignItems: 'center'}}>
+                    <Content style={{ marginBottom: '0.9rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold'}}>상품명</div>
                     </Content>
                     <Content>
                         <Input type='text' placeholder='상품명을 입력해 주세요.' onChange={onChangeName} />
                     </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>최소금액</div>
+                    <Content style={{ marginBottom: '0.9rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold'}}>최소금액</div>
                     </Content>
                     <Content>
                         <Input type='text' placeholder='금액을 입력해 주세요.' onChange={onChangePrice} defaultValue={10000} />
                     </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>마감일자 및 시간</div>
+                    <Content style={{ marginBottom: '0.9rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold'}}>마감일자</div>
                     </Content>
                     <Content>
                         <Input type='date' onChange={onChangeDate} />
+                    </Content>
+                    <Content style={{ marginBottom: '0.9rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold'}}>마감시간</div>
                     </Content>
                     <Content>
                         <Input type='time' onChange={onChangeTime} />
                     </Content>
                     <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>태그</div>
-                        <SubTitle style={{marginBottom:'1rem'}}><Button style={{width:'5rem',height:'2rem'}}
+                        <SubTitle style={{marginBottom:'1rem'}}><Button style={{width:'5.5rem',height:'2rem'}}
                         onClick={()=>{
                             let arr = []
                             for(var i = 0;i<tagList.length;i++){
@@ -173,12 +195,12 @@ const AddAuction = () => {
                                 price:0
                             }
                             setTagList(arr)
-                        }}>+ 추가</Button></SubTitle>
+                        }}>+ 태그 추가</Button></SubTitle>
                     </Content>
                     <Content style={{ marginBottom: '0.3rem',flexDirection:'column' }}>
                     {tagList.map((post,index)=>(
-                         <div key={index} style={{border:'1px solid #5a5a5a',width:'50%',padding:'0.5rem'}}>
-                         <input style={{width:'90%',margin:'auto',outline:'none',border:'none',maxWidth:'120px'}} id={`tag${index}`}  />
+                         <div key={index} style={{border:'1px solid #5a5a5a',width:'90%',padding:'0.5rem'}}>
+                         <input style={{width:'90%',margin:'auto',outline:'none',border:'none',maxWidth:'120px'}} id={`tag${index}`} placeholder="태그 입력" />
                      </div>
                     
                     ))}
@@ -187,7 +209,7 @@ const AddAuction = () => {
                     <Content style={{ marginBottom: '0.3rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>상품이미지</div>
                     </Content>
-                    <Content>
+                    <Content style={{width: '60%'}}>
                         <ImageContainer htmlFor="file">
 
                             {url ?
@@ -200,14 +222,35 @@ const AddAuction = () => {
                                 </>
                                 :
                                 <>
-                                    <AiFillFileImage style={{ margin: '4rem', fontSize: '4rem', color: '#8e44ad' }} />
+                                    <AiFillFileImage style={{ margin: '4rem', fontSize: '4rem', color: '#8e44ad'}} />
                                 </>}
                         </ImageContainer>
                         <div>
                             <input type="file" id="file" onChange={addFile} style={{ display: 'none' }} />
                         </div>
                     </Content>
-                    
+                    <Content style={{ marginBottom: '0.9rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold'}}>상품설명</div>
+                    </Content>
+                    <CKEditor
+                        editor={ ClassicEditor }
+                        data=""
+                        onReady={ editor => {
+                            // You can store the "editor" and use when it is needed.
+                            console.log( 'Editor is ready to use!', editor );
+                        } }
+                        onChange={ ( event, editor ) => {
+                            const data = editor.getData();
+                            console.log( { event, editor, data } );
+                            setNote(data)
+                        } }
+                        onBlur={ ( event, editor ) => {
+                            console.log( 'Blur.', editor );
+                        } }
+                        onFocus={ ( event, editor ) => {
+                            console.log( 'Focus.', editor );
+                        } }
+                    />                
                 </Container>
 
                 <Button style={{ marginBottom: '2rem' }}

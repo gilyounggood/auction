@@ -22,14 +22,15 @@ import { IoChatbubbleEllipses } from 'react-icons/io5'
 import $ from 'jquery'
 
 const PostInfo = styled.div`
-font-size:0.9rem;
+font-size: 1.05rem;
 margin-left:0.3rem;
 width:12rem;
+padding: 10px;
 `
 
 const CommentName = styled.div`
   color: #0A6EFF;
-  font-size: 0.9rem;
+  font-size: 1.0rem;
   margin-left: 6px;
 }
 `
@@ -42,9 +43,9 @@ const CommentTime = styled.span`
 
 const CommentContent = styled.div`
   color: black;
-  font-size: 0.9rem;
-  margin-left: 6px;
-  padding-top: 5px;
+  font-size: 1.0rem;
+  margin-left: 10px;
+  padding-top: 15px;
   &: last-child {
     padding-bottom: 10px;
   }
@@ -92,6 +93,8 @@ const Community = () => {
 
   const {comment_content} = commentContent
   const {reply_content} = replyContent
+
+  const history = useHistory();
 
   async function fetchPosts(){
     const {data: response0} = await axios.get('/api/auth')
@@ -262,7 +265,7 @@ const Community = () => {
                 
                 <Container>
                     <Content>
-                        <SubTitle>제목</SubTitle>
+                        <SubTitle style={{fontSize: '1.1rem'}}>제목</SubTitle>
                     </Content>
                     <Content>
                       <PostInfo>
@@ -270,7 +273,7 @@ const Community = () => {
                       </PostInfo>
                     </Content>
                     <Content>
-                        <SubTitle>조회수</SubTitle>
+                        <SubTitle style={{fontSize: '1.1rem'}}>조회수</SubTitle>
                     </Content>
                     <Content>
                      <PostInfo
@@ -280,27 +283,27 @@ const Community = () => {
                       </PostInfo>
                     </Content>
                     <Content>
-                        <SubTitle>작성자</SubTitle>
+                        <SubTitle style={{fontSize: '1.1rem'}}>작성자</SubTitle>
                     </Content>
                     <Content>
-                      <PostInfo>
-                        {data?.user_icon && <img width={15} src={setIcon(data?.user_icon)}/>}
-                        <img src={setLevel(data?.user_reliability)}/>{data?.user_nickname}
+                      <PostInfo style={{cursor: 'pointer'}} onClick={() => history.push(`/info/${data?.user_pk}`)}>
+                        {data?.user_icon && <img width={20} src={setIcon(data?.user_icon)}/>}
+                        <img width={20} src={setLevel(data?.user_reliability)}/>{data?.user_nickname}
                       </PostInfo>
                     </Content>
                     <Content>
-                        <SubTitle>설명</SubTitle>
+                        <SubTitle style={{fontSize: '1.1rem'}}>내용</SubTitle>
                     </Content>
                     <Content>
                       <PostInfo
-                        style={{minHeight: '12rem'}}
+                        style={{minHeight: '15rem'}}
                       >
                         {ReactHtmlParser(`${data?.content}`)}
                       </PostInfo>
                     </Content>
                     <Content>
-                        <SubTitle>
-                          <IoChatbubbleEllipses style={{fontSize:'18px'}}/> 댓글 목록 <span style={{color: 'black'}}>({commentList.length+replyList.length})</span>
+                        <SubTitle style={{fontSize: '1.1rem'}}>
+                          <IoChatbubbleEllipses style={{fontSize:'20px'}}/> 댓글 목록 <span style={{color: 'black'}}>({commentList.length+replyList.length})</span>
                         </SubTitle>
                     </Content>
                     <Content style={{flexDirection: "column"}}>
@@ -312,6 +315,22 @@ const Community = () => {
                                 <img src={setLevel(comment.comment_user_reliability)}/>
                                 {comment.comment_user_nickname}
                                 <CommentTime>({comment.create_time})</CommentTime>
+                                {comment.comment_user_nickname === myNickName && input !== comment.pk &&
+                                  <>
+                                    <AiFillEdit
+                                      style={{color: '#0A82FF',marginLeft: '10px', cursor: 'pointer',}}
+                                      onClick={()=> {handleClick(comment.pk)}}
+                                    />
+                                    <AiFillDelete 
+                                      style={{color: 'red', marginLeft: '5px', cursor: 'pointer',}}
+                                      onClick={() => { 
+                                          if(window.confirm('댓글을 삭제하시겠습니까?')) {
+                                          deleteComment(comment.pk)
+                                        }
+                                      }}
+                                    />
+                                  </>
+                                }
                               </CommentName>
                               <CommentContent>
                                 {input === comment.pk ?
@@ -328,24 +347,9 @@ const Community = () => {
                                   </Content> 
                                 : 
                                   <>
-                                  <div style={{paddingBottom: '10px'}}>
+                                  <div style={{paddingBottom: '10px', marginLeft: '10px'}}>
                                     {comment.comment_content}
-                                    {comment.comment_user_nickname === myNickName && input !== comment.pk &&
-                                      <>
-                                        <AiFillEdit
-                                          style={{color: '#0A82FF',marginLeft: '50px', cursor: 'pointer'}}
-                                          onClick={()=> {handleClick(comment.pk)}}
-                                        />
-                                        <AiFillDelete 
-                                          style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
-                                          onClick={() => { 
-                                              if(window.confirm('댓글을 삭제하시겠습니까?')) {
-                                              deleteComment(comment.pk)
-                                            }
-                                          }}
-                                        />
-                                      </>
-                                     }
+
                                   </div>
                                       <Reply
                                         onClick={() => {setReplyInput(comment.pk)}}
@@ -366,6 +370,22 @@ const Community = () => {
                                                 <img src={setLevel(reply.reply_user_reliability)}/>
                                                 {reply.reply_user_nickname}
                                                 <CommentTime>({reply.create_time})</CommentTime>
+                                                {reply.reply_user_nickname === myNickName && input2 !== reply.pk &&
+                                                  <>
+                                                    <AiFillEdit
+                                                      style={{color: '#0A82FF',marginLeft: '10px', cursor: 'pointer'}}
+                                                      onClick={()=> {replyHandleClick(reply.pk)}}
+                                                    />
+                                                    <AiFillDelete 
+                                                      style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
+                                                      onClick={() => { 
+                                                          if(window.confirm('답글을 삭제하시겠습니까?')) {
+                                                          deleteReply(reply.pk)
+                                                        }
+                                                      }}
+                                                    />
+                                                  </>
+                                                }
                                               </CommentName>
                                               <CommentContent>
                                               {input2 === reply.pk ?
@@ -381,25 +401,9 @@ const Community = () => {
                                                   <Button onClick={()=> {setInput2(0)}} style={{width: "5.5rem", height: "3.5rem", marginLeft: "1px"}} >취소</Button>
                                                 </Content> 
                                               : 
-                                                <>
+                                                <span style={{marginLeft: '10px'}}>
                                                   {reply.reply_content}
-                                                </>
-                                              }
-                                              {reply.reply_user_nickname === myNickName && input2 !== reply.pk &&
-                                                <>
-                                                  <AiFillEdit
-                                                    style={{color: '#0A82FF',marginLeft: '50px', cursor: 'pointer'}}
-                                                    onClick={()=> {replyHandleClick(reply.pk)}}
-                                                  />
-                                                  <AiFillDelete 
-                                                    style={{color: 'red', marginLeft: '5px', cursor: 'pointer'}}
-                                                    onClick={() => { 
-                                                        if(window.confirm('답글을 삭제하시겠습니까?')) {
-                                                        deleteReply(reply.pk)
-                                                      }
-                                                    }}
-                                                  />
-                                                </>
+                                                </span>
                                               }
                                               </CommentContent>
                                             </ReplyWrapper>

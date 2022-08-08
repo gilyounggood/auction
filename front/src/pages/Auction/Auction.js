@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components'
-
 import Wrapper from '../../components/elements/Wrapper';
 import '../../styles/style.css'
 import ContentsWrapper from '../../components/elements/ContentWrapper';
@@ -14,6 +13,7 @@ import Input from '../../components/elements/Input';
 import {AiFillStar} from 'react-icons/ai'
 import setLevel from '../../data/Level';
 import { setIcon } from '../../data/Icon';
+import ReactHtmlParser from 'html-react-parser'
 const Container2 = styled.div`
 width:80%;
 padding:1rem;
@@ -289,11 +289,15 @@ const Auction = () => {
           <LeftTextBox>
             <img src={`${ServerLink}` + item.main_image ?? ''} style={{ width: '80%', maxWidth: '360px' }} />
           </LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>상품설명</LeftTextBox>
+          <LeftTextBox>
+            {ReactHtmlParser(item?.content ?? '')}
+          </LeftTextBox>
           <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>태그</LeftTextBox>
           <LeftTextBox style={{ display: 'flex', flexWrap: 'wrap' }}>
             {tagList.map((item, index) => (
               <div key={index} style={{ background: '#cd84f1', color: 'white', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.2rem', padding: '0 0.2rem', marginRight: '0.2rem', marginBottom: '0.2rem' }}
-                onClick={() => { history.push({ pathname: '/searchresult', state: { keyword: item } }) }}>
+                onClick={() => { history.push({ pathname: '/searchresult', state: { keyword: item, kind: "auction" } }) }}>
                 {'#' + item}
               </div>
             ))}

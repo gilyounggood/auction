@@ -12,8 +12,6 @@ import Button from '../../components/elements/Button';
 import Container from '../../components/elements/Container';
 import Content from '../../components/elements/Content';
 import SubTitle from '../../components/elements/SubTitle';
-import RightButtonContainer from '../../components/elements/RightButtonContainer';
-import Textarea from '../../components/elements/Textarea';
 import CenterButtonContainer from '../../components/elements/CenterButtonContainer';
 import '../../styles/style.css'
 
