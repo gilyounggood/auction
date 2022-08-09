@@ -99,6 +99,37 @@ const EditCommunity = () => {
             }
         }
     }
+
+    const imgLink = "http://localhost:8001/image/ad"
+
+    const customUploadAdapter = (loader) => { // (2)
+        return {
+            upload(){
+                return new Promise ((resolve, reject) => {
+                    const data = new FormData();
+                     loader.file.then( (file) => {
+                            data.append("name", file.name);
+                            data.append("image", file);
+
+                            axios.post('/api/upload', data)
+                                .then((res) => {
+                                    resolve({
+                                        default: `${imgLink}/${res.data.filename}`
+                                    });
+                                })
+                                .catch((err)=>reject(err));
+                        })
+                })
+            }
+        }
+    }
+
+    function uploadPlugin (editor){ // (3)
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return customUploadAdapter(loader);
+        }
+    }
+
     return (
         <Wrapper >
             <ContentsWrapper style={{
@@ -126,21 +157,41 @@ const EditCommunity = () => {
                     </Content>
                     <CKEditor
                         editor={ ClassicEditor }
+                        config= {{
+                            extraPlugins: [uploadPlugin],
+                            heading: {
+                            options: [
+                                {
+                                model: "paragraph",
+                                view: "p",
+                                title: "본문",
+                                class: "ck-heading_paragraph",
+                                },
+                                {
+                                model: "heading1",
+                                view: "h1",
+                                title: "헤더1",
+                                class: "ck-heading_heading1",
+                                },
+                                {
+                                model: "heading2",
+                                view: "h2",
+                                title: "헤더2",
+                                class: "ck-heading_heading2",
+                                },
+                                {
+                                model: "heading3",
+                                view: "h3",
+                                title: "헤더3",
+                                class: "ck-heading_heading3",
+                                },
+                            ],
+                            },
+                        }}
                         data= {content}
-                        onReady={ editor => {
-                            // You can store the "editor" and use when it is needed.
-                            console.log( 'Editor is ready to use!', editor );
-                        } }
                         onChange={ ( event, editor ) => {
                             const data = editor.getData();
-                            console.log( { event, editor, data } );
                             onChangeContent(data)
-                        } }
-                        onBlur={ ( event, editor ) => {
-                            console.log( 'Blur.', editor );
-                        } }
-                        onFocus={ ( event, editor ) => {
-                            console.log( 'Focus.', editor );
                         } }
                     />
                     {/* <Content>

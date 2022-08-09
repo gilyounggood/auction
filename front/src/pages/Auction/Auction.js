@@ -289,8 +289,8 @@ const Auction = () => {
           <LeftTextBox>
             <img src={`${ServerLink}` + item.main_image ?? ''} style={{ width: '80%', maxWidth: '360px' }} />
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>상품설명</LeftTextBox>
-          <LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem'}}>상품설명</LeftTextBox>
+          <LeftTextBox style={{minHeight: '10rem'}}>
             {ReactHtmlParser(item?.content ?? '')}
           </LeftTextBox>
           <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>태그</LeftTextBox>

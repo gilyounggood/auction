@@ -52,6 +52,10 @@ app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../front/build/index.html'))
 })
 
+app.post('/api/upload', upload.single('image'), (req, res) => {
+        res.status(200).json(req.file);
+})
+
 app.post('/api/addauction', upload.single('image'), (req, res) =>{
         try{
                 const sql = 'INSERT INTO item_table (name, min_price, bid_price, category_list, seller_pk, seller_nickname, seller_reliability, seller_icon, end_date, create_time, main_image, views, content) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ?, ?, ?, ?, ?)'
