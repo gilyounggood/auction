@@ -9,11 +9,34 @@ import axios from 'axios';
 import ServerLink from '../../data/ServerLink';
 import Button from '../../components/elements/Button';
 import $ from 'jquery'
-import Input from '../../components/elements/Input';
 import {AiFillStar} from 'react-icons/ai'
 import setLevel from '../../data/Level';
 import { setIcon } from '../../data/Icon';
 import ReactHtmlParser from 'html-react-parser'
+import TimeLeft from '../../data/TimeLeft';
+
+const Input = styled.input`
+  margin-top: 5px;
+  outline: 1px solid #c4c4c4;
+  font-size:1rem;
+  border:none;
+  margin-right:0.3rem;
+  width:20rem;
+  height: 2rem;
+  padding-bottom:0.2rem;
+  ::placeholder {
+      color: #cccccc;
+  }
+  @media screen and (max-width: 790px) {
+      width: 15rem;
+      margin-right:0rem;
+  }
+  &:focus {
+      outline: 1px solid #0078FF;
+      box-shadow: 0px 0px 2px black;
+  }
+`
+
 const Container2 = styled.div`
 width:80%;
 padding:1rem;
@@ -42,13 +65,7 @@ display:flex;
 flex-direction:column;
 align-items:end;
 `
-const Lines2 = styled.hr`
-margin-top:0.5rem;
-margin-bottom:1rem;
-background-color: #8e44ad;
-height:1px;
-width:90%;
-`
+
 const Textarea = styled.textarea`
 width: 80%;
 border-radius: 0.3rem;
@@ -253,21 +270,16 @@ const Auction = () => {
   return (
     <Wrapper>
       <ContentsWrapper style={{
-        borderRadius: '1rem', fontSize: '1rem', color: '#8e44ad', fontWeight: 'bold', borderRadius: '0.5rem'
-        , alignItems: 'center', fontSize: '1.3rem'
-      }}>
-        {item?.name}
-      </ContentsWrapper>
-      <ContentsWrapper style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
         , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'
       }}>
         <Container2>
+          <Title style={{textAlign: 'center', color: '#A52A2A'}}>{item?.name}</Title>
           <Title>상품정보</Title>
           <LeftTextBox style={{ fontWeight: 'bold', color: '#464646', fontSize: '1rem' }}>조회: {item?.views}</LeftTextBox>
           {auth.pk?
           <>
-          <LeftTextBox><AiFillStar style={{fontSize:'2rem',cursor:'pointer',color:`${favorite?'yellow':'#f1f2f6'}`}} 
+          <LeftTextBox><AiFillStar style={{fontSize:'2rem',cursor:'pointer',color:`${favorite?'yellow':'#c8c8c8'}`}} 
           onClick={() => {
             if(favorite){
               if (window.confirm("즐겨찾기를 취소 하시겠습니까?")) {
@@ -278,23 +290,22 @@ const Auction = () => {
                 updateFavorite(1)
               }
             }
-            
-        }} /></LeftTextBox>
+          }} /></LeftTextBox>
           </>
           :
           <>
           </>}
           
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>상품이미지</LeftTextBox>
-          <LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#0064CD', fontSize: '1rem', paddingBottom: '10px', borderTop: '1px solid gray', paddingTop: '20px'}}>상품 메인 이미지</LeftTextBox>
+          <LeftTextBox style={{borderBottom: '1px solid gray', paddingBottom: '20px'}}>
             <img src={`${ServerLink}` + item.main_image ?? ''} style={{ width: '80%', maxWidth: '360px' }} />
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem'}}>상품설명</LeftTextBox>
-          <LeftTextBox style={{minHeight: '10rem'}}>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#0064CD', fontSize: '1rem', paddingBottom: '10px'}}>상품설명</LeftTextBox>
+          <LeftTextBox style={{minHeight: '10rem', borderBottom: '1px solid gray', paddingBottom: '20px'}}>
             {ReactHtmlParser(item?.content ?? '')}
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>태그</LeftTextBox>
-          <LeftTextBox style={{ display: 'flex', flexWrap: 'wrap' }}>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#cd84f1', fontSize: '1rem', paddingBottom: '10px' }}>태그</LeftTextBox>
+          <LeftTextBox style={{ display: 'flex', flexWrap: 'wrap', borderBottom: '1px solid gray', paddingBottom: '20px' }}>
             {tagList.map((item, index) => (
               <div key={index} style={{ background: '#cd84f1', color: 'white', fontWeight: 'bold', cursor: 'pointer', borderRadius: '0.2rem', padding: '0 0.2rem', marginRight: '0.2rem', marginBottom: '0.2rem' }}
                 onClick={() => { history.push({ pathname: '/searchresult', state: { keyword: item, kind: "auction" } }) }}>
@@ -302,41 +313,43 @@ const Auction = () => {
               </div>
             ))}
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>시작가</LeftTextBox>
-          <LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#228B22', fontSize: '1rem', paddingBottom: '10px' }}>상태 :</LeftTextBox>
+          <LeftTextBox style={{fontWeight: 'bold', borderBottom: '1px solid gray', paddingBottom: '20px', color: item?.buy_count === 0 ? '#228B22' : "#CD2E57"}}>
+            {item?.buy_count == 0 ? '경매중' : '경매마감'}
+          </LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#CD2E57', fontSize: '1rem', paddingBottom: '10px' }}>시작가 :</LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', borderBottom: '1px solid gray', paddingBottom: '20px'}}>
             {item?.min_price ?? ''} 원
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>{item?.buy_count===0 ? "현재가" : "마감가"}</LeftTextBox>
-          <LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#CD2E57', fontSize: '1rem', paddingBottom: '10px' }}>{item?.buy_count===0 ? "현재가 :" : "마감가 :"}</LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', borderBottom: '1px solid gray', paddingBottom: '20px'}}>
             {item?.bid_price ?? ''} 원
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>마감일</LeftTextBox>
-          <LeftTextBox>
-            {item?.end_date ?? ''}
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#FF8200', fontSize: '1rem', paddingBottom: '10px' }}>입찰기간</LeftTextBox>
+          <LeftTextBox style={{ color: '#FF8200', borderBottom: '1px solid gray', paddingBottom: '20px'}}>
+            <strong>남은시간: {item?.buy_count===0 ? TimeLeft(item?.end_date) : '마감'}</strong><br/>
+            {item?.create_time} ~<br/>{item?.end_date ?? ''}
           </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>판매자</LeftTextBox>
-          <LeftTextBox onClick={() => { history.push(`/info/${item?.seller_pk}`) }} style={{ cursor: 'pointer' }}>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#8B4513', fontSize: '1rem', paddingBottom: '10px' }}>판매자 :</LeftTextBox>
+          <LeftTextBox onClick={() => { history.push(`/info/${item?.seller_pk}`) }} style={{ cursor: 'pointer', borderBottom: '1px solid gray', paddingBottom: '20px', fontWeight: 'bold' }}>
             {item?.seller_icon &&
-            <img width={25} src={setIcon(item?.seller_icon)}/>
+            <img width={20} src={setIcon(item?.seller_icon)}/>
             }
-            <img width={25} src={setLevel(item?.seller_reliability)}/>{item?.seller_nickname ?? ''}
-          </LeftTextBox>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>상태</LeftTextBox>
-          <LeftTextBox>
-            {item?.buy_count == 0 ? '경매중' : '경매완료'}
+            <img src={setLevel(item?.seller_reliability)}/>{item?.seller_nickname ?? ''}
           </LeftTextBox>
           {item?.buy_count == 1 ?
             <>
-              
-
-
+              <LeftTextBox style={{ fontWeight: 'bold', color: '#8B4513', fontSize: '1rem', paddingBottom: '10px' }}>낙찰자 :</LeftTextBox>
+              <LeftTextBox style={{ borderBottom: '1px solid gray', paddingBottom: '20px', fontWeight: 'bold'}}>
+                {item?.buyer_nickname ?? '없음'}
+              </LeftTextBox>
             </>
             :
             <>
             {item.buyer_nickname?
             <>
-            <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>구매자</LeftTextBox>
-              <LeftTextBox>
+            <LeftTextBox style={{ fontWeight: 'bold', color: '#8B4513', fontSize: '1rem', paddingBottom: '10px' }}>현재 낙찰자 :</LeftTextBox>
+              <LeftTextBox style={{ borderBottom: '1px solid gray', paddingBottom: '20px', fontWeight: 'bold'}}>
                 {item?.buyer_nickname ?? ''}
               </LeftTextBox>
             </>
@@ -344,18 +357,20 @@ const Auction = () => {
             <></>}
             {auth.pk && auth.pk !== item.seller_pk ?
             <>
- {item.bid_price == item.min_price ?
+              {item.bid_price == item.min_price ?
                 <>
-
-                  <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>시작가 낮추기 신청</LeftTextBox>
+                  <LeftTextBox style={{ fontWeight: 'bold', color: '#CD0000', fontSize: '1rem', paddingBottom: '10px' }}>경매신청</LeftTextBox>
+                  <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>시작가 낮추기 신청</LeftTextBox>
                   <LeftTextBox>
                     <InputAndButton>
                       <Input style={{ marginBottom: '0.3rem' }} placeholder='숫자를 입력하세요.' id='request-down-price' />
-                      <Button onClick={() => {
+                      <Button 
+                        style={{width: '7rem'}}
+                        onClick={() => {
                         if (window.confirm("시작가 낮추기 요청을 하겠습니까?")) {
                           requestDownPrice()
                         }
-                      }}>신청</Button>
+                      }}>신청하기</Button>
                     </InputAndButton>
                   </LeftTextBox>
                 </>
@@ -364,15 +379,17 @@ const Auction = () => {
                 </>
               }
 
-              <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>경매가 올리기</LeftTextBox>
+              <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>경매가 올리기</LeftTextBox>
               <LeftTextBox>
                 <InputAndButton>
                   <Input style={{ marginBottom: '0.3rem' }} placeholder='숫자를 입력하세요.' id='up-price' />
-                  <Button onClick={() => {
+                  <Button 
+                    style={{width: '7rem'}}
+                    onClick={() => {
                     if (window.confirm("경매가를 올리시겠습니까?")) {
                       upPrice()
                     }
-                  }}>올리기</Button>
+                  }}>경매가 올리기</Button>
                 </InputAndButton>
               </LeftTextBox>
             </>
@@ -388,28 +405,34 @@ const Auction = () => {
           <>
           {item.seller_pk == auth.pk && item.buy_count == 0 ?
             <>
+              <LeftTextBox style={{ fontWeight: 'bold', color: '#CD0000', fontSize: '1rem', paddingBottom: '10px' }}>경매관리</LeftTextBox>
               {item.bid_price == item.min_price ?
                 <>
-                  <RightTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>시작가 낮추기</RightTextBox>
-                  <RightTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>
+                  <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>시작가 낮추기</LeftTextBox>
+                  <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '1rem' }}>
                     <InputAndButton>
-                      <Input style={{ marginBottom: '0.3rem' }} placeholder='숫자를 입력하세요.' id='down-price' />
-                      <Button onClick={() => {
-                        if (window.confirm("시작가를 낮추시겠습니까?")) {
-                          updateminPrice();
-                        }
-                      }}>낮추기</Button>
+                      <Input placeholder='숫자를 입력하세요.' id='down-price' />
+                      <Button 
+                        style={{width: '7rem'}}
+                        onClick={() => {
+                          if (window.confirm("시작가를 낮추시겠습니까?")) {
+                            updateminPrice();
+                          }
+                      }}>시작가 조정</Button>
                     </InputAndButton>
-                  </RightTextBox>
+                  </LeftTextBox>
                 </>
                 : <></>}
 
-              <RightTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}>낙찰하기</RightTextBox>
-              <RightTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '0.8rem' }}><Button onClick={() => {
-                if (window.confirm("낙찰 하시겠습니까?")) {
-                  successfulAuction()
-                }
-              }}>낙찰</Button></RightTextBox>
+              <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>낙찰하기</LeftTextBox>
+              <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '1rem' }}>
+                <Button
+                  style={{width: '7rem'}} 
+                  onClick={() => {
+                  if (window.confirm("낙찰 하시겠습니까?")) {
+                    successfulAuction()
+                  }
+              }}>경매마감</Button></LeftTextBox>
 
             </>
             :

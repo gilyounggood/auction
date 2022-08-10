@@ -56,11 +56,11 @@ const AuctionComponent = (props) => {
         <BoxImage style={{ backgroundImage: `url(${`${ServerLink}${props?.main_image}`})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center center', position: 'relative' }} />
         <LeftTextBox style={{ fontSize: '1rem', fontWeight: 'bold' }}>{props.name} {chatList.length>0 && <strong style={{ fontSize: '1rem', color: '#e84118' }}>[{chatList.length}]</strong>}</LeftTextBox>
         <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>경매가 | <strong style={{ fontSize: '1rem', color: '#e84118' }}>{props.bid_price}</strong> 원</RightTextBox>
-        <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>등록인 | <strong style={{ fontSize: '1rem', color: '#ababab' }}>
+        <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>등록인 | <strong style={{ fontSize: '0.9rem', color: '#FF8200' }}>
           {props.seller_icon &&
-          <img width={25} src={setIcon(props.seller_icon)}/>
+          <img width={15} src={setIcon(props.seller_icon)}/>
           }
-          <img width={25} src={setLevel(props.seller_reliability)}/>{props.seller_nickname}</strong></RightTextBox>
+          <img src={setLevel(props.seller_reliability)}/>{props.seller_nickname}</strong></RightTextBox>
         <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>상태 | {props?.buy_count == 0 ? '경매중' : '경매완료'} | 조회수 | {props.views}</RightTextBox>
 
         <RightTextBox style={{ fontSize: '0.8rem', color: '#5a5a5a' }}>마감일자 | {props.end_date}</RightTextBox>
