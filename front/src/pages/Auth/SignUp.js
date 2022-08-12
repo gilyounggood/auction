@@ -132,7 +132,7 @@ const SignUp = () => {
         setPhoneNumber(e.target.value)
     }
     return (
-        <Wrapper >
+        <Wrapper style={{paddingBottom: '0.1rem'}}>
             <ContentsWrapper style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`,minHeight:'28rem'

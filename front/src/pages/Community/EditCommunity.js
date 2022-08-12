@@ -159,6 +159,9 @@ const EditCommunity = () => {
                         editor={ ClassicEditor }
                         config= {{
                             extraPlugins: [uploadPlugin],
+                            mediaEmbed: {
+                                previewsInData : true,
+                            },
                             heading: {
                             options: [
                                 {

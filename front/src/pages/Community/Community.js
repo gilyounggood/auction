@@ -24,7 +24,7 @@ import $ from 'jquery'
 const PostInfo = styled.div`
 font-size: 1.05rem;
 margin-left:0.3rem;
-width:12rem;
+width:40rem;
 padding: 10px;
 `
 
@@ -296,7 +296,7 @@ const Community = () => {
                     </Content>
                     <Content>
                       <PostInfo
-                        style={{minHeight: '15rem'}}
+                        style={{minHeight: '15rem', }}
                       >
                         {ReactHtmlParser(`${data?.content}`)}
                       </PostInfo>

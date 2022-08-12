@@ -109,7 +109,7 @@ const AddCommunity = () => {
                             axios.post('/api/upload', data)
                                 .then((res) => {
                                     resolve({
-                                        default: `${imgLink}/${res.data.filename}`
+                                        default: `${imgLink}/${res.data.filename}`,
                                     });
                                 })
                                 .catch((err)=>reject(err));
@@ -151,6 +151,10 @@ const AddCommunity = () => {
                         editor={ ClassicEditor }
                         config= {{
                             extraPlugins: [uploadPlugin],
+                            mediaEmbed: {
+                                // elementName: 'iframe',
+                                previewsInData : true,
+                            },
                             heading: {
                             options: [
                                 {
