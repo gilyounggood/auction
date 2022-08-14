@@ -202,11 +202,11 @@ const EditCommunity = () => {
                     </Content> */}
                 </Container>
                 <CenterButtonContainer>
-                <Button onClick={()=>{history.goBack()}}>
-                        뒤로가기
+                <Button style={{width: '8rem', height: '2.5rem', background: '#CD2E57'}} onClick={()=>{history.goBack()}}>
+                        취소
                     </Button>
-                    <Button onClick={Edit}>
-                        수정
+                    <Button style={{width: '8rem', height: '2.5rem', background: '#228B22'}} onClick={Edit}>
+                        수정하기
                     </Button>
                 </CenterButtonContainer>
             </ContentsWrapper>

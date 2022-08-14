@@ -256,7 +256,7 @@ const CommunityList = () => {
                 {slide == 1 && myLevel >= 40 ?
                     <>
                         <RightButtonContainer>
-                            <Button onClick={() => { history.push('/addcommunity/1') }}>추가하기</Button>
+                            <Button style={{width: '6rem', height: '2.5rem'}} onClick={() => { history.push('/addcommunity/1') }}>글쓰기</Button>
                         </RightButtonContainer>
                     </>
                     : <>
@@ -265,7 +265,7 @@ const CommunityList = () => {
                 {slide == 2 && myLevel >= 0 ?
                     <>
                         <RightButtonContainer>
-                            <Button onClick={() => { history.push('/addcommunity/2') }}>추가하기</Button>
+                            <Button style={{width: '6rem', height: '2.5rem'}} onClick={() => { history.push('/addcommunity/2') }}>글쓰기</Button>
                         </RightButtonContainer>
                     </>
                     :

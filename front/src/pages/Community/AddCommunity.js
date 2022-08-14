@@ -132,7 +132,7 @@ const AddCommunity = () => {
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`
             }}>
                 
-                <Title>{params.pk==1?'공지사항 추가':'자유게시판 추가'}</Title>
+                <Title>{params.pk==1?'공지사항 추가':'게시판 글쓰기'}</Title>
                 
                 <Container style={{justifyContent: 'center', alignItems: 'center'}}>
                     <Content>
@@ -195,10 +195,10 @@ const AddCommunity = () => {
                     </Content> */}
                 </Container>
                 <CenterButtonContainer>
-                <Button onClick={()=>{history.goBack()}}>
-                        뒤로가기
+                <Button style={{width: '8rem', height: '2.5rem', background: '#CD2E57'}} onClick={()=>{history.goBack()}}>
+                        취소
                     </Button>
-                    <Button onClick={upLoad}>
+                    <Button style={{width: '8rem', height: '2.5rem', background: '#228B22'}} onClick={upLoad}>
                         업로드
                     </Button>
                 </CenterButtonContainer>

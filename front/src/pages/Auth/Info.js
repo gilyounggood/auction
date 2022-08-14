@@ -17,6 +17,26 @@ import setLevel from '../../data/Level';
 import { setIcon } from '../../data/Icon';
 import $ from 'jquery'
 
+const Input = styled.input`
+    outline: 1px solid #c4c4c4;
+    font-size:1rem;
+    border:none;
+    margin-left:0.3rem;
+    width:25rem;
+    height: 2rem;
+    padding-bottom:0.2rem;
+    ::placeholder {
+        color: #cccccc;
+    }
+    @media screen and (max-width: 790px) {
+        width: 285px;
+    }
+    &:focus {
+        outline: 1px solid #0078FF;
+        box-shadow: 0px 0px 2px black;
+    }
+`
+
 const Button = styled.button`
 width:12.2rem;
 height:3rem;
@@ -58,22 +78,8 @@ border-bottom:1px solid black;
 margin-left:0.3rem;
 width:12rem;
 padding-bottom:0.2rem;
-
-
 `
-const Input = styled.input`
-outline:none;
-font-size:0.9rem;
-border:none;
-border-bottom:1px solid black;
-margin-left:0.3rem;
-width:12rem;
-padding-bottom:0.2rem;
-::placeholder {
-    color: #cccccc;
-  }
 
-`
 const Check = styled.div`
 width:21.5rem;
 text-align:left;
@@ -290,59 +296,45 @@ const Info = () => {
                 <Container>
                     <Title>Profile</Title>
 
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>닉네임</div>
+                    <Content style={{ marginBottom: '1rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#1E90FF', fontSize: '1rem', fontWeight: 'bold' }}>닉네임</div>
+                        <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#1E90FF' }}>{nickname}</Div>
                     </Content>
-                    <Content>
-                        <Div>{nickname}</Div>
+                    <Content style={{ marginBottom: '1rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#483D8B', fontSize: '1rem', fontWeight: 'bold' }}>전화번호</div>
+                        <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '2.5rem', fontWeight: 'bold', color: '#483D8B' }}>{phoneNumber}</Div>
                     </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>전화번호</div>
+                    <Content style={{ marginBottom: '1rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '1rem', fontWeight: 'bold' }}>레벨</div>
+                        <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '4.4rem', fontWeight: 'bold', color: '#483D8B' }}><img width={25} src={setLevel(reliability)}/></Div>
                     </Content>
-                    <Content>
-                        <Div>{phoneNumber}</Div>
-                    </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>레벨</div>
-                    </Content>
-                    <Content>
-                        <Div><img width={25} src={setLevel(reliability)}/></Div>
-                    </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>아이콘</div>
-                    </Content>
-                    <Content>
+                    <Content style={{ marginBottom: '1rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#FF5675', fontSize: '1rem', fontWeight: 'bold' }}>아이콘</div>
                         {myIcon ?
                             <>
-                            <Div><img width={30} src={setIcon(myIcon)}/></Div>
+                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#483D8B' }}><img width={25} src={setIcon(myIcon)} /></Div>
                             </> :
                             <>
-                            <Div>없음</Div>
+                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#483D8B' }}>없음</Div>
                             </>
                         }
                     </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>신뢰도</div>
+                    <Content style={{ marginBottom: '1rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#AE5E1A', fontSize: '1rem', fontWeight: 'bold' }}>신뢰도</div>
+                        <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#AE5E1A' }}>{reliability}</Div>
                     </Content>
-                    <Content>
-                        <Div>{reliability}</Div>
+                    <Content style={{ marginBottom: '1rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#FF8200', fontSize: '1rem', fontWeight: 'bold' }}>포인트</div>
+                        <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#FF8200' }}>{point}</Div>
                     </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>포인트</div>
-                    </Content>
-                    <Content>
-                        <Div>{point}</Div>
-                    </Content>
-                    <Content style={{ marginBottom: '0.3rem' }}>
-                        <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>관심 태그</div>
-                    </Content>
-                    <Content>
+                    <Content style={{ marginBottom: '1rem' }}>
+                        <div style={{ marginLeft: '0.3rem', color: '#006400', fontSize: '1rem', fontWeight: 'bold' }}>관심 태그</div>
                         {userTagInfo ?
                             <>
-                            <Div>{userTagInfo}</Div>
+                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '2rem', fontWeight: 'bold', color: '#006400' }}>{userTagInfo}</Div>
                             </> :
                             <>
-                            <Div>없음</Div>
+                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '2rem', fontWeight: 'bold', color: '#006400' }}>없음</Div>
                             </>
                         }
                     </Content>
@@ -353,7 +345,7 @@ const Info = () => {
                             <Content>
                                 <Input id="tag2" type='text' onChange={onChangeTag} />
                             </Content>
-                            <Button style={{ marginBottom: '2rem' }}
+                            <Button style={{ marginBottom: '2rem', width: '7rem', height: '2.5rem' }}
                                 onClick={editTag}>태그 수정하기</Button>
                         </>
                         ) :
@@ -362,7 +354,7 @@ const Info = () => {
                             <Content>
                                 <Input id="tag" type='text' onChange={onChangeTag} />
                             </Content>
-                            <Button style={{ marginBottom: '2rem' }}
+                            <Button style={{ marginBottom: '2rem', width: '7rem', height: '2.5rem' }}
                                 onClick={addTag}>태그 등록하기</Button> 
                         </>
                         )
@@ -373,25 +365,25 @@ const Info = () => {
                         <>
                             <Title>비밀번호 변경</Title>
                             <Content style={{ marginBottom: '0.3rem' }}>
-                                <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>현재 비밀번호</div>
+                                <div style={{ marginLeft: '0.3rem', color: 'black', fontSize: '1rem', fontWeight: 'bold' }}>현재 비밀번호</div>
                             </Content>
                             <Content>
-                                <Input type='password' placeholder='****' onChange={onChangePassword} />
+                                <Input type='password' onChange={onChangePassword} />
                             </Content>
                             <Content style={{ marginBottom: '0.3rem' }}>
-                                <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>새 비밀번호</div>
+                                <div style={{ marginLeft: '0.3rem', color: '#B9062F', fontSize: '1rem', fontWeight: 'bold' }}>새 비밀번호</div>
                             </Content>
                             <Content>
-                                <Input type='password' placeholder='****' onChange={onChangeNewPassword} />
+                                <Input type='password' onChange={onChangeNewPassword} />
                             </Content>
                             <Content style={{ marginBottom: '0.3rem' }}>
-                                <div style={{ marginLeft: '0.3rem', color: '#cd84f1', fontSize: '0.9rem', fontWeight: 'bold' }}>비밀번호 확인</div>
+                                <div style={{ marginLeft: '0.3rem', color: '#B9062F', fontSize: '1rem', fontWeight: 'bold' }}>비밀번호 확인</div>
                             </Content>
                             <Content style={{ marginBottom: '0' }}>
-                                <Input style={{ marginBottom: '0.2rem' }} type='password' placeholder='****' onChange={onChangeNewPasswordCheck} />
+                                <Input style={{ marginBottom: '0.2rem' }} type='password' onChange={onChangeNewPasswordCheck} />
                             </Content>
                             <Check>{check ? '' : '비밀번호가 일치하지 않습니다.'}</Check>
-                            <Button style={{ marginBottom: '2rem' }}
+                            <Button style={{ marginBottom: '2rem', width: '5rem', height: '2.5rem' }}
                                 onClick={handleChangePassword}>변경하기</Button>
                         </>
                         :
@@ -416,6 +408,7 @@ const Info = () => {
                                 <Td>낙찰일</Td>
                                 <Td>구매자</Td>
                                 <Td>상태</Td>
+                                <Td>상세보기</Td>
                                 <Td>가격</Td>
                                 <Td>비고</Td>
                             </Tr>
@@ -427,6 +420,7 @@ const Info = () => {
                                     <Td>{post.end_date}</Td>
                                     <Td>{post.buyer_nickname??'----'}</Td>
                                     <Td>{post.buy_count==0?'경매중':'경매완료'}</Td>
+                                    <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/auction/${post.pk}`) }} /></Td>
                                     <Td>{post.bid_price}원</Td>
                                     <Td>
                                         {post.seller_pk==myPk?
@@ -464,6 +458,7 @@ const Info = () => {
                                 <Td>낙찰일</Td>
                                 <Td>판매자</Td>
                                 <Td>상태</Td>
+                                <Td>상세보기</Td>
                                 <Td>가격</Td>
                             </Tr>
                             </thead>
@@ -474,6 +469,7 @@ const Info = () => {
                                     <Td>{post.end_date}</Td>
                                     <Td>{post.seller_nickname??'---'}</Td>
                                     <Td>{post.buy_count==0?'경매중':'경매완료'}</Td>
+                                    <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/auction/${post.pk}`) }} /></Td>
                                     <Td>{post.bid_price}원</Td>
                                 </Tr>
                             ))}
