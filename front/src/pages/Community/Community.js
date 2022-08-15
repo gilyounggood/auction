@@ -6,7 +6,6 @@ import Wrapper from '../../components/elements/Wrapper';
 import '../../styles/style.css'
 import Title from '../../components/elements/Title';
 import Button from '../../components/elements/Button';
-import Input from '../../components/elements/Input';
 import Container from '../../components/elements/Container';
 import Content from '../../components/elements/Content';
 import SubTitle from '../../components/elements/SubTitle';
@@ -15,24 +14,28 @@ import ContentsWrapper from '../../components/elements/ContentWrapper';
 import setLevel from '../../data/Level';
 import ReactHtmlParser from 'html-react-parser'
 import { setIcon } from '../../data/Icon';
-import { IoCompassOutline, IoConstructOutline } from 'react-icons/io5';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai'
 import { BsArrowReturnRight } from 'react-icons/bs'
 import { IoChatbubbleEllipses } from 'react-icons/io5'
+import { GoThumbsup } from 'react-icons/go'
+import { GoThumbsdown } from 'react-icons/go'
 import $ from 'jquery'
 
 const PostInfo = styled.div`
-font-size: 1.05rem;
-margin-left:0.3rem;
-width:40rem;
-padding: 10px;
+  font-size: 1.05rem;
+  margin-left:0.3rem;
+  width:30rem;
+  padding: 10px;
+  @media screen and (max-width: 500px) {
+    width: 20rem;
+  }
 `
 
 const CommentName = styled.div`
   color: #0A6EFF;
   font-size: 1.0rem;
   margin-left: 6px;
-}
+
 `
 
 const CommentTime = styled.span`
@@ -69,6 +72,16 @@ const ReplyWrapper = styled.div`
   min-height: 60px;
 `
 
+const ButtonOutLine = styled.button`
+  width: 5.5rem;
+  height: 3.5rem;
+  background: white;
+  font-size: 1.3rem; 
+  border: 1px solid #969696;
+  border-radius: 5px;
+  cursor: pointer;
+`
+
 const Community = () => {
   const params = useParams()
   const [auth, setAuth] = useState(false)
@@ -90,6 +103,7 @@ const Community = () => {
   const [replyContent, setReplyContent] = useState({
     reply_content: ""
   })
+  const [upDownList, setUpDownList] = useState([])
 
   const {comment_content} = commentContent
   const {reply_content} = replyContent
@@ -115,6 +129,9 @@ const Community = () => {
 
     const {data: response3} = await axios.post('/api/reply', {pk:params.pk})
     setReplyList(response3.data)
+
+    const {data: response4} = await axios.post('/api/up_down', {community_pk: params.pk})
+    setUpDownList(response4.data)
   }
 
   useEffect(()=>{
@@ -252,10 +269,33 @@ const Community = () => {
       setReplyList(response2.data)
     }
   }
+  
+  const upDownRequest = async (kind) => {
+    for (var i = 0; i < upDownList.length; i++) {
+      if(upDownList[i].user_pk === myPk){
+        alert("이미 추천 혹은 반대 한 게시글입니다.")
+        return;
+      } 
+    }
+    await axios.post('/api/addup_down', {
+      community_pk: params.pk,
+      user_pk: myPk,
+      up_down: kind
+    })
+    if(kind ===1) {
+      alert("게시글 추천 완료")
+    } else {
+      alert("게시글 반대 완료")
+    }
+    const {data: response} = await axios.post('/api/up_down', {community_pk: params.pk})
+    setUpDownList(response.data)
+  }
+
+  const upList = upDownList.filter(list => list.up_down === 1);
+  const downList = upDownList.filter(list => list.up_down === -1)
 
   return (
     <Wrapper>
-      
       <ContentsWrapper style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`
@@ -295,11 +335,31 @@ const Community = () => {
                         <SubTitle style={{fontSize: '1.1rem'}}>내용</SubTitle>
                     </Content>
                     <Content>
-                      <PostInfo
-                        style={{minHeight: '15rem', }}
-                      >
+                      <PostInfo style={{minHeight: '15rem', }}>
                         {ReactHtmlParser(`${data?.content}`)}
                       </PostInfo>
+                    </Content>
+                    <Content style={{justifyContent: 'center' }}>
+                      <ButtonOutLine 
+                        style={{color: '#B9062F'}}
+                        onClick={() => {
+                          if (window.confirm("게시글에 추천 하시겠습니까?")) {
+                            upDownRequest(1)
+                          }
+                        }}
+                      >
+                        <GoThumbsup/> {upList.length}
+                      </ButtonOutLine>
+                      <ButtonOutLine
+                        style={{ marginLeft: '1rem', color: '#4169E1' }}
+                        onClick={() => {
+                          if (window.confirm("게시글에 반대 하시겠습니까?")) {
+                            upDownRequest(-1)
+                          }
+                        }}
+                      >
+                        <GoThumbsdown/> {downList.length}
+                      </ButtonOutLine>
                     </Content>
                     <Content>
                         <SubTitle style={{fontSize: '1.1rem'}}>

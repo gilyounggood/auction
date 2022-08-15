@@ -116,6 +116,7 @@ const Auction = () => {
 
   const [chatList, setChatList] = useState([])
   const [favorite, setFavorite] = useState(false)
+  const [favoriteList, setFavoriteList] = useState(0)
   useEffect(() => {
     async function fetchPosts() {
       const { data: response } = await axios.get('/api/auth')
@@ -135,6 +136,7 @@ const Auction = () => {
         for(var i =0;i<response2?.data?.favorite?.length;i++){
           if(response2?.data?.favorite[i].user_pk==response.pk){
             setFavorite(true)
+            setFavoriteList(response2?.data?.favorite)
           }
         }
       } else {
@@ -276,11 +278,13 @@ const Auction = () => {
         <Container2>
           <Title style={{textAlign: 'center', color: '#A52A2A'}}>{item?.name}</Title>
           <Title>상품정보</Title>
-          <LeftTextBox style={{ fontWeight: 'bold', color: '#464646', fontSize: '1rem' }}>조회: {item?.views}</LeftTextBox>
-          {auth.pk?
-          <>
-          <LeftTextBox><AiFillStar style={{fontSize:'2rem',cursor:'pointer',color:`${favorite?'yellow':'#c8c8c8'}`}} 
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#464646', fontSize: '1rem', paddingBottom: '10px' }}>조회: {item?.views}</LeftTextBox>
+          <LeftTextBox style={{ fontWeight: 'bold', color: '#008080', fontSize: '1rem', paddingBottom: '10px' }}>관심등록 <AiFillStar style={{fontSize:'2rem',cursor:'pointer',color:`${favorite?'#FFDC3C':'#c8c8c8'}`, marginLeft: '5px'}} 
           onClick={() => {
+            if(!auth.pk) {
+              alert("로그인 후 이용 가능합니다")
+              return;
+            }
             if(favorite){
               if (window.confirm("즐겨찾기를 취소 하시겠습니까?")) {
                 updateFavorite(-1)
@@ -290,11 +294,7 @@ const Auction = () => {
                 updateFavorite(1)
               }
             }
-          }} /></LeftTextBox>
-          </>
-          :
-          <>
-          </>}
+          }} /> ({favoriteList.length ?? 0})</LeftTextBox>
           
           <LeftTextBox style={{ fontWeight: 'bold', color: '#0064CD', fontSize: '1rem', paddingBottom: '10px', borderTop: '1px solid gray', paddingTop: '20px'}}>상품 메인 이미지</LeftTextBox>
           <LeftTextBox style={{borderBottom: '1px solid gray', paddingBottom: '20px'}}>

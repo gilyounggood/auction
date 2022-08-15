@@ -915,7 +915,87 @@ router.post('/community', (req, res) => {
     }
 })
 
-//======================================
+// 커뮤니티 추천 반대 추가
+
+router.post('/addup_down', (req, res) => {
+    try {
+        const community_pk = req.body.community_pk;
+        const comment_pk = req.body.comment_pk;
+        const reply_pk = req.body.reply_pk;
+        const user_pk = req.body.user_pk;
+        const up_down = req.body.up_down;
+
+        let kind;
+        let params;
+
+        if(community_pk) {
+            kind = 'community_pk'
+            params = community_pk;
+        } else if(comment_pk) {
+            kind = 'comment_pk'
+            params = comment_pk;
+        } else if (reply_pk) {
+            kind = 'reply_pk'
+            params = reply_pk;
+        } else {
+            kind = null;
+            params = null;
+        }
+
+        db.query(`INSERT INTO up_down_table (${kind}, user_pk, up_down) VALUES (?,?,?)`, [params, user_pk, up_down], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200 ,"추천 반대 실패", [])
+            } else {
+                response(req, res, 200, "추천 반대 성공", [])
+            }
+        })
+    } 
+    catch(err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+// 추천 반대 조회
+router.post('/up_down', (req, res) => {
+    try {
+        const community_pk = req.body.community_pk;
+        const comment_pk = req.body.comment_pk;
+        const reply_pk = req.body.reply_pk;
+
+        let kind;
+        let params;
+
+        if(community_pk) {
+            kind = 'community_pk'
+            params = community_pk;
+        } else if(comment_pk) {
+            kind = 'comment_pk'
+            params = comment_pk;
+        } else if (reply_pk) {
+            kind = 'reply_pk'
+            params = reply_pk;
+        } else {
+            kind = null;
+            params = null;
+        }
+
+        db.query(`SELECT * FROM up_down_table WHERE ${kind}=?`, [params], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200 ,"추천 반대 실패", [])
+            } else {
+                response(req, res, 200, "추천 반대 성공", result)
+            }
+        })
+    } 
+    catch(err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 //경매 로그 추가
 router.post('/addchat', (req, res) => {
     try {
