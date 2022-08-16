@@ -32,6 +32,7 @@ const PostInfo = styled.div`
 `
 
 const CommentName = styled.div`
+  font-weight: bold;
   color: #0A6EFF;
   font-size: 1.0rem;
   margin-left: 6px;
@@ -39,6 +40,7 @@ const CommentName = styled.div`
 `
 
 const CommentTime = styled.span`
+  font-weight: normal;
   margin-left: 3px;
   color: gray;
   font-size: 0.8rem;
@@ -270,29 +272,75 @@ const Community = () => {
     }
   }
   
-  const upDownRequest = async (kind) => {
-    for (var i = 0; i < upDownList.length; i++) {
-      if(upDownList[i].user_pk === myPk){
-        alert("이미 추천 혹은 반대 한 게시글입니다.")
-        return;
-      } 
+  const community_upDownList = upDownList.filter(list => list.community_pk !== null && list.comment_pk === null && list.reply_pk === null);
+  const comment_upDownList = upDownList.filter(list => list.comment_pk !== null);
+  const reply_upDownList = upDownList.filter(list => list.reply_pk !== null);
+
+  const upDownRequest = async (kind, pk, up_down) => {
+    if(!auth) {
+      alert("로그인 후 이용 가능합니다.")
+      return;
     }
-    await axios.post('/api/addup_down', {
-      community_pk: params.pk,
-      user_pk: myPk,
-      up_down: kind
-    })
-    if(kind ===1) {
-      alert("게시글 추천 완료")
+    if (kind===1) {
+      for (var i = 0; i < community_upDownList.length; i++) {
+        if(community_upDownList[i].user_pk === myPk){
+          alert("이미 추천 혹은 반대 한 게시글입니다.")
+          return;
+        } 
+      }
+    } else if (kind===2) {
+      for (var i = 0; i < comment_upDownList.filter(list => list.comment_pk === pk).length; i++) {
+        if(comment_upDownList.filter(list => list.comment_pk === pk)[i].user_pk === myPk){
+          alert("이미 추천 혹은 반대 한 댓글입니다.")
+          return;
+        } 
+      }
     } else {
-      alert("게시글 반대 완료")
+      for (var i = 0; i < reply_upDownList.filter(list => list.reply_pk === pk).length; i++) {
+        if(reply_upDownList.filter(list => list.reply_pk === pk)[i].user_pk === myPk){
+          alert("이미 추천 혹은 반대 한 답글입니다.")
+          return;
+        } 
+      }
+    }
+    if(kind === 1) {
+      await axios.post('/api/addup_down', {
+        community_pk: pk,
+        user_pk: myPk,
+        up_down: up_down
+      })
+    } else if (kind === 2) {
+      await axios.post('/api/addup_down', {
+        community_pk: params.pk,
+        comment_pk: pk,
+        user_pk: myPk,
+        up_down: up_down
+      })
+    } else {
+      await axios.post('/api/addup_down', {
+        community_pk: params.pk,
+        reply_pk: pk,
+        user_pk: myPk,
+        up_down: up_down
+      })
+    }
+    if(up_down===1) {
+      alert("추천 완료")
+    } else {
+      alert("반대 완료")
     }
     const {data: response} = await axios.post('/api/up_down', {community_pk: params.pk})
     setUpDownList(response.data)
   }
 
-  const upList = upDownList.filter(list => list.up_down === 1);
-  const downList = upDownList.filter(list => list.up_down === -1)
+  const community_upList = upDownList.filter(list => list.up_down === 1 && list.community_pk !== null && list.comment_pk === null && list.reply_pk === null);
+  const community_downList = upDownList.filter(list => list.up_down === -1 && list.community_pk !== null && list.comment_pk === null && list.reply_pk === null);
+
+  const comment_upList = upDownList.filter(list => list.up_down === 1 && list.comment_pk !== null);
+  const comment_downList = upDownList.filter(list => list.up_down === -1 && list.comment_pk !== null);
+
+  const reply_upList = upDownList.filter(list => list.up_down === 1 && list.reply_pk !== null);
+  const reply_downList = upDownList.filter(list => list.up_down === -1 && list.reply_pk !== null);
 
   return (
     <Wrapper>
@@ -344,21 +392,21 @@ const Community = () => {
                         style={{color: '#B9062F'}}
                         onClick={() => {
                           if (window.confirm("게시글에 추천 하시겠습니까?")) {
-                            upDownRequest(1)
+                            upDownRequest(1, data?.pk, 1)
                           }
                         }}
                       >
-                        <GoThumbsup/> {upList.length}
+                        <GoThumbsup/> {community_upList.length}
                       </ButtonOutLine>
                       <ButtonOutLine
                         style={{ marginLeft: '1rem', color: '#4169E1' }}
                         onClick={() => {
                           if (window.confirm("게시글에 반대 하시겠습니까?")) {
-                            upDownRequest(-1)
+                            upDownRequest(1, data?.pk, -1)
                           }
                         }}
                       >
-                        <GoThumbsdown/> {downList.length}
+                        <GoThumbsdown/> {community_downList.length}
                       </ButtonOutLine>
                     </Content>
                     <Content>
@@ -375,14 +423,34 @@ const Community = () => {
                                 <img src={setLevel(comment.comment_user_reliability)}/>
                                 {comment.comment_user_nickname}
                                 <CommentTime>({comment.create_time})</CommentTime>
+                                  <ButtonOutLine
+                                    style={{ marginLeft: '0.3rem', color: '#B9062F', width: '2.4rem', height: '1.8rem', fontSize: '0.8rem' }}
+                                    onClick={() => {
+                                      if (window.confirm("댓글에 추천 하시겠습니까?")) {
+                                        upDownRequest(2, comment.pk, 1)
+                                      }
+                                    }}
+                                  >
+                                    <GoThumbsup /> {comment_upList.filter(list => list.comment_pk === comment.pk).length}
+                                  </ButtonOutLine>
+                                  <ButtonOutLine
+                                    style={{ marginLeft: '0.3rem', color: '#4169E1', width: '2.4rem', height: '1.8rem', fontSize: '0.8rem' }}
+                                    onClick={() => {
+                                      if (window.confirm("댓글에 반대 하시겠습니까?")) {
+                                        upDownRequest(2, comment.pk, -1)
+                                      }
+                                    }}
+                                  >
+                                    <GoThumbsdown /> {comment_downList.filter(list => list.comment_pk === comment.pk).length}
+                                  </ButtonOutLine>
                                 {comment.comment_user_nickname === myNickName && input !== comment.pk &&
                                   <>
                                     <AiFillEdit
-                                      style={{color: '#0A82FF',marginLeft: '10px', cursor: 'pointer',}}
+                                      style={{color: '#0A82FF',marginLeft: '10px', cursor: 'pointer' }}
                                       onClick={()=> {handleClick(comment.pk)}}
                                     />
                                     <AiFillDelete 
-                                      style={{color: 'red', marginLeft: '5px', cursor: 'pointer',}}
+                                      style={{color: 'red', marginLeft: '5px', cursor: 'pointer' }}
                                       onClick={() => { 
                                           if(window.confirm('댓글을 삭제하시겠습니까?')) {
                                           deleteComment(comment.pk)
@@ -430,6 +498,26 @@ const Community = () => {
                                                 <img src={setLevel(reply.reply_user_reliability)}/>
                                                 {reply.reply_user_nickname}
                                                 <CommentTime>({reply.create_time})</CommentTime>
+                                                <ButtonOutLine
+                                                  style={{ marginLeft: '0.3rem', color: '#B9062F', width: '2.4rem', height: '1.8rem', fontSize: '0.8rem' }}
+                                                  onClick={() => {
+                                                    if (window.confirm("답글에 추천 하시겠습니까?")) {
+                                                      upDownRequest(3, reply.pk, 1)
+                                                    }
+                                                  }}
+                                                >
+                                                  <GoThumbsup /> {reply_upList.filter(list => list.reply_pk === reply.pk).length}
+                                                </ButtonOutLine>
+                                                <ButtonOutLine
+                                                  style={{ marginLeft: '0.3rem', color: '#4169E1', width: '2.4rem', height: '1.8rem', fontSize: '0.8rem' }}
+                                                  onClick={() => {
+                                                    if (window.confirm("답글에 반대 하시겠습니까?")) {
+                                                      upDownRequest(3, reply.pk, -1)
+                                                    }
+                                                  }}
+                                                >
+                                                  <GoThumbsdown /> {reply_downList.filter(list => list.reply_pk === reply.pk).length}
+                                                </ButtonOutLine>
                                                 {reply.reply_user_nickname === myNickName && input2 !== reply.pk &&
                                                   <>
                                                     <AiFillEdit

@@ -924,25 +924,22 @@ router.post('/addup_down', (req, res) => {
         const reply_pk = req.body.reply_pk;
         const user_pk = req.body.user_pk;
         const up_down = req.body.up_down;
+        
+        let sql = '';
+        let params = [];
 
-        let kind;
-        let params;
-
-        if(community_pk) {
-            kind = 'community_pk'
-            params = community_pk;
-        } else if(comment_pk) {
-            kind = 'comment_pk'
-            params = comment_pk;
+        if (comment_pk) {
+            sql = `INSERT INTO up_down_table (community_pk, comment_pk, user_pk, up_down) VALUES (?,?,?,?)`;
+            params = [community_pk, comment_pk, user_pk, up_down];
         } else if (reply_pk) {
-            kind = 'reply_pk'
-            params = reply_pk;
+            sql = `INSERT INTO up_down_table (community_pk, reply_pk, user_pk, up_down) VALUES (?,?,?,?)`;
+            params = [community_pk, reply_pk, user_pk, up_down];
         } else {
-            kind = null;
-            params = null;
+            sql = `INSERT INTO up_down_table (community_pk, user_pk, up_down) VALUES (?,?,?)`;
+            params = [community_pk, user_pk, up_down];
         }
 
-        db.query(`INSERT INTO up_down_table (${kind}, user_pk, up_down) VALUES (?,?,?)`, [params, user_pk, up_down], (err, result) => {
+        db.query(sql, params, (err, result) => {
             if (err) {
                 console.log(err)
                 response(req, res, -200 ,"추천 반대 실패", [])
@@ -961,27 +958,8 @@ router.post('/addup_down', (req, res) => {
 router.post('/up_down', (req, res) => {
     try {
         const community_pk = req.body.community_pk;
-        const comment_pk = req.body.comment_pk;
-        const reply_pk = req.body.reply_pk;
 
-        let kind;
-        let params;
-
-        if(community_pk) {
-            kind = 'community_pk'
-            params = community_pk;
-        } else if(comment_pk) {
-            kind = 'comment_pk'
-            params = comment_pk;
-        } else if (reply_pk) {
-            kind = 'reply_pk'
-            params = reply_pk;
-        } else {
-            kind = null;
-            params = null;
-        }
-
-        db.query(`SELECT * FROM up_down_table WHERE ${kind}=?`, [params], (err, result) => {
+        db.query(`SELECT * FROM up_down_table WHERE community_pk=?`,[community_pk] ,(err, result) => {
             if (err) {
                 console.log(err)
                 response(req, res, -200 ,"추천 반대 실패", [])
