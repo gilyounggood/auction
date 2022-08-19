@@ -42,6 +42,8 @@ const CommunityList = () => {
     const [posts, setPosts] = useState([])
     const [myLevel, setMyLevel] = useState(0);
     const [myPk, setMyPk] = useState(0)
+    const [comment, setComment] = useState([])
+    const [reply, setReply] = useState([])
     useEffect(() => {
         async function fetchPosts() {
             setLoading(true)
@@ -67,6 +69,22 @@ const CommunityList = () => {
             const { data: response } = await axios.post(url, obj)
             setSlide(params.pk)
             setPosts(response.data.result)
+            let array = [];
+            let array2 = [];
+            for(var i =0; i<response.data.result.length; i++){
+                const { data: response2 } = await axios.post('/api/comment', {pk: response.data.result[i].pk})
+                array.push({
+                    pk : response.data.result[i].pk,
+                    length: response2.data.length
+                })
+                const { data: response3 } = await axios.post('/api/reply', {pk: response.data.result[i].pk})
+                array2.push({
+                    pk : response.data.result[i].pk,
+                    length: response3.data.length
+                })
+            }
+            setComment(array)
+            setReply(array2)
             setMaxPage(response.data.maxPage)
             let arr = [];
             for (var i = 1; i <= response.data.maxPage; i++) {
@@ -101,6 +119,22 @@ const CommunityList = () => {
         }
         const { data: response } = await axios.post(url, obj)
         setPosts(response.data.result)
+        let array = [];
+        let array2 = [];
+        for(var i =0; i<response.data.result.length; i++){
+            const { data: response2 } = await axios.post('/api/comment', {pk: response.data.result[i].pk})
+            array.push({
+                pk : response.data.result[i].pk,
+                length: response2.data.length
+            })
+            const { data: response3 } = await axios.post('/api/reply', {pk: response.data.result[i].pk})
+            array2.push({
+                pk : response.data.result[i].pk,
+                length: response3.data.length
+            })
+        }
+        setComment(array)
+        setReply(array2)
         setMaxPage(response.data.maxPage)
         let arr = [];
         for (var i = 1; i <= response.data.maxPage; i++) {
@@ -117,6 +151,7 @@ const CommunityList = () => {
             changePage(page)
         }
     }
+
     return (
         <Wrapper style={{ minHeight: '70.8vh' }}>
             <ContentsWrapper style={{ flexDirection: 'row', flexWrap: 'wrap', boxShadow: 'none', background: '#f1f2f6', justifyContent: "space-between" }}>
@@ -202,7 +237,17 @@ const CommunityList = () => {
                                                     <Td>{post.user_icon && <img width={15} src={setIcon(post.user_icon)}/>}
                                                         <img src={setLevel(post.user_reliability)}/>{post.user_nickname}
                                                     </Td>
-                                                    <Td>{post.title}</Td>
+                                                    <Td>
+                                                        {post.title}
+                                                        {comment.map(comment => 
+                                                            comment.pk === post.pk && 0 < comment.length &&
+                                                            <span key={comment.pk} style={{color: '#FF0000', marginLeft: '5px'}}>
+                                                                {reply.map(reply =>  reply.pk === post.pk &&
+                                                                    `[${comment.length + reply.length}]`
+                                                                )}
+                                                            </span>
+                                                        )}
+                                                    </Td>
                                                     <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/community/${post.pk}`) }} /></Td>
                                                     <Td>{post.create_time}</Td>
                                                     <Td>{post.views}</Td>
@@ -220,7 +265,6 @@ const CommunityList = () => {
                                                 :
                                                 <>
                                                 </>
-
                                         }
                                         {
                                             slide == 3 ?
@@ -242,8 +286,6 @@ const CommunityList = () => {
                                                 </>
 
                                         }
-
-
                                     </Tr>
                                 ))}
                                 </tbody>

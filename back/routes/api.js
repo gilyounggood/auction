@@ -520,11 +520,11 @@ router.post('/endauctionlist', (req, res, next) => {
 })
 router.post('/communitylist', (req, res, next) => {
     try {
-        console.log(req.body)
         let page = req.body.page ? req.body.page   :false;
         let kind = req.body.kind;
         let sql1 = `SELECT COUNT(*) FROM community_table WHERE kind=${kind} `;
         let sql2 = `SELECT * FROM community_table WHERE kind=${kind} ORDER BY pk DESC`;
+        let sql3 = 'SELECT pk FROM community_table'
         if (page) {
             sql2 += ` LIMIT ${(page - 1) * 10}, 10 `;
         }
@@ -533,6 +533,15 @@ router.post('/communitylist', (req, res, next) => {
             if (err) {
                 console.log(err)
                 response(req, res, -200, "fail", [])
+            } else if(kind===4) {
+                db.query(sql3, (err, result) => {
+                    if(err) {
+                        console.log(err)
+                        response(req, res, -200, "fail", [])
+                    } else {
+                        response(req, res, 200, "success", result)
+                    }
+                })
             } else {
                 await db.query(sql2, (err, result2) => {
                     if (err) {
@@ -540,8 +549,6 @@ router.post('/communitylist', (req, res, next) => {
                         response(req, res, -200, "fail", [])
                     } else {
                         let maxPage = result1[0]['COUNT(*)'];
-                        console.log(sql1)
-                        console.log(result1)
                         if (maxPage % 10) {
                             maxPage = (maxPage - maxPage % 10) / 10 + 1
                         }
