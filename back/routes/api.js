@@ -30,7 +30,7 @@ const saltRounds = 10
 const pwBytes = 64
 const jwtSecret = "djfudnsqlalfKeyFmfRkwu"
 
-const geolocation = require('geolocation')
+const nodemailer = require('nodemailer')
 
 router.get('/', (req, res) => {
     console.log("back-end initialized")
@@ -176,6 +176,41 @@ router.post('/changepassword', (req, res, next) => {
         response(req, res, -200, "서버 에러 발생", [])
     }
 })
+
+// 회원가입 이메일 인증 추가
+
+router.post('/checkemail', async (req, res) => {
+    try {
+        const user_email = req.body.user_email;    
+
+        const mailPoster  = nodemailer.createTransport({
+            service: 'naver',              
+            prot: 587,
+            host: 'smtp.naver.com',
+            auth: {
+                user: 'reacttest@naver.com',           
+                pass: 'react123789-'                 
+            }
+        });
+    
+        let number = Math.floor(Math.random() * 1000000)+100000; 
+        if(number>1000000){                                      
+           number = number - 100000;                            
+        }
+    
+        await mailPoster .sendMail({   
+            from: 'reacttest@naver.com',             
+            to: user_email,                        
+            subject: 'auction 회원가입 이메일 인증입니다',                  
+            text: '인증 칸에 아래의 숫자를 입력해주세요. \n'+number                      
+        });   
+        response(req, res, 200 ,"메일 전송 성공", number)
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200 ,"서버 에러 발생", [])
+    }
+})
+
 // 권한 체크
 router.get('/auth', (req, res, next) => {
     try {

@@ -23,7 +23,30 @@ margin-bottom:1rem;
   ::placeholder {
     color: #cccccc;
   }
+  &:focus {
+    border: 1px solid #0078FF;
+}
 `
+const Input2 = styled.input`
+    outline: 1px solid black;
+    font-size:1rem;
+    border:none;
+    margin-right:0.3rem;
+    width:15rem;
+    height: 2rem;
+    ::placeholder {
+        color: #cccccc;
+    }
+    @media screen and (max-width: 790px) {
+        width: 150px;
+        font-size:0.8rem;
+    }
+    &:focus {
+        outline: 1px solid #0078FF;
+        box-shadow: 0px 0px 2px black;
+    }
+`
+
 const Button = styled.button`
 width:22rem;
 height:3rem;
@@ -46,7 +69,7 @@ font-weight:bold;
 const SubTitle = styled.div`
 width:21.5rem;
 text-align:left;
-color:#9b59b6;
+color:black;
 font-weight:bold;
 font-size:1rem;
 margin-bottom:0.5rem;
@@ -70,9 +93,14 @@ const SignUp = () => {
     const [id, setId] = useState('')
     const [pw, setPw] = useState('')
     const [nickName, setNickName] = useState('')
+    const [email, setEmail] = useState('')
     const [pwCheck, setPwCheck] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [chack, setCheck] = useState(true)
+    const [number, setNumber] = useState(0);  
+    const [userNumber, setUserNumber] = useState(0);  
+    const [input, setInput] = useState(false)
+    const [isEmail, setIsEmail] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -84,7 +112,6 @@ const SignUp = () => {
           alert("비밀번호가 일치하지 않습니다.")
         }
         else {
-            
                 const { data: response } = await axios.post('/api/signup', {
                     id: id,
                     pw: pw,
@@ -101,7 +128,6 @@ const SignUp = () => {
                     alert('회원가입이 완료 되었습니다.')
                     history.push('/profile')
                   }
-            
         }
       }
     const onChangeId = (e) =>{
@@ -131,29 +157,60 @@ const SignUp = () => {
     const onChangePhoneNumber = (e) =>{
         setPhoneNumber(e.target.value)
     }
+
+    const checkEmail = async () => {
+      if(input) {
+        setInput(false)
+        return;
+      }
+      var pattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@naver.com$/
+      if (pattern.test(email)===false) {
+        alert("네이버 메일주소(naver.com)만 허용됩니다.")
+        return;
+      }
+      setInput(true)
+      const { data: response } = await axios.post('/api/checkemail', {user_email: email})
+      setNumber(response.data)
+    }
+
+    const checkNumber = () => {
+      if(number != userNumber) {
+       alert("인증 번호가 일치하지 않습니다")
+      } else {
+        alert("이메일 인증이 완료되었습니다.")
+      }
+    }
+
     return (
         <Wrapper style={{paddingBottom: '0.1rem'}}>
             <ContentsWrapper style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`,minHeight:'28rem'
             }}>
-                
                 <Title>Sign Up</Title>
-                <SubTitle>ID</SubTitle>
+                <SubTitle>아이디</SubTitle>
                 <Input placeholder='아이디를 입력해주세요.' type='text' onChange={onChangeId} />
-                <SubTitle>Nick Name</SubTitle>
+                <SubTitle>닉네임</SubTitle>
                 <Input placeholder='닉네임을 입력해주세요.'type='text' onChange={onChangeNickName} />
-                <SubTitle>Password</SubTitle>
+                <SubTitle>이메일</SubTitle>
+                <Input placeholder='네이버 메일주소만 이용 가능합니다.'type='text' onChange={e => setEmail(e.target.value)} disabled= {isEmail? true : false} />
+                  <div style={{marginBottom: '10px'}}>
+                    {input &&
+                    <>
+                      <Input2 placeholder='인증번호를 입력해주세요.'type='text' onChange={e => setUserNumber(e.target.value)} />
+                      <Button style={{width: '2.7rem', height: '2rem', background: '#2C952C', marginRight: '5px'}} onClick={checkNumber}>인증</Button>
+                    </>
+                    }
+                    <Button style={{width: input ? '2.7rem' : '6rem', height: input? '2rem' : '2.5rem', background: input? '#EB3232' : '#3c8dbc'}} onClick={checkEmail}>{input ? '취소' : '이메일 인증'}</Button>
+                  </div>
+                <SubTitle>비밀번호</SubTitle>
                 <Input placeholder='비밀번호를 입력해주세요.' type='password' onChange={onChangePw} />
-                <SubTitle>Password Check</SubTitle>
+                <SubTitle>비밀번호 확인</SubTitle>
                 <Input style={{marginBottom:'0.2rem'}} placeholder='비밀번호를 한번 더 입력해주세요.' type='password' onChange={onChangePwCheck} />
                 <Check>{chack ? '' : '비밀번호가 일치하지 않습니다.'}</Check>
-                <SubTitle>Phone Number</SubTitle>
+                <SubTitle>핸드폰 번호</SubTitle>
                 <Input style={{marginBottom:'2rem'}} placeholder='010-XXXX-XXXX' type='text' onChange={onChangePhoneNumber} />
                 <Button style={{marginBottom:'2rem'}} onClick={handleSubmit}>회원가입</Button>
-                
-                
-                
             </ContentsWrapper>
         </Wrapper>
     );
