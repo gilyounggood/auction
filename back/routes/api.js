@@ -41,29 +41,27 @@ router.get('/', (req, res) => {
 
 //회원추가
 router.post('/signup', (req, res, next) => {
-    // 값 받아올 때, id, pw, userLevel, brandList
     try {
 
-        //logRequest(req)
         const id = req.body.id
         const pw = req.body.pw
         const nickName = req.body.nickName
         const phoneNumber = req.body.phoneNumber
         const userLevel = req.body.userLevel
         const userPoint = req.body. userPoint
+        const user_email = req.body.user_email;
 
-        if (isNotNullOrUndefined([id, pw, userLevel, nickName, phoneNumber, userPoint])) {
-            //중복 체크 
+        if (isNotNullOrUndefined([id, pw, userLevel, nickName, phoneNumber, userPoint, user_email])) {
             let sql = "SELECT * FROM user_table WHERE id=?"
             let sql2 = "SELECT * FROM user_table WHERE nick_name=?"
 
             db.query(sql, [id], (err, result) => {  
                 if (result.length > 0)
-                    response(req, res, -200, "ID가 중복됩니다.", [])
+                    response(req, res, -200, "중복되는 아이디 입니다.", [])
                 else {
                     db.query(sql2, [nickName], (err, result2) => {  
                     if (result2.length > 0)
-                        response(req, res, -200, "Nick Name이 중복됩니다.")
+                        response(req, res, -200, "중복되는 닉네임 입니다.")
                     else {
                     console.log(salt)
                     crypto.pbkdf2(pw, salt, saltRounds, pwBytes, 'sha512', async (err, decoded) => {
@@ -75,8 +73,8 @@ router.post('/signup', (req, res, next) => {
                             response(req, res, -200, "비밀번호 암호화 도중 에러 발생", [])
                         }
 
-                        sql = 'INSERT INTO user_table (id, pw, nick_name , phone_number, user_level, user_point) VALUES (?, ?, ?, ?, ?, ?)'
-                        await db.query(sql, [id, hash, nickName, phoneNumber, userLevel, userPoint], (err, result) => {
+                        sql = 'INSERT INTO user_table (id, pw, nick_name , phone_number, user_level, user_point, user_email) VALUES (?, ?, ?, ?, ?, ?, ?)'
+                        await db.query(sql, [id, hash, nickName, phoneNumber, userLevel, userPoint, user_email], (err, result) => {
 
                             if (err) {
                                 console.log(err)
@@ -189,7 +187,7 @@ router.post('/checkemail', async (req, res) => {
             host: 'smtp.naver.com',
             auth: {
                 user: 'reacttest@naver.com',           
-                pass: 'react123789-'                 
+                pass: 'react123789'                 
             }
         });
     

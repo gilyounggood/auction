@@ -104,8 +104,8 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (!id || !pw || !nickName || !phoneNumber) {
-          alert("필요값이 비어있습니다.");
+        if (!id || !pw || !nickName || !phoneNumber || !isEmail) {
+          alert("빈 칸 없이 모두 작성해주세요.");
           
         }
         else if(!chack){
@@ -119,6 +119,7 @@ const SignUp = () => {
                     phoneNumber: phoneNumber,
                     userLevel:0,
                     userPoint:0,
+                    user_email: email
                   })
                   if (response.result < 0) {
                     alert(response.message)
@@ -159,8 +160,13 @@ const SignUp = () => {
     }
 
     const checkEmail = async () => {
+      if(isEmail) {
+        alert("이메일 인증이 완료되었습니다")
+        return;
+      }
       if(input) {
         setInput(false)
+        setIsEmail(false)
         return;
       }
       var pattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@naver.com$/
@@ -168,6 +174,7 @@ const SignUp = () => {
         alert("네이버 메일주소(naver.com)만 허용됩니다.")
         return;
       }
+      alert("작성하신 이메일로 인증번호가 발송되었습니다.")
       setInput(true)
       const { data: response } = await axios.post('/api/checkemail', {user_email: email})
       setNumber(response.data)
@@ -178,6 +185,8 @@ const SignUp = () => {
        alert("인증 번호가 일치하지 않습니다")
       } else {
         alert("이메일 인증이 완료되었습니다.")
+        setIsEmail(true);
+        setInput(false)
       }
     }
 
@@ -193,11 +202,11 @@ const SignUp = () => {
                 <SubTitle>닉네임</SubTitle>
                 <Input placeholder='닉네임을 입력해주세요.'type='text' onChange={onChangeNickName} />
                 <SubTitle>이메일</SubTitle>
-                <Input placeholder='네이버 메일주소만 이용 가능합니다.'type='text' onChange={e => setEmail(e.target.value)} disabled= {isEmail? true : false} />
+                <Input placeholder='네이버 메일주소만 이용 가능합니다.'type='text' onChange={e => setEmail(e.target.value)} disabled= {isEmail? true : false} style={{background: isEmail ? '#dcdcdc' : "white"}} />
                   <div style={{marginBottom: '10px'}}>
                     {input &&
                     <>
-                      <Input2 placeholder='인증번호를 입력해주세요.'type='text' onChange={e => setUserNumber(e.target.value)} />
+                      <Input2 placeholder='인증번호 6자리 입력.'type='text' onChange={e => setUserNumber(e.target.value)} />
                       <Button style={{width: '2.7rem', height: '2rem', background: '#2C952C', marginRight: '5px'}} onClick={checkNumber}>인증</Button>
                     </>
                     }

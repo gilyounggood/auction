@@ -23,6 +23,9 @@ margin-bottom:1rem;
   ::placeholder {
     color: #cccccc;
   }
+  &:focus {
+    border: 1px solid #0078FF;
+}
 `
 const Button = styled.button`
 width:22rem;
@@ -46,7 +49,7 @@ font-weight:bold;
 const SubTitle = styled.div`
 width:21.5rem;
 text-align:left;
-color:#9b59b6;
+color:black;
 font-weight:bold;
 font-size:1rem;
 margin-bottom:0.5rem;
@@ -98,21 +101,20 @@ const Login = () => {
    
     return (
         <Wrapper >
-            <ContentsWrapper style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
-                , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`,minHeight:'28rem'
-            }}>
-                
+            <ContentsWrapper style={{ borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'}}>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
                 <Title>Login</Title>
-                <SubTitle>ID</SubTitle>
+                <SubTitle>아이디</SubTitle>
                 <Input placeholder='아이디를 입력해주세요.' type='text' onChange={onChangeId} />
-                <SubTitle>Password</SubTitle>
+                <SubTitle>비밀번호</SubTitle>
                 <Input style={{marginBottom:'2.5rem'}} placeholder='비밀번호를 입력해주세요.' type='password' onChange={onChangePw} />
-                
                 <Button style={{marginBottom:'2rem'}} onClick={onLogin}>로그인</Button>
-                
-                
-                
+                <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
+                  <span style={{cursor: 'pointer'}}>비밀번호 찾기</span> |
+                  <span style={{marginLeft: '5px', cursor: 'pointer'}}>아이디 찾기</span> |
+                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/signup')}>회원가입</span>  
+                </div>
+              </div> 
             </ContentsWrapper>
         </Wrapper>
     );
