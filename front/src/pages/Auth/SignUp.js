@@ -92,6 +92,7 @@ const SignUp = () => {
     const history = useHistory()
     const [id, setId] = useState('')
     const [pw, setPw] = useState('')
+    const [name, setName] = useState('')
     const [nickName, setNickName] = useState('')
     const [email, setEmail] = useState('')
     const [pwCheck, setPwCheck] = useState('')
@@ -104,7 +105,7 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (!id || !pw || !nickName || !phoneNumber || !isEmail) {
+        if (!id || !pw || !nickName || !phoneNumber || !isEmail || !name) {
           alert("빈 칸 없이 모두 작성해주세요.");
           
         }
@@ -115,6 +116,7 @@ const SignUp = () => {
                 const { data: response } = await axios.post('/api/signup', {
                     id: id,
                     pw: pw,
+                    user_name: name,
                     nickName: nickName,
                     phoneNumber: phoneNumber,
                     userLevel:0,
@@ -196,9 +198,12 @@ const SignUp = () => {
                 display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
                 , borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`,minHeight:'28rem'
             }}>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
                 <Title>Sign Up</Title>
                 <SubTitle>아이디</SubTitle>
                 <Input placeholder='아이디를 입력해주세요.' type='text' onChange={onChangeId} />
+                <SubTitle>이름</SubTitle>
+                <Input placeholder='계정 정보 찾기에 사용됩니다.' type='text' onChange={e => setName(e.target.value)} />
                 <SubTitle>닉네임</SubTitle>
                 <Input placeholder='닉네임을 입력해주세요.'type='text' onChange={onChangeNickName} />
                 <SubTitle>이메일</SubTitle>
@@ -220,6 +225,12 @@ const SignUp = () => {
                 <SubTitle>핸드폰 번호</SubTitle>
                 <Input style={{marginBottom:'2rem'}} placeholder='010-XXXX-XXXX' type='text' onChange={onChangePhoneNumber} />
                 <Button style={{marginBottom:'2rem'}} onClick={handleSubmit}>회원가입</Button>
+                <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
+                  <span style={{cursor: 'pointer'}} onClick={() => history.push('/findpw')}>비밀번호 찾기</span> |
+                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/findid')}>아이디 찾기</span> |
+                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/login')}>로그인</span>  
+                </div>
+              </div>
             </ContentsWrapper>
         </Wrapper>
     );

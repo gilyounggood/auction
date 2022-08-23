@@ -45,13 +45,14 @@ router.post('/signup', (req, res, next) => {
 
         const id = req.body.id
         const pw = req.body.pw
+        const user_name = req.body.user_name
         const nickName = req.body.nickName
         const phoneNumber = req.body.phoneNumber
         const userLevel = req.body.userLevel
         const userPoint = req.body. userPoint
         const user_email = req.body.user_email;
 
-        if (isNotNullOrUndefined([id, pw, userLevel, nickName, phoneNumber, userPoint, user_email])) {
+        if (isNotNullOrUndefined([id, pw, userLevel, nickName, phoneNumber, userPoint, user_email], user_name)) {
             let sql = "SELECT * FROM user_table WHERE id=?"
             let sql2 = "SELECT * FROM user_table WHERE nick_name=?"
 
@@ -73,8 +74,8 @@ router.post('/signup', (req, res, next) => {
                             response(req, res, -200, "비밀번호 암호화 도중 에러 발생", [])
                         }
 
-                        sql = 'INSERT INTO user_table (id, pw, nick_name , phone_number, user_level, user_point, user_email) VALUES (?, ?, ?, ?, ?, ?, ?)'
-                        await db.query(sql, [id, hash, nickName, phoneNumber, userLevel, userPoint, user_email], (err, result) => {
+                        sql = 'INSERT INTO user_table (id, pw, nick_name , phone_number, user_level, user_point, user_email, user_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+                        await db.query(sql, [id, hash, nickName, phoneNumber, userLevel, userPoint, user_email, user_name], (err, result) => {
 
                             if (err) {
                                 console.log(err)
@@ -186,8 +187,8 @@ router.post('/checkemail', async (req, res) => {
             prot: 587,
             host: 'smtp.naver.com',
             auth: {
-                user: 'reacttest@naver.com',           
-                pass: 'react123789'                 
+                user: process.env.REACT_APP_ID,           
+                pass: process.env.REACT_APP_PASSWORD                 
             }
         });
     
@@ -197,7 +198,7 @@ router.post('/checkemail', async (req, res) => {
         }
     
         await mailPoster .sendMail({   
-            from: 'reacttest@naver.com',             
+            from: process.env.REACT_APP_ADDRESS,             
             to: user_email,                        
             subject: 'auction 회원가입 이메일 인증입니다',                  
             text: '인증 칸에 아래의 숫자를 입력해주세요. \n'+number                      
@@ -206,6 +207,27 @@ router.post('/checkemail', async (req, res) => {
     } catch (err) {
         console.log(err)
         response(req, res, -200 ,"서버 에러 발생", [])
+    }
+})
+
+// 아이디 찾기
+
+router.post('/findid', (req, res) => {
+    try {
+        const user_name = req.body.user_name;
+        const user_email = req.body.user_email;
+
+        db.query('SELECT id FROM user_table WHERE user_name=? AND user_email=?', [user_name, user_email], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "아이디 조회 실패", [])
+            } else {
+                response(req, res, 200, "아이디 조회 성공", result[0])
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
     }
 })
 

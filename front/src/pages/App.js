@@ -19,8 +19,9 @@ import AddAuction from './Auth/AddAuction';
 import ChangeCategory from './Auth/ChangeCategory';
 import ChangePassword from './Auth/ChangePassword';
 import Login from './Auth/Login';
-import MyAuctionList from './Auth/MyAuctionList';
 import SignUp from './Auth/SignUp';
+import FindId from './Auth/FindId';
+import FindPw from './Auth/FindPw';
 import Info from './Auth/Info';
 import Favorite from './Auth/Favorite';
 
@@ -96,6 +97,8 @@ const App = () => {
                 <Route exact path="/changepassword" component={ChangePassword} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={SignUp} />
+                <Route exact path="/findid" component={FindId} />
+                <Route exact path="/findpw" component={FindPw} />
                 <Route exact path='/info/:pk' component={Info}/>
                 <Route exact path='/favorite' component={Favorite}/>
 
@@ -129,7 +132,6 @@ const App = () => {
                 </>
                 <Footer/>
                 <MarginBottom1/>
-                
             </Router>
        
     );

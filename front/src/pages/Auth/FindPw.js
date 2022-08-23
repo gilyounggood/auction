@@ -58,7 +58,7 @@ margin-bottom:0.5rem;
   }
 `
 
-const Login = () => {
+const FindPw = () => {
     const history = useHistory()
     const [id, setId] = useState('')
     const [pw, setPw] = useState('')
@@ -103,15 +103,15 @@ const Login = () => {
         <Wrapper >
             <ContentsWrapper style={{ borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'}}>
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
-                <Title>Login</Title>
+                <Title>비밀번호 찾기</Title>
                 <SubTitle>아이디</SubTitle>
                 <Input placeholder='아이디를 입력해주세요.' type='text' onChange={onChangeId} />
                 <SubTitle>비밀번호</SubTitle>
                 <Input style={{marginBottom:'2.5rem'}} placeholder='비밀번호를 입력해주세요.' type='password' onChange={onChangePw} />
                 <Button style={{marginBottom:'2rem'}} onClick={onLogin}>로그인</Button>
                 <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
-                  <span style={{cursor: 'pointer'}} onClick={() => history.push('/findpw')}>비밀번호 찾기</span> |
-                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/findid')}>아이디 찾기</span> |
+                  <span style={{cursor: 'pointer'}} onClick={() => history.push('/findid')}>아이디 찾기</span> |
+                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/login')}>로그인</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/signup')}>회원가입</span>  
                 </div>
               </div> 
@@ -119,4 +119,4 @@ const Login = () => {
         </Wrapper>
     );
 };
-export default Login;
+export default FindPw;
