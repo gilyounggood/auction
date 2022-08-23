@@ -114,7 +114,7 @@ const Login = () => {
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/findid')}>아이디 찾기</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/signup')}>회원가입</span>  
                 </div>
-              </div> 
+              </div>
             </ContentsWrapper> 
         </Wrapper>
     );
