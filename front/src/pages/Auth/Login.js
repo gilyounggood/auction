@@ -115,7 +115,7 @@ const Login = () => {
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/signup')}>회원가입</span>  
                 </div>
               </div> 
-            </ContentsWrapper>
+            </ContentsWrapper> 
         </Wrapper>
     );
 };
