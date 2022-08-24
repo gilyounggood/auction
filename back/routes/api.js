@@ -180,30 +180,42 @@ router.post('/changepassword', (req, res, next) => {
 
 router.post('/checkemail', async (req, res) => {
     try {
-        const user_email = req.body.user_email;    
+            const user_email = req.body.user_email;
 
-        const mailPoster  = nodemailer.createTransport({
-            service: 'naver',              
-            prot: 587,
-            host: 'smtp.naver.com',
-            auth: {
-                user: process.env.REACT_APP_ID,           
-                pass: process.env.REACT_APP_PASSWORD                 
-            }
-        });
-    
-        let number = Math.floor(Math.random() * 1000000)+100000; 
-        if(number>1000000){                                      
-           number = number - 100000;                            
-        }
-    
-        await mailPoster .sendMail({   
-            from: process.env.REACT_APP_ADDRESS,             
-            to: user_email,                        
-            subject: 'auction 회원가입 이메일 인증입니다',                  
-            text: '인증 칸에 아래의 숫자를 입력해주세요. \n'+number                      
-        });   
-        response(req, res, 200 ,"메일 전송 성공", number)
+            db.query('SELECT pk FROM user_table WHERE user_email=?', [user_email], async (err, result) => {
+                if(err) {
+                    console.log(err)
+                    response(req, res, -200, "이메일 조회 실패", [])
+                } else {
+                    if(result.length>0) {
+                        response(req, res, 200, "이메일 중복", 300)
+                    } else {
+                        const mailPoster  = nodemailer.createTransport({
+                            service: 'naver',              
+                            prot: 587,
+                            host: 'smtp.naver.com',
+                            auth: {
+                                user: process.env.REACT_APP_ID,           
+                                pass: process.env.REACT_APP_PASSWORD                 
+                            }
+                        });
+                    
+                        let number = Math.floor(Math.random() * 1000000)+100000; 
+                        if(number>1000000){                                      
+                           number = number - 100000;                            
+                        }
+                    
+                        await mailPoster .sendMail({   
+                            from: process.env.REACT_APP_ADDRESS,             
+                            to: user_email,                        
+                            subject: 'auction 회원가입 이메일 인증입니다.',                  
+                            text: '인증 칸에 아래의 숫자를 입력해주세요. \n'+number                      
+                        });   
+                        response(req, res, 200 ,"메일 전송 성공", number)
+                    }
+                }
+            })
+
     } catch (err) {
         console.log(err)
         response(req, res, -200 ,"서버 에러 발생", [])
@@ -223,6 +235,72 @@ router.post('/findid', (req, res) => {
                 response(req, res, -200, "아이디 조회 실패", [])
             } else {
                 response(req, res, 200, "아이디 조회 성공", result[0])
+            }
+        })
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+// 비밀번호 찾기
+
+router.post('/findpw', (req, res) => {
+    try {
+        const id = req.body.id;
+        const user_name = req.body.user_name;
+        const user_email = req.body.user_email;
+
+        db.query('SELECT pk FROM user_table WHERE id=? AND user_name=? AND user_email=?', [id, user_name, user_email], async (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "아이디 조회 실패", [])
+            } else {
+                if (result.length<1) {
+                    response(req, res, 200, "조회 된 아이디 없음", 300)
+                } else {
+                    let number = Math.floor(Math.random() * 1000000)+100000; 
+                    if(number>1000000){                                      
+                       number = number - 100000;                            
+                    }
+                
+                    const mailPoster  = nodemailer.createTransport({
+                        service: 'naver',              
+                        prot: 587,
+                        host: 'smtp.naver.com',
+                        auth: {
+                            user: process.env.REACT_APP_ID,           
+                            pass: process.env.REACT_APP_PASSWORD                 
+                        }
+                    });
+                            
+                    await mailPoster .sendMail({   
+                        from: process.env.REACT_APP_ADDRESS,             
+                        to: user_email,                        
+                        subject: 'auction 비밀번호 임시 변경 알림입니다.',                  
+                        text: `가입하신 회원님 아이디(${id})의 비밀번호가 아래 6자리 숫자로 임시 변경되었습니다. 내정보에서 반드시 비밀번호를 변경해주세요 \n`+number                      
+                    });
+
+                    const num = number.toString();
+
+                    crypto.pbkdf2(num, salt, saltRounds, pwBytes, 'sha512', async (err, decoded) => {
+                        if (err) {
+                            console.log(err)
+                            response(req, res, -200, "비밀번호 암호화 도중 에러 발생", [])
+                        }
+
+                        let hash = decoded.toString('base64')
+
+                        db.query('UPDATE user_table SET pw=? WHERE id=?', [hash, id], (err, result) => {
+                            if(err) {
+                                console.log(err)
+                                response(req, res, -200 ,"비밀번호 임시 변경 실패", [])
+                            } else {
+                                response(req, res, 200, "비밀번호 임시 변경", [])
+                            }
+                        })
+                    })
+                }
             }
         })
     } catch (err) {

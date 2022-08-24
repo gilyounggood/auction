@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {  useHistory } from 'react-router-dom';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
 import Wrapper from '../../components/elements/Wrapper';

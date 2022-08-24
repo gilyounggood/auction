@@ -97,7 +97,7 @@ const SignUp = () => {
     const [email, setEmail] = useState('')
     const [pwCheck, setPwCheck] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
-    const [chack, setCheck] = useState(true)
+    const [check, setCheck] = useState(true)
     const [number, setNumber] = useState(0);  
     const [userNumber, setUserNumber] = useState(0);  
     const [input, setInput] = useState(false)
@@ -109,7 +109,7 @@ const SignUp = () => {
           alert("빈 칸 없이 모두 작성해주세요.");
           
         }
-        else if(!chack){
+        else if(!check){
           alert("비밀번호가 일치하지 않습니다.")
         }
         else {
@@ -176,10 +176,14 @@ const SignUp = () => {
         alert("네이버 메일주소(naver.com)만 허용됩니다.")
         return;
       }
-      alert("작성하신 이메일로 인증번호가 발송되었습니다.")
-      setInput(true)
       const { data: response } = await axios.post('/api/checkemail', {user_email: email})
-      setNumber(response.data)
+      if (response.data === 300) {
+        alert("중복되는 이메일 입니다.")
+      } else {
+        alert("작성하신 이메일로 인증번호가 발송되었습니다.")
+        setInput(true)
+        setNumber(response.data)
+      }
     }
 
     const checkNumber = () => {
@@ -221,7 +225,7 @@ const SignUp = () => {
                 <Input placeholder='비밀번호를 입력해주세요.' type='password' onChange={onChangePw} />
                 <SubTitle>비밀번호 확인</SubTitle>
                 <Input style={{marginBottom:'0.2rem'}} placeholder='비밀번호를 한번 더 입력해주세요.' type='password' onChange={onChangePwCheck} />
-                <Check>{chack ? '' : '비밀번호가 일치하지 않습니다.'}</Check>
+                <Check>{check ? '' : '비밀번호가 일치하지 않습니다.'}</Check>
                 <SubTitle>핸드폰 번호</SubTitle>
                 <Input style={{marginBottom:'2rem'}} placeholder='010-XXXX-XXXX' type='text' onChange={onChangePhoneNumber} />
                 <Button style={{marginBottom:'2rem'}} onClick={handleSubmit}>회원가입</Button>

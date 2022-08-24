@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {  useHistory } from 'react-router-dom';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
 import Wrapper from '../../components/elements/Wrapper';
@@ -58,57 +58,56 @@ margin-bottom:0.5rem;
   }
 `
 
-const FindPw = () => {
+const FindId = () => {
     const history = useHistory()
     const [id, setId] = useState('')
-    const [pw, setPw] = useState('')
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [isId, setIsId] = useState(false)
 
-    const isAdmin = async () => {
-     
-      const { data: response } = await axios.get('/api/auth')
-      if (response.pk) {
-        history.push('/profile')
+    const checkId= async () => {
+      if(!name || !email || !id) {
+        alert("모든 정보를 입력해주세요.")
+        return;
       }
-     
-  }
-
-  useEffect(() => {
-      isAdmin()
-  }, [])
-    const onLogin = async (e) => {
-      e.preventDefault()
-      const { data: response } = await axios.post('/api/login', {
-          id: id,
-          pw: pw
+      const { data: response } = await axios.post('/api/findpw', {
+        id: id,
+        user_name: name,
+        user_email: email
       })
-      if(response.result<0){
-        alert(response.message)
+      if (response.data===300) {
+        alert("등록된 계정 정보가 없습니다.")
+      } else {
+        setIsId(true)
       }
-      else{
-        alert(response.message)
-        history.push('/profile')
-        window.location.reload()
-      }
-  };
-    const onChangeId = (e) =>{
-        setId(e.target.value)
     }
-    
-    const onChangePw = (e) =>{
-        setPw(e.target.value)
-       
-    }
-   
+
     return (
         <Wrapper >
             <ContentsWrapper style={{ borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'}}>
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
                 <Title>비밀번호 찾기</Title>
                 <SubTitle>아이디</SubTitle>
-                <Input placeholder='아이디를 입력해주세요.' type='text' onChange={onChangeId} />
-                <SubTitle>비밀번호</SubTitle>
-                <Input style={{marginBottom:'2.5rem'}} placeholder='비밀번호를 입력해주세요.' type='password' onChange={onChangePw} />
-                <Button style={{marginBottom:'2rem'}} onClick={onLogin}>로그인</Button>
+                <Input placeholder='아이디를 입력해주세요.' type='text' onChange={e => setId(e.target.value)} />
+                <SubTitle>이름</SubTitle>
+                <Input placeholder='이름을 입력해주세요.' type='text' onChange={e => setName(e.target.value)} />
+                <SubTitle>이메일 주소</SubTitle>
+                <Input style={{marginBottom:'2.5rem'}} placeholder='이메일 주소를 입력해주세요.' type='text' onChange={e => setEmail(e.target.value)} />
+                {isId &&
+                <div style={{marginBottom: '30px'}}>
+                  <SubTitle>
+                    입력하신 계정 정보의 임시 비밀번호 6자리가 <span style={{color: '#CD0000'}}>"{email}"</span>로 전송되었습니다.<br/>
+                    내정보에서 반드시 비밀번호를 변경해주세요.
+                  </SubTitle> 
+                  <Button style={{width: '2.7rem', height: '2rem', background: '#2C952C'}} onClick={() => setIsId(false)}>확인</Button>
+                </div>
+                }
+                <Button style={{marginBottom:'2rem'}} 
+                onClick={() => {
+                  if(window.confirm("입력하신 계정 정보의 비밀번호를 임시 변경 하시겠습니까?")) {
+                    checkId()
+                  }
+                }}>비밀번호 초기화</Button>
                 <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
                   <span style={{cursor: 'pointer'}} onClick={() => history.push('/findid')}>아이디 찾기</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/login')}>로그인</span> |
@@ -119,4 +118,4 @@ const FindPw = () => {
         </Wrapper>
     );
 };
-export default FindPw;
+export default FindId;
