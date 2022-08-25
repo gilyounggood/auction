@@ -84,11 +84,6 @@ const Messenger = props => {
             setMyReliability(response.reliability)
             setMyIcon(response.user_use_icon)
         }
-        
-        // const { data: response2 } = await axios.post('/api/messengernotice', {
-        //     user_name: response.nick_name
-        // })
-        // setMessengerList(response2.data)
 
         try {
             const { data: result } = await axios.post('/api/usertaginfo', {
@@ -123,8 +118,7 @@ const Messenger = props => {
                             ...{ opacity: hovered ? "1" : "0" }
                         }}
                     >
-                        <img width={25} src={setIcon(myIcon)}/>
-                        <img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
+                        <img src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
                     {noticeList.length + noticeList2.length > 0 &&
                     <UserNotice style={{marginLeft: '-20px'}} >{ noticeList.length + noticeList2.length}</UserNotice>
                     }

@@ -96,7 +96,6 @@ const UserManage = () => {
                 pk: num,
             })
             setUserInfo(response.data)
-            console.log(response.data)
         } catch {
 
         }

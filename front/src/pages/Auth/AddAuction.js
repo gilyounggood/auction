@@ -214,6 +214,10 @@ const AddAuction = () => {
                     <Content style={{ marginBottom: '0.3rem' }}>
                         <SubTitle style={{marginBottom:'1rem'}}><Button style={{width:'5.5rem',height:'2rem'}}
                         onClick={()=>{
+                            if(tagList.length>9) {
+                                alert("태그는 최대 10개까지 입력 가능합니다")
+                                return;
+                            }
                             let arr = []
                             for(var i = 0;i<tagList.length;i++){
                                 arr[i] = tagList[i]

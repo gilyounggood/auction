@@ -58,7 +58,7 @@ margin-bottom:0.5rem;
   }
 `
 
-const FindId = () => {
+const FindPw = () => {
     const history = useHistory()
     const [id, setId] = useState('')
     const [name, setName] = useState('')
@@ -118,4 +118,4 @@ const FindId = () => {
         </Wrapper>
     );
 };
-export default FindId;
+export default FindPw;

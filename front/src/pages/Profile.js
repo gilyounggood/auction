@@ -165,7 +165,7 @@ const Profile = () => {
                         </DottedLineContainer>
                             <ThemeList>
                                 
-                                    <Theme onClick={() => { history.push(`/info/${myPk}`) }}>
+                                    <Theme onClick={() => { history.push(`/myprofile/${myPk}`) }}>
                                         <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>내 정보</p>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>

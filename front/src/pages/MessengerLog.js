@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, BrowserRouter as Routes, Link, Router, Route } from 'react-router-dom';
+import { BrowserRouter as Routes, Link, Router, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import setLevel from '../data/Level';
 import { setIcon } from '../data/Icon';
@@ -16,7 +16,7 @@ const UserLogStyle = styled.div`
   color: Lightseagreen;
   background-color: white;
   box-shadow: 3px 3px 3px grey;
-  margin-left: 130px;
+  margin-left: 150px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 4px;
@@ -150,8 +150,6 @@ const MessengerLog = props => {
   const [userList, setUserList] = useState([])
   const [userChatInfo, setUserChatInfo] = useState(false)
   const [adminUserChatList, setAdminUserChatList] = useState([])
-
-  const history = useHistory();
 
   const isAdmin = async () => {
       setLoading(true)
@@ -309,7 +307,7 @@ const MessengerLog = props => {
                   </StyledLink>
                   : null
                   }
-                  {messenger.post_id === "0" && myNickName !== messenger.user_name && messenger.chat_message.includes(userTagInfo) ?
+                  {userTagInfo && messenger.post_id === "0" && myNickName !== messenger.user_name && messenger.chat_message.includes(userTagInfo) ?
                   <StyledLink 
                     to = {{
                       pathname:'/searchresult',

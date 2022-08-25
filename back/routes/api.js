@@ -325,7 +325,9 @@ router.get('/auth', (req, res, next) => {
             let user_icon = decode.user_icon
             let user_use_icon = decode.user_use_icon
             let level = decode.user_level
-            res.send({ id, first, second, pk, nick_name, level, phone_number, reliability, user_point, user_icon, user_use_icon })
+            let user_email = decode.user_email
+            let user_name = decode.user_name
+            res.send({ id, first, second, pk, nick_name, level, phone_number, reliability, user_point, user_icon, user_use_icon, user_email, user_name })
         }
         else {
             res.send({
@@ -368,6 +370,8 @@ router.post('/login', (req, res, next) => {
                     user_point: user.user_point,
                     user_icon: user.user_icon,
                     user_use_icon: user.user_use_icon,
+                    user_email: user.user_email,
+                    user_name: user.user_name
                 },
                     jwtSecret,
                     {
@@ -1579,7 +1583,20 @@ router.post('/useredit', async (req, res, next) => {
         const reliability = req.body.reliability
         const user_point = req.body.user_point
 
-        await db.query(`UPDATE user_table SET nick_name=?,phone_number=?,reliability=?,user_point=?  WHERE pk=?`, [nick_name,phone_number,reliability,user_point, pk], (err, result) => {
+        const user_name = req.body.user_name;
+
+        let sql ='';
+        let params = [];
+
+        if(!user_name) {
+            sql= `UPDATE user_table SET nick_name=?,phone_number=?,reliability=?,user_point=?  WHERE pk=?`
+            params = [nick_name,phone_number,reliability,user_point, pk];
+        } else {
+            sql = 'UPDATE user_table SET user_name=?, phone_number=? WHERE pk =?'
+            params = [user_name, phone_number, pk]
+        }
+
+        await db.query(sql, params, (err, result) => {
             if(err) {
                 console.log(err)
                 response(req, res, -200, "fail", [])

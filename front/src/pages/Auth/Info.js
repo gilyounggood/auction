@@ -137,7 +137,6 @@ const Info = () => {
         } catch {
         }
 
-        console.log(response2)
         if (response2.data) {
             setPk(response2.data.info[0].pk)
             setReliability(response2.data.info[0].reliability)
