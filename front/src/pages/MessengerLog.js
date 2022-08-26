@@ -16,7 +16,6 @@ const UserLogStyle = styled.div`
   color: Lightseagreen;
   background-color: white;
   box-shadow: 3px 3px 3px grey;
-  margin-left: 150px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 4px;
@@ -178,7 +177,7 @@ const MessengerLog = props => {
             user_name: response.nick_name
         })
         if (result.data) {
-            setUserTagInfo(result.data.userTag[0].userTag)
+            setUserTagInfo(result.data.userTag)
         } else {
         }
       } catch {

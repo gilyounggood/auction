@@ -25,13 +25,11 @@ const UserImageStyle = styled.img`
 
 const UserNameStyle = styled.h4`
     padding: 10px;
-    margin-left: 200px;
     border-radius: 20px;
     color: black;
     background-color: #FFF0F5;
     box-shadow: 3px 3px 3px grey;
     text-align: center;
-    display: flex;
     justify-content: center;
     align-items: center;
     @media screen and (max-width:950px) {
@@ -40,9 +38,11 @@ const UserNameStyle = styled.h4`
 `;
 
 const UserNotice = styled.div`
+    position: relative; 
+    z-index: 1;
+    float: right;
     color: white;
     background-color: red;
-    margin-bottom: 83px;
     border-radius: 10px;
     width: 23px;
     text-align: center;
@@ -91,7 +91,7 @@ const Messenger = props => {
             })
             const { data: response2 } = await axios.post('/api/messengernotice', {
                 user_name: response.nick_name,
-                user_tag: result.data.userTag[0].userTag
+                user_tag: result.data.userTag
             })
             setMessengerList(response2.data)
           } catch {
@@ -110,15 +110,13 @@ const Messenger = props => {
   return (
     <div>
         {auth ? (
-                <div style={{
-                    display: "flex"
-                }}>
-                    <UserNameStyle
+                <div>
+                    {/* <UserNameStyle
                         style={{
-                            ...{ opacity: hovered ? "1" : "0" }
+                            ...{ display: hovered ? "block" : "none" }
                         }}
                     >
-                        <img src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle>
+                        <img src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle> */}
                     {noticeList.length + noticeList2.length > 0 &&
                     <UserNotice style={{marginLeft: '-20px'}} >{ noticeList.length + noticeList2.length}</UserNotice>
                     }

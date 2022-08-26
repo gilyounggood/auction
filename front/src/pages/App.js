@@ -16,14 +16,13 @@ import SelectCommunty from './SelectCommunity';
 import Auction from './Auction/Auction';
 
 import AddAuction from './Auth/AddAuction';
-import ChangeCategory from './Auth/ChangeCategory';
-import ChangePassword from './Auth/ChangePassword';
 import Login from './Auth/Login';
 import SignUp from './Auth/SignUp';
 import FindId from './Auth/FindId';
 import FindPw from './Auth/FindPw';
 import Info from './Auth/Info';
 import MyProfile from './Auth/MyProflie';
+import ChangePw from './Auth/ChangePw';
 import Favorite from './Auth/Favorite';
 
 import AuctionList from './Auction/AuctionList';
@@ -94,13 +93,12 @@ const App = () => {
                 <Route exact path="/auction/:pk" component={Auction} />
 
                 <Route exact path="/addauction" component={AddAuction} />
-                <Route exact path="/changecategory" component={ChangeCategory} />
-                <Route exact path="/changepassword" component={ChangePassword} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/signup" component={SignUp} />
                 <Route exact path="/findid" component={FindId} />
                 <Route exact path="/findpw" component={FindPw} />
                 <Route exact path="/myprofile/:pk" component={MyProfile} />
+                <Route exact path="/changepw/:pk" component={ChangePw} />
                 <Route exact path='/info/:pk' component={Info}/>
                 <Route exact path='/favorite' component={Favorite}/>
 

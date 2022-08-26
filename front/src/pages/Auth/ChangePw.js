@@ -146,13 +146,7 @@ const MyProfile = () => {
         <Wrapper >
             <ContentsWrapper style={{ borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'}}>
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
-                <Title>내정보</Title>
-                <SubTitle style={{marginBottom: '15px'}}>아이디: {id}</SubTitle>
-                <SubTitle style={{marginBottom: '15px'}}>이메일 주소: {user_email}</SubTitle>
-                <SubTitle style={{marginBottom: '15px'}}>닉네임: {nick_name}</SubTitle>
-                <SubTitle style={{marginBottom: '15px'}}>포인트: {user_point}</SubTitle>
-                <SubTitle style={{marginBottom: '15px'}}>레벨: <img src={setLevel(reliability)}/></SubTitle>
-                <SubTitle style={{marginBottom: '15px'}}>사용중인 아이콘: {user_use_icon ? <img width={15} src={setIcon(user_use_icon)}/> : '없음'}</SubTitle>
+                <Title>비밀번호 변경</Title>
                 <SubTitle>이름</SubTitle>
                 <Input style={{marginBottom:'15px'}} type='text' value={user_name} name='user_name' onChange={e => changeUserInfo(e)} />
                 <SubTitle>전화번호</SubTitle>
@@ -161,12 +155,12 @@ const MyProfile = () => {
                 <Input style={{marginBottom:'2.5rem'}} type='text' value={userTag} name='userTag' onChange={e => changeUserTag(e)} />
                 <Button style={{marginBottom:'2rem'}} 
                 onClick={() => {
-                  if(window.confirm("계정 정보를 변경 하시겠습니까?")) {
+                  if(window.confirm("비밀번호를 변경 하시겠습니까?")) {
                     changeInfo()
                   }
-                }}>정보 변경</Button>
+                }}>비밀번호 변경</Button>
                 <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
-                  <span style={{cursor: 'pointer'}} onClick={() => history.push(`/changepw/${params.pk}`)}>보안 설정</span> |
+                  <span style={{cursor: 'pointer'}} onClick={() => history.push(`/myprofile/${params.pk}`)}>내정보</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/login')}>이력 관리</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push('/signup')}>회원 탈퇴</span>  
                 </div>
