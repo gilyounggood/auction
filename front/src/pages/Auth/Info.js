@@ -110,7 +110,6 @@ const Info = () => {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [point, setPoint] = useState(0)
     const [communityList, setCommunityList] = useState([])
-    const [userTag, setUserTag] = useState("")
     const [userTagInfo, setUserTagInfo] = useState("")
 
     const level = useSelector((state) => state.level.value)
@@ -131,7 +130,7 @@ const Info = () => {
                 user_name: response2.data.info[0].nick_name
             })
             if (result.data) {
-                setUserTagInfo(result.data.userTag[0].userTag)
+                setUserTagInfo(result.data.userTag)
             } else {
             }
         } catch {
@@ -160,59 +159,12 @@ const Info = () => {
         } else {
 
         }
-        console.log(response2)
     }
 
     useEffect(() => {
         isAdmin()
     }, [])
 
-    const handleChangePassword = async () => {
-        if (!password || !check) {
-            alert('비밀번호를 다시 확인해 주세요.')
-        }
-        else {
-            const { data: response } = await axios.post('/api/changepassword', {
-                pk: myPk,
-                pw: password,
-                newPw: newPassword
-            })
-            if (response.result < 0) {
-                alert(response.message)
-            }
-            else {
-                alert('비빌번호 변경이 완료되었습니다.\n다시 로그인 해주세요.')
-                onLogout()
-            }
-        }
-
-    }
-    const onLogout = async () => {
-        await axios.post('/api/logout')
-        history.push('/')
-        history.push('/profile')
-    }
-    const onChangePassword = (e) => {
-        setPassword(e.target.value)
-    }
-    const onChangeNewPassword = (e) => {
-        setNewPassword(e.target.value)
-        if (e.target.value != newPasswordCheck) {
-            setCheck(false)
-        }
-        else {
-            setCheck(true)
-        }
-    }
-    const onChangeNewPasswordCheck = (e) => {
-        setNewPasswordCheck(e.target.value)
-        if (e.target.value != newPassword) {
-            setCheck(false)
-        }
-        else {
-            setCheck(true)
-        }
-    }
     async function deleteAuction(num) {
         const { data: response } = await axios.post('/api/delete', { tableName: 'item', pk: num })
         if(response.result>0){
@@ -225,62 +177,6 @@ const Info = () => {
         if(response.result>0){
             alert('삭제되었습니다.')
             window.location.reload()
-        }
-    }
-
-    const onChangeTag = (e) => {
-        setUserTag(e.target.value)
-    }
-
-    const addTag = async (e) => {
-        if(userTag==="") {
-            alert("태그를 입력해주세요")
-        } else {
-            const {data:response} = axios.post('/api/addusertag',{
-                nickname: nickname,
-                userTag: userTag,
-            })
-                alert('태그가 등록되었습니다')
-                $("$tag").val("");
-                const { data: response2 } = await axios.post('/api/info', {
-                    pk: params.pk
-                })
-                try {
-                    const { data: result } = await axios.post('/api/usertaginfo', {
-                        user_name: response2.data.info[0].nick_name
-                    })
-                    if (result.data) {
-                        setUserTagInfo(result.data.userTag[0].userTag)
-                    } else {
-                    }
-                } catch {
-                }
-        }
-    }
-
-    const editTag = async (e) => {
-        if(userTag==="") {
-            alert("태그를 입력해주세요")
-        } else {
-            const {data:response} = axios.post('/api/editusertag',{
-                nickname: nickname,
-                userTag: userTag,
-            })
-                alert('태그가 수정되었습니다')
-                $("#tag2").val("");
-                const { data: response2 } = await axios.post('/api/info', {
-                    pk: params.pk
-                })
-                try {
-                    const { data: result } = await axios.post('/api/usertaginfo', {
-                        user_name: response2.data.info[0].nick_name
-                    })
-                    if (result.data) {
-                        setUserTagInfo(result.data.userTag[0].userTag)
-                    } else {
-                    }
-                } catch {
-                }
         }
     }
 
@@ -309,14 +205,7 @@ const Info = () => {
                     </Content>
                     <Content style={{ marginBottom: '1rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#FF5675', fontSize: '1rem', fontWeight: 'bold' }}>아이콘</div>
-                        {myIcon ?
-                            <>
-                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#483D8B' }}><img width={25} src={setIcon(myIcon)} /></Div>
-                            </> :
-                            <>
-                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#483D8B' }}>없음</Div>
-                            </>
-                        }
+                        <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '3.4rem', fontWeight: 'bold', color: '#483D8B' }}>{myIcon ? <img width={25} src={setIcon(myIcon)} /> : "없음" }</Div>
                     </Content>
                     <Content style={{ marginBottom: '1rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#AE5E1A', fontSize: '1rem', fontWeight: 'bold' }}>신뢰도</div>
@@ -328,68 +217,8 @@ const Info = () => {
                     </Content>
                     <Content style={{ marginBottom: '1rem' }}>
                         <div style={{ marginLeft: '0.3rem', color: '#006400', fontSize: '1rem', fontWeight: 'bold' }}>관심 태그</div>
-                        {userTagInfo ?
-                            <>
-                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '2rem', fontWeight: 'bold', color: '#006400' }}>{userTagInfo}</Div>
-                            </> :
-                            <>
-                                <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '2rem', fontWeight: 'bold', color: '#006400' }}>없음</Div>
-                            </>
-                        }
+                        <Div style={{ fontSize: '1rem', border: 'none' ,marginLeft: '2rem', fontWeight: 'bold', color: '#006400' }}>{userTagInfo ? userTagInfo : "없음"}</Div>
                     </Content>
-                    {myPk == params.pk &&
-                    <>
-                        {userTagInfo ? ( 
-                        <>
-                            <Content>
-                                <Input id="tag2" type='text' onChange={onChangeTag} />
-                            </Content>
-                            <Button style={{ marginBottom: '2rem', width: '7rem', height: '2.5rem' }}
-                                onClick={editTag}>태그 수정하기</Button>
-                        </>
-                        ) :
-                        (
-                        <>
-                            <Content>
-                                <Input id="tag" type='text' onChange={onChangeTag} />
-                            </Content>
-                            <Button style={{ marginBottom: '2rem', width: '7rem', height: '2.5rem' }}
-                                onClick={addTag}>태그 등록하기</Button> 
-                        </>
-                        )
-                        }
-                    </>
-                    }
-                    {myPk == params.pk ?
-                        <>
-                            <Title>비밀번호 변경</Title>
-                            <Content style={{ marginBottom: '0.3rem' }}>
-                                <div style={{ marginLeft: '0.3rem', color: 'black', fontSize: '1rem', fontWeight: 'bold' }}>현재 비밀번호</div>
-                            </Content>
-                            <Content>
-                                <Input type='password' onChange={onChangePassword} />
-                            </Content>
-                            <Content style={{ marginBottom: '0.3rem' }}>
-                                <div style={{ marginLeft: '0.3rem', color: '#B9062F', fontSize: '1rem', fontWeight: 'bold' }}>새 비밀번호</div>
-                            </Content>
-                            <Content>
-                                <Input type='password' onChange={onChangeNewPassword} />
-                            </Content>
-                            <Content style={{ marginBottom: '0.3rem' }}>
-                                <div style={{ marginLeft: '0.3rem', color: '#B9062F', fontSize: '1rem', fontWeight: 'bold' }}>비밀번호 확인</div>
-                            </Content>
-                            <Content style={{ marginBottom: '0' }}>
-                                <Input style={{ marginBottom: '0.2rem' }} type='password' onChange={onChangeNewPasswordCheck} />
-                            </Content>
-                            <Check>{check ? '' : '비밀번호가 일치하지 않습니다.'}</Check>
-                            <Button style={{ marginBottom: '2rem', width: '5rem', height: '2.5rem' }}
-                                onClick={handleChangePassword}>변경하기</Button>
-                        </>
-                        :
-                        <>
-                        </>
-                    }
-
                 </Container>
 
             </ContentsWrapper>

@@ -66,27 +66,34 @@ const Span = styled.span`
 `;
 
 const InputContainer = styled.div`
-  border: 1px solid #0064FF;
-  border-radius:0.5rem;
   align-items:center;
   padding:8px 0;
   display:flex;
   margin:0 auto;
-  background:#fff;
   position: fixed; /* 이 부분을 고정 */
   bottom: 98px; /* 하단에 여백 없이 */
   height: 30px;
-  width: 250px;
+  width: 270px;
 `
 
 const MessengerInput = styled.input`
-  width: 14rem;
-  padding:0 5px 0 5px;
-  font-size:1rem;
-  outline:none;
-  border: none;
-  margin-top: 5px;
-  color:#2e2e2e;
+width:20.5rem;
+padding:0.75rem;
+font-size:1rem;
+outline:none;
+border:none;
+border:1px solid black;
+color:#2e2e2e;
+@media screen and (max-width:600px) {
+    width: 14.5rem;
+    font-size:0.8rem;
+  }
+  ::placeholder {
+    color: #cccccc;
+  }
+  &:focus {
+    border: 1px solid #0078FF;
+}
 `
 const MessengerButton = styled.button`
 	width: 85px;

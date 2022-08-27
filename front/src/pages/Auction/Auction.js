@@ -21,9 +21,8 @@ const Input = styled.input`
   font-size:1rem;
   border:none;
   margin-right:0.3rem;
-  width:20rem;
-  height: 2rem;
-  padding-bottom:0.2rem;
+  width:21rem;
+  height: 2.5rem;
   ::placeholder {
       color: #cccccc;
   }
@@ -56,16 +55,6 @@ width:90%;
 margin:0.5rem auto;
 color:#2e2e2e;
 `
-const RightTextBox = styled.div`
-text-align:end;
-width:90%;
-margin:0.3rem auto;
-color:#2e2e2e;
-display:flex;
-flex-direction:column;
-align-items:end;
-`
-
 const Textarea = styled.textarea`
 width: 80%;
 border-radius: 0.3rem;
@@ -333,7 +322,7 @@ const Auction = () => {
           <LeftTextBox style={{ fontWeight: 'bold', color: '#8B4513', fontSize: '1rem', paddingBottom: '10px' }}>판매자 :</LeftTextBox>
           <LeftTextBox onClick={() => { history.push(`/info/${item?.seller_pk}`) }} style={{ cursor: 'pointer', borderBottom: '1px solid gray', paddingBottom: '20px', fontWeight: 'bold' }}>
             {item?.seller_icon &&
-            <img width={20} src={setIcon(item?.seller_icon)}/>
+            <img width={15} src={setIcon(item?.seller_icon)}/>
             }
             <img src={setLevel(item?.seller_reliability)}/>{item?.seller_nickname ?? ''}
           </LeftTextBox>
@@ -363,9 +352,9 @@ const Auction = () => {
                   <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>시작가 낮추기 신청</LeftTextBox>
                   <LeftTextBox>
                     <InputAndButton>
-                      <Input style={{ marginBottom: '0.3rem' }} placeholder='숫자를 입력하세요.' id='request-down-price' />
+                      <Input placeholder='숫자를 입력하세요.' id='request-down-price' />
                       <Button 
-                        style={{width: '7rem'}}
+                        style={{width: '4.5rem', height: '2.5rem', marginTop: '5px'}}
                         onClick={() => {
                         if (window.confirm("시작가 낮추기 요청을 하겠습니까?")) {
                           requestDownPrice()
@@ -382,9 +371,9 @@ const Auction = () => {
               <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>경매가 올리기</LeftTextBox>
               <LeftTextBox>
                 <InputAndButton>
-                  <Input style={{ marginBottom: '0.3rem' }} placeholder='숫자를 입력하세요.' id='up-price' />
+                  <Input placeholder='숫자를 입력하세요.' id='up-price' />
                   <Button 
-                    style={{width: '7rem'}}
+                    style={{width: '6.8rem', height: '2.5rem', marginTop: '5px'}}
                     onClick={() => {
                     if (window.confirm("경매가를 올리시겠습니까?")) {
                       upPrice()
@@ -413,7 +402,7 @@ const Auction = () => {
                     <InputAndButton>
                       <Input placeholder='숫자를 입력하세요.' id='down-price' />
                       <Button 
-                        style={{width: '7rem'}}
+                        style={{width: '6rem', height: '2.5rem', marginTop: '5px'}}
                         onClick={() => {
                           if (window.confirm("시작가를 낮추시겠습니까?")) {
                             updateminPrice();
@@ -427,7 +416,7 @@ const Auction = () => {
               <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>낙찰하기</LeftTextBox>
               <LeftTextBox style={{ fontWeight: 'bold', color: '#ababab', fontSize: '1rem' }}>
                 <Button
-                  style={{width: '7rem'}} 
+                  style={{width: '5rem', height: '2.5rem'}} 
                   onClick={() => {
                   if (window.confirm("낙찰 하시겠습니까?")) {
                     successfulAuction()
@@ -463,9 +452,9 @@ const Auction = () => {
                   }}>
                     <div style={{ textAlign: 'left', fontWeight: 'bold' }}>
                       {post.user_icon &&
-                      <img width={25} src={setIcon(post.user_icon)} />
+                      <img width={15} src={setIcon(post.user_icon)} />
                       }
-                      <img width={25} src={setLevel(post.user_reliability)}/>{post.user_nickname}
+                      <img src={setLevel(post.user_reliability)}/>{post.user_nickname}
                     </div>
                     <div style={{ fontSize: '0.8rem', wordBreak: 'break-all' }}>{post.content}</div>
                     <div style={{ fontSize: '0.7rem' }}>{post.create_time}</div>

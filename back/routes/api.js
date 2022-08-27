@@ -103,7 +103,6 @@ router.post('/signup', (req, res, next) => {
 })
 //비밀번호 변경
 router.post('/changepassword', (req, res, next) => {
-    // 값 받아올 때, id, pw, userLevel, brandList
     try {
 
         const pk = req.body.pk
@@ -111,7 +110,6 @@ router.post('/changepassword', (req, res, next) => {
         const newPw = req.body.newPw
 
         if (isNotNullOrUndefined([pk, pw, newPw])) {
-            //중복 체크 
             let sql = "SELECT pw FROM user_table WHERE pk=?"
 
             db.query(sql, [pk], (err, result) => {

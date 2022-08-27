@@ -5,8 +5,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import ContentsWrapper from '../../components/elements/ContentWrapper';
 import Wrapper from '../../components/elements/Wrapper';
 import axios from 'axios';
-import setLevel from '../../data/Level';
-import { setIcon } from '../../data/Icon';
 
 const Input = styled.input`
 width:20.5rem;
@@ -64,81 +62,50 @@ const MyProfile = () => {
     const history = useHistory()
     const params = useParams();
 
-    const [userTagInfo, setUserTagInfo] = useState({
-      userTag: ''
-    })
-
-    const { userTag } = userTagInfo
-
-    const [userInfo, setUserInfo] = useState({
-      id: '',
-      user_email: '',
-      nick_name: '',
-      reliability: 0,
-      user_use_icon: '',
-      user_name: '',
-      user_point: 0,
-      phone_number: 0,
-    })
-
-    const { id, user_email, nick_name, reliability, user_use_icon, user_name, user_point, phone_number } = userInfo;
+    const [pw, setPw] = useState('')
+    const [newPw, setNewPw] = useState('')
+    const [confirmNewPw, setConfirmNewPw] = useState('')
+    const [number, setNumber] = useState(0);
 
     async function fetchInfo(){
       const { data: response } = await axios.get('/api/auth')
       if(!response.second || params.pk != response.pk) {
         alert("접근 권한이 없습니다.")
         history.push('/profile')
-      } else {
-        const { data: response2 } = await axios.post('/api/userinfo/user', {pk: params.pk})
-        setUserInfo(response2.data)
-        
-        const { data: response3 } = await axios.post('/api/usertaginfo', {user_name: response2.data.nick_name})
-        if(response3.data) {
-          setUserTagInfo(response3.data)
-        }
+      } 
+    }
+
+    function randomNumber(){
+      let number = Math.floor(Math.random() * 1000000)+100000; 
+      if(number>1000000){                                      
+         number = number - 100000;                            
       }
+      setNumber(number);
     }
 
     useEffect(() => {
       fetchInfo();
+      randomNumber();
     }, [])
 
-    function changeUserInfo(e){
-      setUserInfo({...userInfo, [e.target.name]: e.target.value})
-    }
-
-    function changeUserTag(e){
-      setUserTagInfo({...userTagInfo, [e.target.name]: e.target.value})
-    }
-
-    const changeInfo = async () => {
-      if(!user_name || !phone_number) {
-        alert("모든 정보를 입력해주세요.")
+    const changePw = async () => {
+      if(!pw || !newPw || !confirmNewPw) {
+        alert("모든 정보를 입력해주세요.");
         return;
-      } else {
-        if(userTag) {
-          const {data: response0} = await axios.post('/api/usertag', {
-            nickname: nick_name,
-            userTag: userTag
-          })
-          if (response0.data > 0) {
-            const {data: response3} = await axios.post('/api/usertaginfo', {user_name: nick_name})
-            setUserTagInfo(response3.data)
-          }
-        } 
-
-        const {data: response} = await axios.post('/api/useredit', {
-          pk: params.pk,
-          user_name: user_name,
-          phone_number: phone_number
-        })
-        if (response.result > 0) {
-          alert("유저 정보가 변경되었습니다")
-          const {data: response2} = await axios.post('/api/userinfo/user', {pk: params.pk})
-          setUserInfo(response2.data)
-      } else {
-          alert('서버 에러 발생')
+      } else if (newPw !== confirmNewPw) {
+        alert("새 비밀번호가 일치하지 않습니다");
+        return;
       }
+      const { data: response } = await axios.post('/api/changepassword', {
+        pk: params.pk,
+        pw: pw,
+        newPw: newPw
+      })
+      if(response.result < 0) {
+        alert(response.message)
+      } else {
+        alert("비밀번호 변경이 완료 되었습니다.");
+        history.push(`/myprofile/${params.pk}`)
       }
     }
 
@@ -147,16 +114,19 @@ const MyProfile = () => {
             <ContentsWrapper style={{ borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'}}>
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
                 <Title>비밀번호 변경</Title>
-                <SubTitle>이름</SubTitle>
-                <Input style={{marginBottom:'15px'}} type='text' value={user_name} name='user_name' onChange={e => changeUserInfo(e)} />
-                <SubTitle>전화번호</SubTitle>
-                <Input style={{marginBottom:'15px'}} type='text' value={phone_number} name='phone_number' onChange={e => changeUserInfo(e)} />
-                <SubTitle>관심 태그</SubTitle>
-                <Input style={{marginBottom:'2.5rem'}} type='text' value={userTag} name='userTag' onChange={e => changeUserTag(e)} />
-                <Button style={{marginBottom:'2rem'}} 
+                <SubTitle>현재 비밀번호</SubTitle>
+                <Input style={{marginBottom:'15px'}} type='password' onChange={e => setPw(e.target.value)} />
+                <SubTitle>새 비밀번호</SubTitle>
+                <Input style={{marginBottom:'15px'}} type='password' onChange={e => setNewPw(e.target.value)} />
+                <SubTitle>새 비밀번호 확인</SubTitle>
+                <Input style={{marginBottom:'20px'}} type='password' onChange={e => setConfirmNewPw(e.target.value)} />
+                {newPw !== confirmNewPw &&
+                  <div style={{marginBottom:'2.5rem', color: 'red'}}>비밀번호가 일치하지 않습니다</div>
+                }
+                <Button style={{marginBottom:'2rem'}}
                 onClick={() => {
                   if(window.confirm("비밀번호를 변경 하시겠습니까?")) {
-                    changeInfo()
+                    changePw()
                   }
                 }}>비밀번호 변경</Button>
                 <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
