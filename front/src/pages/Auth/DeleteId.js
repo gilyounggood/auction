@@ -59,7 +59,7 @@ margin-bottom:0.5rem;
   }
 `
 
-const MyProfile = () => {
+const DeleteId = () => {
     const history = useHistory()
     const params = useParams();
 
@@ -119,7 +119,7 @@ const MyProfile = () => {
         <Wrapper >
             <ContentsWrapper style={{ borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'}}>
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
-                <Title>비밀번호 변경</Title>
+                <Title>회원 탈퇴</Title>
                 <SubTitle>현재 비밀번호</SubTitle>
                 <Input style={{marginBottom:'15px'}} type='password' onChange={e => setPw(e.target.value)} />
                 <SubTitle>새 비밀번호</SubTitle>
@@ -149,11 +149,11 @@ const MyProfile = () => {
                 <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
                   <span style={{cursor: 'pointer'}} onClick={() => history.push(`/myprofile/${params.pk}`)}>내정보</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push(`/mylog/${params.pk}`)}>이력 관리</span> |
-                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push(`/deleteid/${params.pk}`)}>회원 탈퇴</span>  
+                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push(`/changepw/${params.pk}`)}>보안 설정</span>  
                 </div>
               </div> 
             </ContentsWrapper>
         </Wrapper>
     );
 };
-export default MyProfile;
+export default DeleteId;

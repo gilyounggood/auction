@@ -23,6 +23,8 @@ import FindPw from './Auth/FindPw';
 import Info from './Auth/Info';
 import MyProfile from './Auth/MyProflie';
 import ChangePw from './Auth/ChangePw';
+import MyLog from './Auth/MyLog';
+import DeleteId from './Auth/DeleteId';
 import Favorite from './Auth/Favorite';
 
 import AuctionList from './Auction/AuctionList';
@@ -99,6 +101,8 @@ const App = () => {
                 <Route exact path="/findpw" component={FindPw} />
                 <Route exact path="/myprofile/:pk" component={MyProfile} />
                 <Route exact path="/changepw/:pk" component={ChangePw} />
+                <Route exact path="/mylog/:pk" component={MyLog} />
+                <Route exact path="/deleteid/:pk" component={DeleteId} />
                 <Route exact path='/info/:pk' component={Info}/>
                 <Route exact path='/favorite' component={Favorite}/>
 

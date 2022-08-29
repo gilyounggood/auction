@@ -15,40 +15,7 @@ import { CgDetailsMore } from 'react-icons/cg'
 import { useSelector } from 'react-redux'
 import setLevel from '../../data/Level';
 import { setIcon } from '../../data/Icon';
-import $ from 'jquery'
 
-const Input = styled.input`
-    outline: 1px solid #c4c4c4;
-    font-size:1rem;
-    border:none;
-    margin-left:0.3rem;
-    width:25rem;
-    height: 2rem;
-    padding-bottom:0.2rem;
-    ::placeholder {
-        color: #cccccc;
-    }
-    @media screen and (max-width: 790px) {
-        width: 285px;
-    }
-    &:focus {
-        outline: 1px solid #0078FF;
-        box-shadow: 0px 0px 2px black;
-    }
-`
-
-const Button = styled.button`
-width:12.2rem;
-height:3rem;
-border-radius:0.5rem;
-border:none;
-background:#8e44ad;
-color:white;
-box-shadow: 2px 1px 4px #00000029;
-font-size:0.85rem;
-cursor:pointer;
-margin-left:0.3rem;
-`
 const Title = styled.h3`
 font-size:2rem;
 color:#8e44ad;
@@ -80,28 +47,11 @@ width:12rem;
 padding-bottom:0.2rem;
 `
 
-const Check = styled.div`
-width:21.5rem;
-text-align:left;
-color:red;
-font-size:0.6rem;
-margin-bottom:0.5rem;
-margin-left:0.3rem;
-height:0.6rem;
-@media screen and (max-width:600px) {
-    width: 15.5rem;
-  }
-`
 const Info = () => {
     const history = useHistory()
     const params = useParams();
     const [myPk, setMyPk] = useState(0)
-    const [myLevel, setMyLevel] = useState(0)
     const [nickname, setNickname] = useState('')
-    const [password, setPassword] = useState('')
-    const [newPassword, setNewPassword] = useState('')
-    const [newPasswordCheck, setNewPasswordCheck] = useState('')
-    const [check, setCheck] = useState(true)
     const [buyList, setBuyList] = useState([])
     const [sellList, setSellList] = useState([])
     const [pk, setPk] = useState(0)
