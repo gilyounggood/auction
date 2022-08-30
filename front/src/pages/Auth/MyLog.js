@@ -207,7 +207,7 @@ const MyLog = () => {
             <div style={{ color: '#5a5a5a', fontSize: '0.9rem', marginTop: '25px' }}>
               <span style={{ marginLeft: '5px', cursor: 'pointer' }} onClick={() => history.push(`/myprofile/${params.pk}`)}>내정보</span> |
               <span style={{ cursor: 'pointer' }} onClick={() => history.push(`/changepw/${params.pk}`)}> 보안 설정</span> |
-              <span style={{ marginLeft: '5px', cursor: 'pointer' }} onClick={() => history.push(`/deleteid/${params.pk}`)}>회원 탈퇴</span>
+              <span style={{ marginLeft: '5px', cursor: 'pointer' }} onClick={() => history.push(`/singout/${params.pk}`)}>회원 탈퇴</span>
             </div>
           </ContentsWrapper>
         </Wrapper>

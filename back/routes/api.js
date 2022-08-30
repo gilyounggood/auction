@@ -307,6 +307,59 @@ router.post('/findpw', (req, res) => {
     }
 })
 
+// 회원 탈퇴
+router.post('/singout', (req, res, next) => {
+    try {
+        const pk = req.body.pk
+        const pw = req.body.pw
+
+        if (isNotNullOrUndefined([pk, pw])) {
+            let sql = "SELECT pw FROM user_table WHERE pk=?"
+
+            db.query(sql, [pk], (err, result) => {
+                if (err) {
+                    console.log(err)
+                    response(req, res, -200, "비밀번호 조회 실패", [])
+                }
+                else {
+
+                    crypto.pbkdf2(pw, salt, saltRounds, pwBytes, 'sha512', async (err, decoded) => {
+                        let hash = decoded.toString('base64')
+
+                        if (err) {
+                            console.log(err)
+                            response(req, res, -200, "비밀번호 암호화 도중 에러 발생", [])
+                        }
+                        else {
+                            if (result[0].pw != hash) {
+                                response(req, res, -200, "비밀번호가 일치하지 않습니다.", [])
+                            }
+                            else {
+                                db.query('DELETE FROM user_table WHERE pk =?', [pk], (err, result) => {
+                                    if (err) {
+                                        console.log(err)
+                                        response(req, res, -200, "회원 탈퇴 실패", [])
+                                    } else {
+                                        response(req, res, 200, "회원 탈퇴 성공", [])
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            })
+        }
+        else {
+            nullResponse(req, res)
+        }
+
+    }
+    catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 // 권한 체크
 router.get('/auth', (req, res, next) => {
     try {
@@ -766,7 +819,6 @@ router.post('/editcommunity', (req, res, next) => {
 
 router.post('/delete', (req, res, next) => {
     try {
-        console.log(req.body)
         const tableName = req.body.tableName
         const pk = req.body.pk
         db.query(`DELETE FROM ${tableName}_table WHERE pk=?`, [pk], (err, result) => {

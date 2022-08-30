@@ -59,13 +59,13 @@ margin-bottom:0.5rem;
   }
 `
 
-const DeleteId = () => {
+const SignOut = () => {
     const history = useHistory()
     const params = useParams();
 
-    const [pw, setPw] = useState('')
-    const [newPw, setNewPw] = useState('')
-    const [confirmNewPw, setConfirmNewPw] = useState('')
+    const [pw, setPw] = useState(0)
+    const [confirm, setConfirm] = useState('')
+    const [userConfirm, setUserConfirm] = useState('')
     const [number, setNumber] = useState(0);
     const [userNumber, setUserNumber] = useState(0)
 
@@ -74,7 +74,10 @@ const DeleteId = () => {
       if(!response.second || params.pk != response.pk) {
         alert("접근 권한이 없습니다.")
         history.push('/profile')
+        return;
       } 
+      const message = `사용중인 아이디(${response.id})의 회원탈퇴를 동의합니다`
+      setConfirm(message)
     }
 
     function randomNumber(){
@@ -90,28 +93,31 @@ const DeleteId = () => {
       randomNumber();
     }, [])
 
-    const changePw = async () => {
-      if(!pw || !newPw || !confirmNewPw || !userNumber) {
-        alert("모든 정보를 입력해주세요.");
+    const onLogout = async () => {
+      await axios.post('/api/logout')
+      history.push('/profile')
+      window.location.reload()
+  }
+
+    const singOut = async () => {
+      if(!pw || !userConfirm || !userNumber) {
+        alert('모든 정보를 입력해주세요')
         return;
-      } else if (newPw !== confirmNewPw) {
-        alert("새 비밀번호가 일치하지 않습니다");
-        return;
-      }
-      if(userNumber != number) {
-        alert("자동입력 방지숫자가 일치하지 않습니다.")
-        return;
-      }
-      const { data: response } = await axios.post('/api/changepassword', {
-        pk: params.pk,
-        pw: pw,
-        newPw: newPw
-      })
-      if(response.result < 0) {
-        alert(response.message)
+      } else if (confirm !== userConfirm) {
+        alert('확인 문구가 일치하지 않습니다.')
+      } else if (number != userNumber) {
+        alert('자동입력 방지숫자가 일치하지 않습니다.')
       } else {
-        alert("비밀번호 변경이 완료 되었습니다.");
-        history.push(`/myprofile/${params.pk}`)
+        const { data: response } = await axios.post('/api/singout', {
+          pk: params.pk,
+          pw: pw
+        })
+        if (response.result < 0) {
+          alert(response.message)
+        } else {
+          alert("회원 탈퇴가 완료 되었습니다.")
+          onLogout();
+        }
       }
     }
 
@@ -120,15 +126,13 @@ const DeleteId = () => {
             <ContentsWrapper style={{ borderRadius: `${window.innerWidth >= 950 ? '1rem' : '0'}`, minHeight: '28rem'}}>
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', border: '1px solid #d2d2d2', borderRadius: '0.5rem',padding: '15px'}}>
                 <Title>회원 탈퇴</Title>
-                <SubTitle>현재 비밀번호</SubTitle>
-                <Input style={{marginBottom:'15px'}} type='password' onChange={e => setPw(e.target.value)} />
-                <SubTitle>새 비밀번호</SubTitle>
-                <Input style={{marginBottom:'15px'}} type='password' onChange={e => setNewPw(e.target.value)} />
-                <SubTitle>새 비밀번호 확인</SubTitle>
-                <Input style={{marginBottom:'30px'}} type='password' onChange={e => setConfirmNewPw(e.target.value)} />
-                {newPw !== confirmNewPw &&
-                  <div style={{marginBottom:'20px', color: 'red'}}>비밀번호가 일치하지 않습니다</div>
-                }
+                <SubTitle style={{ marginBottom:'25px', fontSize: '0.8rem', textAlign: 'center', color: 'red' }}>회월 탈퇴 시 계정 정보는 되돌릴 수 없습니다</SubTitle>
+                <SubTitle>비밀번호 입력</SubTitle>
+                <Input style={{marginBottom:'15px'}} type='password' placeholder='현재 비밀번호' onChange={e => setPw(e.target.value)} />
+                <SubTitle style={{marginBottom: '15px'}}>회원 탈퇴 확인 문구 입력</SubTitle>
+                <SubTitle style={{ marginBottom:'15px', fontSize: '0.8rem', color: '#FF0000' }}>아래 문장을 띄어쓰기까지 정확히 따라 입력해주세요</SubTitle>
+                <SubTitle style={{ marginBottom:'25px', fontSize: '1rem', color: '#14148C', border: '1px solid gray', padding: '10px' }}>{confirm}</SubTitle>
+                <Input style={{marginBottom:'30px'}} type='text' placeholder="확인 문구 입력" onChange={e => setUserConfirm(e.target.value)} />
 
                 <SubTitle style={{ marginBottom:'15px', fontSize: '0.8rem' }}>아래 숫자를 보이는 대로 입력해주세요</SubTitle>
                 <div style={{border: '1px solid black', padding: '1.5rem', marginBottom: '15px', color: '#464646', fontSize: '1.8rem'}}>
@@ -142,10 +146,10 @@ const DeleteId = () => {
 
                 <Button style={{marginBottom:'2rem'}}
                 onClick={() => {
-                  if(window.confirm("비밀번호를 변경 하시겠습니까?")) {
-                    changePw()
+                  if(window.confirm('정말 회원 탈퇴를 하시겠습니까? \n회원 탈퇴 시 계정 정보들은 되돌릴 수 없습니다.')) {
+                    singOut()
                   }
-                }}>비밀번호 변경</Button>
+                }}>회원 탈퇴</Button>
                 <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
                   <span style={{cursor: 'pointer'}} onClick={() => history.push(`/myprofile/${params.pk}`)}>내정보</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push(`/mylog/${params.pk}`)}>이력 관리</span> |
@@ -156,4 +160,4 @@ const DeleteId = () => {
         </Wrapper>
     );
 };
-export default DeleteId;
+export default SignOut;

@@ -149,7 +149,7 @@ const MyProfile = () => {
                 <div style={{color: '#5a5a5a', fontSize: '0.9rem'}}>
                   <span style={{cursor: 'pointer'}} onClick={() => history.push(`/myprofile/${params.pk}`)}>내정보</span> |
                   <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push(`/mylog/${params.pk}`)}>이력 관리</span> |
-                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push(`/deleteid/${params.pk}`)}>회원 탈퇴</span>  
+                  <span style={{marginLeft: '5px', cursor: 'pointer'}} onClick={() => history.push(`/singout/${params.pk}`)}>회원 탈퇴</span>  
                 </div>
               </div> 
             </ContentsWrapper>

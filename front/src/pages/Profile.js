@@ -133,7 +133,6 @@ const Profile = () => {
     }, [])
     const onLogout = async () => {
         await axios.post('/api/logout')
-        history.push('/')
         history.push('/profile')
         window.location.reload()
     }
