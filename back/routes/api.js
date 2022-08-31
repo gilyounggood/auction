@@ -32,6 +32,8 @@ const jwtSecret = "djfudnsqlalfKeyFmfRkwu"
 
 const nodemailer = require('nodemailer')
 
+let current_time = require('../data/current_time')
+
 router.get('/', (req, res) => {
     console.log("back-end initialized")
     res.send('back-end initialized')
@@ -1383,7 +1385,6 @@ router.post('/myfavorite', async (req, res) => {
                         console.log(err)
                         response(req, res, -200, "서버 에러 발생", [])
                     } else {
-                        console.log(result2)
                         response(req, res, 200, "즐겨찾기 불러오기 성공", result2)
                     }
                 })
@@ -1688,6 +1689,48 @@ router.post('/applyicon', async (req, res) => {
             }
         })
     } catch {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+// 쪽지 추가
+router.post('/addnote', (req, res) => {
+    try {
+        const send_user = req.body.send_user;
+        const receive_user = req.body.receive_user;
+        const title = req.body.title;
+        const content = req.body.content;
+
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = ('0' + (today.getMonth() + 1)).slice(-2);
+        var day = ('0' + today.getDate()).slice(-2);
+        var dateString = year + '-' + month + '-' + day;
+        var hours = ('0' + today.getHours()).slice(-2);
+        var minutes = ('0' + today.getMinutes()).slice(-2);
+        var seconds = ('0' + today.getSeconds()).slice(-2);
+        var timeString = hours + ':' + minutes + ':' + seconds;
+        let moment = dateString + ' ' + timeString;
+
+        db.query('SELECT pk FROM user_table WHERE nick_name=?', [receive_user], (err, result) => {
+            if(err) {
+                console.log(err)
+            } else if(result.length < 1) {
+                response(req, res, -200, `${receive_user}님을 찾을 수 없습니다. 닉네임을 확인해주세요.`, [])
+            } else {
+                let sql = 'INSERT INTO note_table (send_user, receive_user, title, content, create_time) VALUES (?, ? ,? ,? , ?)';
+                db.query(sql, [send_user, receive_user, title, content, moment], (err, result) => {
+                    if (err) {
+                        console.log(err)
+                        response(req, res, -200, "쪽지 전송 실패", [])
+                    } else {
+                        response(req, res, 200, "쪽지 전송 성공", [])
+                    }
+                })
+            }
+        })
+    } catch (err) {
         console.log(err)
         response(req, res, -200, "서버 에러 발생", [])
     }

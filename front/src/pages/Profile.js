@@ -178,6 +178,13 @@ const Profile = () => {
                                             <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
                                         </div>
                                     </Theme>
+                                    <Theme onClick={() => { history.push(`/note`) }}>
+                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>우편함</p>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
+                                            <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
+                                        </div>
+                                    </Theme>
                                     <Theme onClick={() => { history.push(`/favorite`) }}>
                                         <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>즐겨찾기</p>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>

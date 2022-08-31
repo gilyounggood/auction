@@ -27,9 +27,10 @@ import MyLog from './Auth/MyLog';
 import SingOut from './Auth/SingOut';
 import Favorite from './Auth/Favorite';
 
+import Note from './Note/Note';
+import AddNote from './Note/AddNote'
+
 import AuctionList from './Auction/AuctionList';
-import UserInfo from './Manager/UserInfo';
-import UserList from './Manager/UserList';
 
 import AddCommunity from './Community/AddCommunity';
 import EditCommunity from './Community/EditCommunity';
@@ -106,9 +107,10 @@ const App = () => {
                 <Route exact path='/info/:pk' component={Info}/>
                 <Route exact path='/favorite' component={Favorite}/>
 
+                <Route exact path='/note' component={Note}/>
+                <Route exact path='/addnote' component={AddNote}/>
+
                 <Route exact path="/manager/auctionlist" component={AuctionList} />
-                <Route exact path="/manager/userinfo" component={UserInfo} />
-                <Route exact path="/manager/userlist" component={UserList} />
 
                 <Route exact path="/community/:pk" component={Community} />
                 <Route exact path="/communitylist/:pk" component={CommunityList} />
