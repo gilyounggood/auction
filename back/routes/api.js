@@ -1736,4 +1736,49 @@ router.post('/addnote', (req, res) => {
     }
 })
 
+router.post('/note', (req, res) => {
+    try {
+        const user_nickname = req.body.user_nickname
+
+        db.query('SELECT * FROM note_table WHERE send_user=? OR receive_user=?', [user_nickname, user_nickname], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200 , "쪽지 조회 실패", [])
+            } else {
+                response(req, res, 200, "쪽지 조회 성공", result)
+            }
+        })
+
+    } catch (err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/updatenote', (req, res) => {
+    try {
+        const pk = req.body.pk;
+        const user_kind = req.body.user_kind;
+
+        db.query(`UPDATE note_table SET ${user_kind}=0 WHERE pk=?`, [pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "쪽지 업데이트 실패", [])
+            } else {
+                response(req, res, 200, "쪽지 업데이트 성공", [])
+
+                db.query('DELETE FROM note_table WHERE send_user=0 AND receive_user=0', (err, result) => {
+                    if (err) {
+                        console.log(err)
+                        response(req, res, -200, "쪽지 삭제 실패", [])
+                    }
+                })
+            }
+        })
+    } catch(err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
 module.exports = router;        

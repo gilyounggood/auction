@@ -157,14 +157,14 @@ const Note = () => {
                                     <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
                                 </div>
                             </Theme>
-                            <Theme onClick={() => { history.push(`/addauction`) }}>
+                            <Theme onClick={() => { history.push(`/mynotelist/1`) }}>
                                 <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>받은 쪽지함</p>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
                                     <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
                                 </div>
                             </Theme>
-                            <Theme onClick={() => { history.push(`/favorite`) }}>
+                            <Theme onClick={() => { history.push(`/mynotelist/2`) }}>
                                 <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>보낸 쪽지함</p>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>

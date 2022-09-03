@@ -29,6 +29,7 @@ import Favorite from './Auth/Favorite';
 
 import Note from './Note/Note';
 import AddNote from './Note/AddNote'
+import MyNoteList from './Note/MyNoteList';
 
 import AuctionList from './Auction/AuctionList';
 
@@ -109,6 +110,7 @@ const App = () => {
 
                 <Route exact path='/note' component={Note}/>
                 <Route exact path='/addnote' component={AddNote}/>
+                <Route exact path='/mynotelist/:pk' component={MyNoteList}/>
 
                 <Route exact path="/manager/auctionlist" component={AuctionList} />
 

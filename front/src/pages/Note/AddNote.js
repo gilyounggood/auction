@@ -84,6 +84,8 @@ const AddNote = () => {
     const upLoad = async () =>{
         if(title==="" || note==="" || receiveUser==="") {
             alert("빈 칸 없이 모두 작성해주세요.")
+        } else if(myNickname===receiveUser) {
+            alert("자기 자신한테는 쪽지를 보낼수 없습니다.")
         } else {
             const {data:response} = await axios.post('/api/addnote', {
                 send_user: myNickname,
