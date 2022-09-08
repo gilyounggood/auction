@@ -49,7 +49,7 @@ const MyNoteList = () => {
     async function updateNote(num) {
         const { data: response } = await axios.post('/api/updatenote', {
             pk: num,
-            user_kind: params.pk == 1 ? 'receive_user' : 'send_user'
+            delete_kind: params.pk == 1 ? 'receive_delete' : 'send_delete'
         })
         if (response.result > 0) {
             alert('삭제되었습니다')
@@ -80,11 +80,11 @@ const MyNoteList = () => {
                             </thead>
                             <tbody>
                             {params.pk == 1 && noteList.map(note => (
-                                note.receive_user === auth.nick_name &&
+                                note.receive_user === auth.nick_name && note.receive_delete == 0 &&
                                     <Tr key={note.pk}>
-                                    <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/readnote/${note.pk}`) }} /></Td>
+                                    <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push({pathname:'/readnote/1', pk: note.pk}) }} /></Td>
                                     <Td>{note.title}</Td>
-                                    <Td>{note.receive_user}</Td>
+                                    <Td>{note.send_user}</Td>
                                     <Td>{note.create_time}</Td>
                                     <Td><AiFillDelete style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
                                         onClick={() => {
@@ -97,11 +97,11 @@ const MyNoteList = () => {
                             </tbody>
                             <tbody>
                             {params.pk == 2 && noteList.map(note => (
-                                note.send_user === auth.nick_name &&
+                                note.send_user === auth.nick_name && note.send_delete == 0 &&
                                     <Tr key={note.pk}>
-                                        <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push(`/readnote/${note.pk}`) }} /></Td>
+                                        <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push({pathname: '/readnote/2', pk: note.pk}) }} /></Td>
                                         <Td>{note.title}</Td>
-                                        <Td>{note.send_user}</Td>
+                                        <Td>{note.receive_user}</Td>
                                         <Td>{note.create_time}</Td>
                                         <Td><AiFillDelete style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
                                             onClick={() => {
