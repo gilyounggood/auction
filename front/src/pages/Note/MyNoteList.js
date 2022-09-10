@@ -75,6 +75,7 @@ const MyNoteList = () => {
                                 <Td>제목</Td>
                                 <Td>{params.pk==1 ? '보낸유저' : '받은유저'}</Td>
                                 <Td>날짜</Td>
+                                {params.pk == 2 && <Td>상태</Td>}
                                 <Td>삭제</Td>
                             </Tr>
                             </thead>
@@ -83,12 +84,18 @@ const MyNoteList = () => {
                                 note.receive_user === auth.nick_name && note.receive_delete == 0 &&
                                     <Tr key={note.pk}>
                                     <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push({pathname:'/readnote/1', pk: note.pk}) }} /></Td>
-                                    <Td>{note.title}</Td>
+                                    <Td>{note.title}
+                                        {note.notice === 1 &&
+                                            <span style={{marginLeft: '3px', color: '#EB0000'}}>
+                                                new!
+                                            </span>
+                                        }
+                                    </Td>
                                     <Td>{note.send_user}</Td>
                                     <Td>{note.create_time}</Td>
                                     <Td><AiFillDelete style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
                                         onClick={() => {
-                                            if (window.confirm("정말로 삭제하시겠습니까?")) {
+                                            if (window.confirm("정말 삭제하시겠습니까?")) {
                                                 updateNote(note.pk)
                                             }
                                         }} /></Td>
@@ -100,12 +107,18 @@ const MyNoteList = () => {
                                 note.send_user === auth.nick_name && note.send_delete == 0 &&
                                     <Tr key={note.pk}>
                                         <Td><CgDetailsMore style={{ color: '#cd84f1', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => { history.push({pathname: '/readnote/2', pk: note.pk}) }} /></Td>
-                                        <Td>{note.title}</Td>
+                                        <Td>{note.title}
+                                        </Td>
                                         <Td>{note.receive_user}</Td>
                                         <Td>{note.create_time}</Td>
+                                        <Td>
+                                            <span style={{ color: '#EB0000' }}>
+                                                {note.notice ===1 ? '미확인' : '확인'}
+                                            </span>
+                                        </Td>
                                         <Td><AiFillDelete style={{ color: 'red', fontSize: '1.3rem', cursor: 'pointer' }}
                                             onClick={() => {
-                                                if (window.confirm("정말로 삭제하시겠습니까?")) {
+                                                if (window.confirm("정말 삭제하시겠습니까?")) {
                                                     updateNote(note.pk)
                                                 }
                                             }} /></Td>

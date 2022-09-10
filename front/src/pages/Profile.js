@@ -8,6 +8,10 @@ import { GrNext } from 'react-icons/gr'
 import axios from 'axios';
 import { MdOutlineAccountBox } from 'react-icons/md'
 import { BiSmile } from 'react-icons/bi'
+import { BsMailbox } from 'react-icons/bs'
+import { AiFillStar } from 'react-icons/ai'
+import { RiAuctionFill } from 'react-icons/ri'
+import { GrNotes } from 'react-icons/gr'
 import ScaleLoader from "react-spinners/ScaleLoader";
 import setLevel from '../data/Level';
 import { setIcon } from '../data/Icon';
@@ -107,12 +111,12 @@ const Profile = () => {
     const [myPk, setMyPk] = useState(0);
     const [myReliability, setMyReliability] = useState(0)
     const [myIcon, setMyIcon] = useState("")
+    const [noteLength, setNoteLength] = useState(0)
     const isAdmin = async () => {
         setLoading(true)
         const { data: response } = await axios.get('/api/auth')
         if (!response.second) {
             setAuth(false)
-
         }
         else{
             setAuth(true)
@@ -122,9 +126,10 @@ const Profile = () => {
             setMyPk(response.pk)
             setMyReliability(response.reliability)
             setMyIcon(response.user_use_icon)
-            console.log(response)
+
+            const { data: response2 } = await axios.post('/api/notelist', {receive_user: response.nick_name})
+            setNoteLength(response2.data)
         }
-        
         setLoading(false)
     }
 
@@ -165,28 +170,41 @@ const Profile = () => {
                             <ThemeList>
                                 
                                     <Theme onClick={() => { history.push(`/myprofile/${myPk}`) }}>
-                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>내 정보</p>
+                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>
+                                            <GrNotes style={{ height: '0.8rem' }} /> 내 정보
+                                        </p>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
                                             <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
                                         </div>
                                     </Theme>
                                     <Theme onClick={() => { history.push(`/addauction`) }}>
-                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>경매등록</p>
+                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>
+                                            <RiAuctionFill style={{ fontSize:'1.2rem', color: '#00008C', verticalAlign: '-15%' }} /> 경매등록
+                                        </p>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
                                             <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
                                         </div>
                                     </Theme>
                                     <Theme onClick={() => { history.push(`/note`) }}>
-                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>우편함</p>
+                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>
+                                            <BsMailbox style={{ fontSize:'1.2rem', color: '#B9062F', verticalAlign: '-15%' }} /> 우편함
+                                            {noteLength > 0 &&
+                                                <span style={{marginLeft: '5px', color: '#EB0000', fontWeight: 'bold'}}>
+                                                    {`(${noteLength})`}
+                                                </span>
+                                            }
+                                        </p>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
                                             <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
                                         </div>
                                     </Theme>
                                     <Theme onClick={() => { history.push(`/favorite`) }}>
-                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>즐겨찾기</p>
+                                        <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>
+                                            <AiFillStar style={{fontSize:'1.2rem', color: '#FFDC3C', verticalAlign: '-15%'}} /> 즐겨찾기
+                                        </p>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
                                             <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />

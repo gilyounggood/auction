@@ -1755,6 +1755,19 @@ router.post('/note', (req, res) => {
     }
 })
 
+router.post('/notelist', (req, res) => {
+    const receive_user = req.body.receive_user;
+
+    db.query('SELECT pk FROM note_table WHERE receive_user=? AND notice=1', [receive_user], (err, result) => {
+        if(err) {
+            console.log(err)
+            response(req, res, -200, "받은 쪽지 조회 실패", [])
+        } else {
+            response(req, res, 200, "받은 쪽지 조회 성공", result.length)
+        }
+    })
+})
+
 router.post('/updatenote', (req, res) => {
     try {
         const pk = req.body.pk;
@@ -1793,6 +1806,13 @@ router.post('/readnote', (req, res) => {
                 response(req, res, 200, "쪽지 조회 성공", result[0])
             }
         })
+
+        db.query('UPDATE note_table SET notice=0 WHERE pk=?', [pk], (err, result) => {
+            if(err) {
+                console.log(err)
+            }
+        })
+
     } catch(err) {
         console.log(err)
         response(req, res, -200, "서버 에러 발생", [])

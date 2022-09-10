@@ -105,6 +105,7 @@ const Note = () => {
     const [myPk, setMyPk] = useState(0);
     const [myReliability, setMyReliability] = useState(0)
     const [myIcon, setMyIcon] = useState("")
+    const [noteLength, setNoteLength] = useState(0)
     const isAdmin = async () => {
         setLoading(true)
         const { data: response } = await axios.get('/api/auth')
@@ -118,6 +119,9 @@ const Note = () => {
             setMyPk(response.pk)
             setMyReliability(response.reliability)
             setMyIcon(response.user_use_icon)
+
+            const { data: response2 } = await axios.post('/api/notelist', {receive_user: response.nick_name})
+            setNoteLength(response2.data)
         }
         
         setLoading(false)
@@ -158,7 +162,13 @@ const Note = () => {
                                 </div>
                             </Theme>
                             <Theme onClick={() => { history.push(`/mynotelist/1`) }}>
-                                <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>받은 쪽지함</p>
+                                <p style={{ paddingLeft: '0.4rem', fontSize: '1rem' }}>받은 쪽지함
+                                {noteLength > 0 &&
+                                    <span style={{ marginLeft: '5px', color: '#EB0000', fontWeight: 'bold' }}>
+                                        {`(${noteLength})`}
+                                    </span>
+                                }
+                                </p>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <div style={{ fontSize: '0.8rem', color: '#9b59b6' }}>자세히보기</div>
                                     <GrNext style={{ height: '0.8rem', color: '#9b59b6' }} />
