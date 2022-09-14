@@ -47,6 +47,8 @@ import MessengerLog from './MessengerLog';
 import UserManage from './UserManage';
 import PointShop from './PointShop';
 
+import NotFound from './NotFound';
+
 const MarginTop1 = styled.div`
 margin-top:5rem;
 @media screen and (max-width:950px) {
@@ -125,6 +127,8 @@ const App = () => {
 
                 <Route exact path="/usermanage" component={UserManage} />
                 <Route exact path="/pointshop" component={PointShop} />
+
+                <Route exact path="*" component={NotFound} />
 
                 </Switch>
                 

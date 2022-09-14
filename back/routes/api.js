@@ -1797,6 +1797,7 @@ router.post('/updatenote', (req, res) => {
 router.post('/readnote', (req, res) => {
     try {
         const pk = req.body.pk
+        const kind = req.body.kind;
 
         db.query('SELECT * FROM note_table WHERE pk=?', [pk], (err, result) => {
             if(err) {
@@ -1807,11 +1808,14 @@ router.post('/readnote', (req, res) => {
             }
         })
 
-        db.query('UPDATE note_table SET notice=0 WHERE pk=?', [pk], (err, result) => {
-            if(err) {
-                console.log(err)
-            }
-        })
+        if(kind == 1) {
+            db.query('UPDATE note_table SET notice=0 WHERE pk=?', [pk], (err, result) => {
+                if(err) {
+                    console.log(err)
+                }
+            })
+        }
+
 
     } catch(err) {
         console.log(err)

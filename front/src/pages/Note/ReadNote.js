@@ -65,7 +65,10 @@ const ReadNote = () => {
         }
         setMyPk(response0.pk)
 
-        const { data: response2 } = await axios.post('/api/readnote', {pk: location.pk})
+        const { data: response2 } = await axios.post('/api/readnote', {
+            pk: location.pk,
+            kind: params.pk
+        })
         setNoteInfo(response2.data)
     }
     useEffect(() => {
