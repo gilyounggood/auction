@@ -14,6 +14,7 @@ import setLevel from '../../data/Level';
 import { setIcon } from '../../data/Icon';
 import ReactHtmlParser from 'html-react-parser'
 import TimeLeft from '../../data/TimeLeft';
+import AutoBuyingModal from '../../components/modals/AutoBuyingModal';
 
 const Input = styled.input`
   margin-top: 5px;
@@ -106,37 +107,48 @@ const Auction = () => {
   const [chatList, setChatList] = useState([])
   const [favorite, setFavorite] = useState(false)
   const [favoriteList, setFavoriteList] = useState(0)
-  useEffect(() => {
-    async function fetchPosts() {
-      const { data: response } = await axios.get('/api/auth')
-      setAuth(response)
-      const { data: response2 } = await axios.post('/api/item', { pk: params.pk })
-      if (response2.data) {
-        setItem(response2?.data?.item)
-        let arr = []
-        arr = JSON.parse(response2?.data?.item?.category_list ?? "")
-        console.log(arr)
-        if(arr.length>0){
-          arr = arr?.split(",");
-        } else {
-          arr = [];
-        }
-        setTagList(arr)
-        for(var i =0;i<response2?.data?.favorite?.length;i++){
-          if(response2?.data?.favorite[i].user_pk==response.pk){
-            setFavorite(true)
-            setFavoriteList(response2?.data?.favorite)
-          }
-        }
+
+  const [modal, setModal] = useState(false)
+  const [systemInfo, setSystemInfo] = useState({})
+
+  async function fetchPosts() {
+    const { data: response } = await axios.get('/api/auth')
+    setAuth(response)
+    const { data: response2 } = await axios.post('/api/item', { pk: params.pk })
+    if (response2.data) {
+      setItem(response2?.data?.item)
+      let arr = []
+      arr = JSON.parse(response2?.data?.item?.category_list ?? "")
+      if(arr.length>0){
+        arr = arr?.split(",");
       } else {
-        history.push('/')
+        arr = [];
+      }
+      setTagList(arr)
+      for(var i =0;i<response2?.data?.favorite?.length;i++){
+        if(response2?.data?.favorite[i].user_pk==response.pk){
+          setFavorite(true)
+          setFavoriteList(response2?.data?.favorite)
+        }
       }
 
-      const { data: response3 } = await axios.post('/api/chat', { itemPk: params.pk })
-      setChatList(response3.data)
-      $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
-
+      const { data: response3 } = await axios.post('/api/autosysteminfo', {
+        auction_pk: params.pk,
+        user_pk: response.pk,
+      })
+      if (response3.data) {
+        setSystemInfo(response3.data)
+        console.log(response3.data)
+      }
+    } else {
+      history.push('/')
     }
+
+    const { data: response3 } = await axios.post('/api/chat', { itemPk: params.pk })
+    setChatList(response3.data)
+    $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
+  }
+  useEffect(() => {
     fetchPosts()
   }, [])
   const addChat = async (e) => {
@@ -258,7 +270,19 @@ const Auction = () => {
     }
   }
 
+  const openModal = () => {
+    setModal(true)
+  }
+
+  const closeModal = () => {
+    setModal(false)
+  }
+
   return (
+    <>
+    <AutoBuyingModal open={modal} close={closeModal} auction_pk={params.pk} fetchPosts={() => fetchPosts()}
+      user_pk={auth.pk} bid_price={item?.bid_price} max_price={systemInfo.max_price} purchase_price={systemInfo.purchase_price}
+    />
     <Wrapper>
       <ContentsWrapper style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
@@ -381,13 +405,22 @@ const Auction = () => {
                   }}>경매가 올리기</Button>
                 </InputAndButton>
               </LeftTextBox>
+              <LeftTextBox style={{ fontWeight: 'bold', color: '#B93232', fontSize: '1rem' }}>자동 경매 시스템</LeftTextBox>
+              <LeftTextBox>
+                <InputAndButton>
+                  <Button 
+                    style={{width: '9.8rem', height: '2.5rem', marginTop: '5px', background: '#0064FF'}}
+                    onClick={() => {
+                    if (window.confirm("경매 자동 관리 시스템을 사용하시겠습니까? \n설정된 상한가보다 가격이 낮을 시 계속해서 자동으로 매수합니다")) {
+                      openModal();
+                    }
+                  }}>자동 매수 시스템 관리</Button>
+                </InputAndButton>
+              </LeftTextBox>
             </>
             :
             <>
             </>}
-
-             
-
             </>
           }
           {auth.pk ?
@@ -478,6 +511,7 @@ const Auction = () => {
       }
 
     </Wrapper>
+    </>
   );
 };
 export default Auction;

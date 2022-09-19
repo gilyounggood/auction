@@ -1823,4 +1823,56 @@ router.post('/readnote', (req, res) => {
     }
 })
 
+//경매 자동 매수 시스템 추가
+
+router.post('/autosystem', (req, res) => {
+    try {
+        const auction_pk = req.body.auction_pk;
+        const user_pk = req.body.user_pk;
+        const max_price = req.body.max_price;
+        const purchase_price = req.body.purchase_price;
+        const kind = req.body.kind;
+        
+        let sql = ''
+        let params = []
+        if(kind==='add') {
+            sql = 'INSERT INTO auto_auction_system (auction_pk, user_pk, max_price, purchase_price) VALUES (?,?,?,?)';
+            params = [auction_pk, user_pk, max_price, purchase_price]
+        } else {
+            sql = 'UPDATE auto_auction_system SET max_price=?, purchase_price=? WHERE auction_pk=? AND user_pk=?'
+            params = [max_price, purchase_price, auction_pk, user_pk]
+        }
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200 , "시스템 등록 실패", [])
+            } else {
+                response(req, res, 200 , "시스템 등록 성공", [])
+            }
+        })
+    } catch(err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/autosysteminfo', (req, res) => {
+    try {
+        const {auction_pk, user_pk} = req.body;
+
+        db.query('SELECT max_price, purchase_price FROM auto_auction_system WHERE auction_pk=? AND user_pk=?', [auction_pk, user_pk], (err, result) => {
+            if(err) {
+                console.log(err)
+                response(req, res, -200, "매수 시스템 조회 실패", [])
+            } else {
+                response(req, res, 200, "매수 시스템 조회 성공", result[0])
+            }
+        })
+    } catch(err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    } 
+})
+
 module.exports = router;        

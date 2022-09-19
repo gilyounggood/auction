@@ -317,7 +317,7 @@ const MessengerLog = props => {
                   <StyledLink 
                     to = {{
                       pathname:'/searchresult',
-                      state:{...{keyword: messenger.chat_message}}
+                      state:{...{keyword: messenger.chat_message, kind: 'auction'}}
                     }}
                     onClick={e => deleteNotice(messenger.pk)}
                     style={{color: messenger.notice === 0 ? 'gray' : null}}
