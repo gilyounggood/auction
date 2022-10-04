@@ -110,6 +110,7 @@ const Auction = () => {
 
   const [modal, setModal] = useState(false)
   const [systemInfo, setSystemInfo] = useState({})
+  const [autoList, setAutoList] = useState([])
 
   async function fetchPosts() {
     const { data: response } = await axios.get('/api/auth')
@@ -138,7 +139,6 @@ const Auction = () => {
       })
       if (response3.data) {
         setSystemInfo(response3.data)
-        console.log(response3.data)
       }
     } else {
       history.push('/')
@@ -200,11 +200,53 @@ const Auction = () => {
         setChatList(response3.data)
         alert("흥정 신청 성공")
       }
-  
       $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
-
     }
   }
+
+  async function system(){
+    const { data: response4 } = await axios.post('/api/autosysteminfo', {
+      auction_pk: params.pk,
+      user_pk: auth.pk,
+      kind: 'all' 
+    })
+
+    if (response4.result>0) {
+      setAutoList(response4.data)
+      
+      let price = item?.bid_price;
+
+      for(let i =0; i< autoList.length; i++) {
+        if (autoList[i].max_price > item?.bid_price) {
+          const {data:response0} = await axios.post('/api/userinfo/user', {pk: autoList[i].user_pk})
+
+          const {data:response} = await axios.post('/api/upbid',{
+            price: price + autoList[i].purchase_price,
+            itemPk:params.pk,
+            nickname:response0.data.nick_name,
+            reliability: response0.data.reliability,
+            icon: response0.data.user_use_icon,
+            userPk:response0.data.pk,
+            post_id: item?.pk,
+            post_name: item?.seller_nickname,
+            post_title: item?.name,
+          })
+          if(response.result>0){
+            const { data: response2 } = await axios.post('/api/item', { pk: params.pk })
+            if (response2.data) {
+              setItem(response2?.data?.item)
+              price = response2?.data?.item.bid_price;
+              console.log(response2?.data?.item.bid_price);
+            }
+            const { data: response3 } = await axios.post('/api/chat', { itemPk: params.pk })
+            setChatList(response3.data)
+            $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
+          }
+        }
+      }
+    }
+  }
+
   const upPrice = async (e) => {
     if (isNaN(parseInt($('#up-price').val()))) {
       alert('숫자만 입력해 주세요.')
@@ -226,7 +268,16 @@ const Auction = () => {
       })
       if(response.result>0){
         alert('가격 올리기 성공')
-        window.location.reload();
+        $('#up-price').val("");
+        const { data: response2 } = await axios.post('/api/item', { pk: params.pk })
+        if (response2.data) {
+          setItem(response2?.data?.item)
+        }
+        const { data: response3 } = await axios.post('/api/chat', { itemPk: params.pk })
+        setChatList(response3.data)
+        $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
+        
+        system();
       }
     }
   }
@@ -282,6 +333,7 @@ const Auction = () => {
     <>
     <AutoBuyingModal open={modal} close={closeModal} auction_pk={params.pk} fetchPosts={() => fetchPosts()}
       user_pk={auth.pk} bid_price={item?.bid_price} max_price={systemInfo.max_price} purchase_price={systemInfo.purchase_price}
+      min_price={item?.min_price}
     />
     <Wrapper>
       <ContentsWrapper style={{
@@ -362,8 +414,8 @@ const Auction = () => {
             {item.buyer_nickname?
             <>
             <LeftTextBox style={{ fontWeight: 'bold', color: '#8B4513', fontSize: '1rem', paddingBottom: '10px' }}>현재 낙찰자 :</LeftTextBox>
-              <LeftTextBox style={{ borderBottom: '1px solid gray', paddingBottom: '20px', fontWeight: 'bold'}}>
-                {item?.buyer_nickname ?? ''}
+              <LeftTextBox style={{ borderBottom: '1px solid gray', paddingBottom: '20px', fontWeight: 'bold' }}>
+                <span style={{marginLeft: '15px'}}>{item?.buyer_nickname ?? ''}</span>
               </LeftTextBox>
             </>
             :

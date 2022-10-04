@@ -81,8 +81,8 @@ const AutoBuyingModal = (props) => {
                 alert("가격은 숫자만 입력해주세요.")
             } else if(maxPrice<=props.bid_price) {
                 alert(`상한가는 현재 매수가보다 높게 설정 해주세요.\n현재 매수가:${props.bid_price}`)
-            } else if(purchasePrice<10000) {
-                alert("매수가는 최소 10,000원보다 높아야 합니다.")
+            } else if(purchasePrice<props.min_price/10) {
+                alert(`매수가는 최소 ${props.min_price/10}원보다 높아야 합니다.`)
             } else {
                 const {data: response} = await axios.post('/api/autosystem', {
                     auction_pk: props.auction_pk,
@@ -141,7 +141,7 @@ const AutoBuyingModal = (props) => {
                     매수 가격 설정하기
                     <Explan>
                         매수 가격을 설정해주세요.<br/>
-                        최소 단위는 10,000원입니다.
+                        최소 단위는 {props.min_price/10}원입니다.
                     </Explan>
                 </ModalSubTitle>
                 <ModalInput 

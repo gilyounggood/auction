@@ -1859,14 +1859,25 @@ router.post('/autosystem', (req, res) => {
 
 router.post('/autosysteminfo', (req, res) => {
     try {
-        const {auction_pk, user_pk} = req.body;
+        const {auction_pk, user_pk, kind} = req.body;
 
-        db.query('SELECT max_price, purchase_price FROM auto_auction_system WHERE auction_pk=? AND user_pk=?', [auction_pk, user_pk], (err, result) => {
+        let sql = '';
+        let params = [];
+
+        if(kind === 'all') {
+            sql = 'SELECT user_pk, max_price, purchase_price FROM auto_auction_system WHERE auction_pk=? ORDER BY pk DESC';
+            params = [auction_pk];
+        } else {
+            sql = 'SELECT max_price, purchase_price FROM auto_auction_system WHERE auction_pk=? AND user_pk=?';
+            params = [auction_pk, user_pk]
+        }
+
+        db.query(sql, params, (err, result) => {
             if(err) {
                 console.log(err)
                 response(req, res, -200, "매수 시스템 조회 실패", [])
             } else {
-                response(req, res, 200, "매수 시스템 조회 성공", result[0])
+                response(req, res, 200, "매수 시스템 조회 성공", kind === 'all' ? result : result[0])
             }
         })
     } catch(err) {
@@ -1874,5 +1885,6 @@ router.post('/autosysteminfo', (req, res) => {
         response(req, res, -200, "서버 에러 발생", [])
     } 
 })
+
 
 module.exports = router;        
