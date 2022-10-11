@@ -140,6 +140,16 @@ const Auction = () => {
       if (response3.data) {
         setSystemInfo(response3.data)
       }
+
+      const { data: response4 } = await axios.post('/api/autosysteminfo', {
+        auction_pk: params.pk,
+        user_pk: auth.pk,
+        kind: 'all' 
+      })
+  
+      if (response4.result>0) {
+        setAutoList(response4.data)
+      }
     } else {
       history.push('/')
     }
@@ -204,20 +214,23 @@ const Auction = () => {
     }
   }
 
+  let price = item?.bid_price;
+  
   async function system(){
-    const { data: response4 } = await axios.post('/api/autosysteminfo', {
-      auction_pk: params.pk,
-      user_pk: auth.pk,
-      kind: 'all' 
-    })
 
-    if (response4.result>0) {
-      setAutoList(response4.data)
-      
-      let price = item?.bid_price;
+    let autoList2 = autoList.filter(list => list.max_price > item?.bid_price)
+    let userPk;
+    let systemPk;
+    let count = 0;
+
+    while(autoList2.length > 0) {
+
+      // if(count > 0) {
+      //   break;
+      // }
 
       for(let i =0; i< autoList.length; i++) {
-        if (autoList[i].max_price > item?.bid_price) {
+        if (autoList[i].max_price > price) {
           const {data:response0} = await axios.post('/api/userinfo/user', {pk: autoList[i].user_pk})
 
           const {data:response} = await axios.post('/api/upbid',{
@@ -231,17 +244,27 @@ const Auction = () => {
             post_name: item?.seller_nickname,
             post_title: item?.name,
           })
+
           if(response.result>0){
             const { data: response2 } = await axios.post('/api/item', { pk: params.pk })
             if (response2.data) {
               setItem(response2?.data?.item)
               price = response2?.data?.item.bid_price;
               console.log(response2?.data?.item.bid_price);
+              autoList2 = autoList.filter(list => list.max_price > response2?.data?.item.bid_price)
             }
             const { data: response3 } = await axios.post('/api/chat', { itemPk: params.pk })
             setChatList(response3.data)
             $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
-          }
+
+            // userPk = response2?.data?.item.buyer_pk;
+            // systemPk = autoList[i].user_pk;
+
+            // if(userPk === systemPk) {
+            //   count += 1;
+            // }
+
+          }          
         }
       }
     }
