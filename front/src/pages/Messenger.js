@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import MessengerImage from '../assets/images/메신저이미지.png'
-import setLevel from '../data/Level';
-import { setIcon } from '../data/Icon';
 import axios from 'axios';
 
 const UserImageStyle = styled.img`
@@ -43,7 +41,8 @@ const UserNotice = styled.div`
     float: right;
     color: white;
     background-color: red;
-    border-radius: 10px;
+    border: 2px solid black;
+    border-radius: 15px;
     width: 23px;
     text-align: center;
     font-weight: bold;
@@ -67,6 +66,7 @@ const Messenger = props => {
     const [myReliability, setMyReliability] = useState(0);
     const [myIcon, setMyIcon] = useState("")
     const [messengerList, setMessengerList] = useState([])
+    const [autoNoticeList, setAutoNoticeList] = useState([]);
 
     const isAdmin = async () => {
         setLoading(true)
@@ -94,6 +94,11 @@ const Messenger = props => {
                 user_tag: result.data.userTag
             })
             setMessengerList(response2.data)
+
+            const { data: response3 } = await axios.post('/api/autosystem/notice', {
+                user_pk: response.pk
+            })
+            setAutoNoticeList(response3.data);
           } catch {
           }
 
@@ -105,7 +110,8 @@ const Messenger = props => {
     }, [])
 
     const noticeList = messengerList.filter(message => message.notice === 1 && message.post_id !== '0' && message.user_name !== myNickName)
-    const noticeList2 = messengerList.filter(message => message.notice ===1 && message.post_id === '0' && message.user_name !== myNickName)
+    const noticeList2 = messengerList.filter(message => message.notice === 1 && message.post_id === '0' && message.user_name !== myNickName)
+    const noticeList3 = autoNoticeList.filter(list => list.notice === 1);
 
   return (
     <div>
@@ -117,8 +123,8 @@ const Messenger = props => {
                         }}
                     >
                         <img src={setLevel(myReliability)}/>{myNickName}님의 메신저</UserNameStyle> */}
-                    {noticeList.length + noticeList2.length > 0 &&
-                    <UserNotice style={{marginLeft: '-20px'}} >{ noticeList.length + noticeList2.length}</UserNotice>
+                    {noticeList.length + noticeList2.length + noticeList3.length > 0 &&
+                    <UserNotice style={{marginLeft: '-20px'}} >{noticeList.length + noticeList2.length + noticeList3.length}</UserNotice>
                     }
                     <UserImageStyle 
                         onMouseEnter={() => {setHovered(true)}}

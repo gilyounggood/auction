@@ -148,6 +148,8 @@ const MessengerLog = props => {
 
   const [messengerList, setMessengerList] = useState([])
   const [userTagInfo, setUserTagInfo] = useState("")
+  
+  const [autoNoticeList, setAutoNoticeList] = useState([])
 
   const [chat, setChat] = useState(false)
 
@@ -187,6 +189,13 @@ const MessengerLog = props => {
             setUserTagInfo(result.data.userTag)
         } else {
         }
+
+        const { data: response3 } = await axios.post('/api/autosystem/notice', {user_pk: response.pk})
+
+        if (response3.data) {
+          setAutoNoticeList(response3.data)
+        }
+        
       } catch {
       }
 
@@ -296,7 +305,8 @@ const MessengerLog = props => {
           {myIcon &&
           <img width={25} src={setIcon(myIcon)}/>
           }
-          <img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저</LogTitle>
+          <img width={25} src={setLevel(myReliability)}/>{myNickName}님의 메신저
+        </LogTitle>
             {messengerList?.map(messenger => {
               return (
                 <div key={messenger.pk}>
@@ -327,11 +337,25 @@ const MessengerLog = props => {
                     <Span>{messenger.create_time}</Span>
                   </StyledLink>
                   : null
-                  }  
+                  }   
                 </div>
               )
-            })}
-        </div>
+              })}
+              {autoNoticeList && autoNoticeList.map(list =>
+                <div key={list.pk}>
+                  <StyledLink
+                    to={`/auction/${list.post_id}`}
+                    onClick={e => deleteNotice(list.pk)}
+                    style={{ color: list.notice === 0 ? 'gray' : null }}
+                  >
+                    경매가격이 시스템 상한가에 도달했습니다. <br/>
+                    상한가: <span style={{ color: list.notice === 0 ? 'gray' : "#DC143C" }}>{list.chat_message}</span>원,
+                    제목: <span style={{ color: list.notice === 0 ? 'gray' : "#FF0000" }}>{list.postTitle}</span>
+                    <Span>{list.create_time}</Span>
+                  </StyledLink>
+                </div>
+              )} 
+      </div>
         <div 
           className='messenger_chat'
           style={{display: chat ? "block" : "none" }}

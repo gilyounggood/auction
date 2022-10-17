@@ -220,14 +220,14 @@ const Auction = () => {
 
     let autoList2 = autoList.filter(list => list.max_price > item?.bid_price)
     let userPk;
-    let systemPk;
+    let arr =[];
     let count = 0;
 
     while(autoList2.length > 0) {
 
-      // if(count > 0) {
-      //   break;
-      // }
+      if(count > 0) {
+        break;
+      }
 
       for(let i =0; i< autoList.length; i++) {
         if (autoList[i].max_price > price) {
@@ -250,19 +250,28 @@ const Auction = () => {
             if (response2.data) {
               setItem(response2?.data?.item)
               price = response2?.data?.item.bid_price;
-              console.log(response2?.data?.item.bid_price);
               autoList2 = autoList.filter(list => list.max_price > response2?.data?.item.bid_price)
             }
             const { data: response3 } = await axios.post('/api/chat', { itemPk: params.pk })
             setChatList(response3.data)
             $("#chating").scrollTop($("#chating")[0]?.scrollHeight);
 
-            // userPk = response2?.data?.item.buyer_pk;
-            // systemPk = autoList[i].user_pk;
+            if(autoList[i].max_price <= response2?.data?.item.bid_price) {
+              for(let n = 0; n<autoList.length; n++){
+                const { data: response3 } = await axios.post('/api/autosystem/message', {
+                  item_pk: params.pk,
+                  item_title: item?.name,
+                  user_pk: autoList[n].user_pk,
+                  max_price: autoList[n].max_price
+                })
+              }
+            }
 
-            // if(userPk === systemPk) {
-            //   count += 1;
-            // }
+            arr.push(autoList[i].user_pk);
+
+            if(arr[i] === arr[i-1]) {
+              count += 1;
+            }
 
           }          
         }

@@ -1886,5 +1886,57 @@ router.post('/autosysteminfo', (req, res) => {
     } 
 })
 
+router.post('/autosystem/message', (req, res) => {
+    try{
+        const item_pk = req.body.item_pk;
+        const item_title = req.body.item_title;
+        const user_pk = req.body.user_pk;
+        const max_price = req.body.max_price
+
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = ('0' + (today.getMonth() + 1)).slice(-2);
+        var day = ('0' + today.getDate()).slice(-2);
+        var dateString = year + '-' + month + '-' + day;
+        var hours = ('0' + today.getHours()).slice(-2);
+        var minutes = ('0' + today.getMinutes()).slice(-2);
+        var seconds = ('0' + today.getSeconds()).slice(-2);
+        var timeString = hours + ':' + minutes + ':' + seconds;
+        let moment = dateString + ' ' + timeString;
+
+        let sql = 'INSERT INTO messenger (chat_message, post_id, post_name, user_name, create_time, postTitle, notice) VALUES (?, ?, ? , ?, ?, ?, ?)';
+
+        db.query(sql, [max_price, item_pk, '-', user_pk, moment, item_title, 1], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200, "메신저 전송 실패", [])
+            } else {
+                response(req, res, 200, "메신저 전송 성공", [])
+            }
+        })
+
+    } catch(err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
+
+router.post('/autosystem/notice', (req, res) => {
+    try {
+        const user_pk = req.body.user_pk;
+
+        db.query('SELECT * FROM messenger WHERE user_name=?', [user_pk], (err, result) => {
+            if (err) {
+                console.log(err)
+                response(req, res, -200 , "알림 조회 실패", [])
+            } else {
+                response(req, res, 200, "알림 조회 성공", result)
+            }
+        })
+    }catch(err) {
+        console.log(err)
+        response(req, res, -200, "서버 에러 발생", [])
+    }
+})
 
 module.exports = router;        
