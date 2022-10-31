@@ -219,22 +219,24 @@ const Auction = () => {
   async function system(){
 
     let autoList2 = autoList.filter(list => list.max_price > item?.bid_price)
-    let userPk;
+    let num = 0;
     let arr =[];
-    let count = 0;
+    let count;
 
     while(autoList2.length > 0) {
 
-      if(count > 0) {
+      if(count===0) {
         break;
       }
 
-      for(let i =0; i< autoList.length; i++) {
+      count = autoList.length;
+
+      for(let i =0; i< count; i++) {
         if (autoList[i].max_price > price) {
           const {data:response0} = await axios.post('/api/userinfo/user', {pk: autoList[i].user_pk})
 
           const {data:response} = await axios.post('/api/upbid',{
-            price: price + autoList[i].purchase_price,
+            price:  price + autoList[i].purchase_price > autoList[i].max_price ? autoList[i].max_price : price + autoList[i].purchase_price,
             itemPk:params.pk,
             nickname:response0.data.nick_name,
             reliability: response0.data.reliability,
@@ -267,10 +269,11 @@ const Auction = () => {
               }
             }
 
+            num += 1;
             arr.push(autoList[i].user_pk);
 
-            if(arr[i] === arr[i-1]) {
-              count += 1;
+            if(arr[num-1] === arr[num-2]) {
+              count = 0;
             }
 
           }          
